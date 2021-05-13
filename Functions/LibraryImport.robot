@@ -1,6 +1,5 @@
 ***Settings***
-Library             DebugLibrary
-Library             Selenium2Library
+Library             Selenium2Library  run_on_failure=no operation
 Library             String
 Library             Collections
 Library             OperatingSystem

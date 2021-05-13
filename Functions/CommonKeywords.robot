@@ -13,7 +13,3 @@ Click Element When Ready
 Input Text When Ready
     [Arguments]  ${element}  ${text}  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
     BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Input Text  ${element}  ${text}  clear=true
-
-Log To Console And Debug With Message '${msg}'
-    Log To Console    ${\n}${msg}${\n}
-    Debug

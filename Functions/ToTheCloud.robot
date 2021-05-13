@@ -99,3 +99,17 @@ Set New Line To The FireStore
         #Not Set anything wait for retry on the next time
 
     END
+
+Get Prev Line Saved
+    [Arguments]  ${date}
+    ${num}=  getPrevNumber  ${date}
+    [Return]  ${num}
+
+Save new Prev
+    [Arguments]  ${date}  ${number}
+    setPrevNumber  ${date}  ${number}
+
+Delete Prev Number From Date
+    [Arguments]  ${date}
+    ${is_exist}=  deletePrevNumDoc  ${date}
+    [Return]  ${is_exist}

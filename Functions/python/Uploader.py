@@ -1,4 +1,5 @@
 import datetime
+import collections
 import firebase_admin
 import firestore
 import google.cloud.firestore
@@ -11,6 +12,7 @@ from datetime import datetime
 #Set Firestore DB Credential
 cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
 firebase_admin.initialize_app(cred)
+db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,product_list):
@@ -48,3 +50,25 @@ class Uploader ():
         else:
             return False
 
+    def getPrevNumber (self, date):
+        str_orderDate = str(date)
+
+        #Set destination
+        line=db.collection("Mita").document(str_orderDate).get()
+        if line.exists:
+            return line.to_dict()
+        else:
+            return False
+
+    def setPrevNumber (self, date, prev_number):
+        str_orderDate = str(date)
+
+        prev=db.collection("Mita").document(str_orderDate)
+        prev.update({
+            "line": prev_number
+        })
+    
+    def deletePrevNumDoc (self, date):
+        str_orderDate = str(date)
+
+        db.collection("Mita").document(str_orderDate).delete()

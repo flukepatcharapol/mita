@@ -13,7 +13,7 @@ Variables      ${CURDIR}/Config.yaml
 ${ATTEMPT}             5x
 ${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${BROWSER}             HeadlessChrome
+${BROWSER}             Chrome
 ${GOLBAL_SLEEP}        0.5 sec
 
 
@@ -36,13 +36,11 @@ Script Setup
     Empty Directory  ${CURDIR}\\FailedScreenshot\\
     Selenium2Library.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
-    Set Screenshot Directory    ${SCREENSHOT_DIR}
     Maximize Browser Window
     Login to Firebear Sothorn POS
 
 End Script
     Run Keyword If Test Failed    Do This When Script Failed
-    Empty Directory    ${SCREENSHOT_DIR}
     Close All Browsers
 
 Do This When Script Failed
@@ -56,8 +54,8 @@ Do This When Script Failed
 ############################################################################################################################################
 
 Login to Firebear Sothorn POS
-    Input Text  ${LOG_user}  ${pos_wn_username}  clear=true
-    Input Text  ${LOG_pass}  ${pos_wn_password}  clear=true
+    Input Text  ${LOG_user}  firebear.sothorn${pos_wn_username}  clear=true
+    Input Text  ${LOG_pass}  Makham${pos_wn_password}  clear=true
     Click Element  ${LOG_submit_btn}
     Check Should Be On Home Page
     Log To Console  ${\n}Loged in to Wongnai!
@@ -165,3 +163,17 @@ Reset Every 00:00
         EventLogger.Log to Logger File  log_status=FAILED  event=Reset Daily  message=FAILED To Empty The OutPuts Directory
 
     END
+
+Test
+    [Tags]  debug
+    Import Library    DebugLibrary
+    debug
+    # Save new Prev  14-05-2021  10
+    # ${result}=  Get Prev Line Saved  14-05-2021
+    # IF  ${result}==False
+    #     log to console  ${\n}It not exist
+    # ELSE
+    #     ${line}=  Get From Dictionary  ${result}  line
+    #     log to console  ${\n}Prev Line is ${line}
+    # END
+    # Delete Prev Number From Date
