@@ -1,0 +1,27 @@
+Version 1-0-0
+1. Robot[Get From Wongnai]
+    1.1 Fix sending line message to Line
+    1.2 Fix incorect point calculation
+    1.3 Append product amount to product name
+    1.4 Get list of product for each Bill ID
+    1.5 Add mechamism to handle the logger.csv does not exist
+2. Python
+    2.1 Change collection directory From
+    Order->bill ID-> Bill detail
+    to
+    Order->Date->orderDetail->Bill ID->Bill Detail
+    2.2 Return success or failed to add data to cloud
+    2.3 Modified to send to list of Bill ID that Failed to Line
+
+Version 0.2
+1. Robot[Get From Wongnai]
+    1.1. Add point calculation list
+    1.2. Add event logger to local csv file
+    1.3. Add Alert event to LineCaller
+    1.4. Enable auto-adjust prev.txt
+2. Python
+    2.1. Set document name as timestamp
+    2.2. Set sub-document name as Bill ID
+3. Robot[Reset everyday]
+    3.1 Clear prev.txt when trigger
+    3.2 Log and send alert to line
