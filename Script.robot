@@ -13,7 +13,7 @@ Variables      ${CURDIR}/Config.yaml
 ${ATTEMPT}             5x
 ${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${BROWSER}             Chrome
+${BROWSER}             HeadlessChrome
 ${GOLBAL_SLEEP}        0.5 sec
 
 
@@ -45,7 +45,7 @@ End Script
 
 Do This When Script Failed
     ${cur_time}=  Get Time
-    Capture Page Screenshot  ${CURDIR}\\FailedScreenshot\\${cur_time}.png
+    # Capture Page Screenshot  ${CURDIR}\\FailedScreenshot\\${cur_time}.png
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
     LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error ${TEST MESSAGE}
@@ -76,58 +76,22 @@ Count Row and Compare With Previous Run
     
 Check If Have New Record
     [Arguments]  ${current_row}
-
-    # Log To Console And Debug With Message 'Check If Have New Record'
-
-    # ${is_prev_exist}  Run Keyword And Return Status  File Should Exist  ${PREV_PATH}
-
-    # IF  ${is_prev_exist}
-
-    #     # Log To Console And Debug With Message 'Prev is Exist'
-        
-    #     # Check First prev.txt should not be empty, if empty add 0 to file and re-read again
-    #     ${prev_length}=  Get File  ${PREV_PATH}
-    #     ${is_empty}=      Run Keyword And Return Status    Should Be Empty    ${prev_length}
-    #     IF  ${is_empty}
-    #         Append To FIle  ${PREV_PATH}  0
-    #     END
-
-    #     ${prev_length}=  Get File  ${PREV_PATH}
-    #     ${is_new_line}  Run Keyword And Return Status  Should Be True  '${current_row}'>'${prev_length}'  msg= There are no new order yet. Latest[ ${current_row} ] Prev[ ${prev_length} ]
-    #     Set Test Variable  ${IS_NEW}    ${is_new_line}
-    #     Set Test Variable  ${PREV_LENGTH}  ${prev_length}
-
-    # ELSE
-
-    #     # Log To Console And Debug With Message 'Prev is NOT Exist'
-    #     Append To FIle  ${PREV_PATH}  0
-    #     Set Test Variable    ${IS_NEW}    True
-    #     Set Test Variable  ${PREV_LENGTH}  0
-
-    # END
-
-    
-
     ${prev}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
     IF  '${prev}'=='False'
-
+        log to console  ${\n}Prev is NOT Exist
         Set Test Variable    ${IS_NEW}       True
         Set Test Variable    ${PREV_LENGTH}  0
 
     ELSE
-
-        ${prev_num}  Get From Dictionary  ${prev}  line
-        ${is_new_line}  Run Keyword And Return Status  Should Be True  '${current_row}'>'${prev_num}'  msg= There are no new order yet. Latest[ ${current_row} ] Prev[ ${prev_num} ]
+        log to console  ${\n}Prev is Exist
+        ${is_new_line}  Run Keyword And Return Status  Should Be True  '${current_row}'>'${prev}'  msg= There are no new order yet. Latest[ ${current_row} ] Prev[ ${prev} ]
         Set Test Variable    ${IS_NEW}       ${is_new_line}
-        Set Test Variable    ${PREV_LENGTH}  ${prev_num}
+        Set Test Variable    ${PREV_LENGTH}  ${prev}
 
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  local  result_format=%d.%m.%Y 
-    ${cur_date}=  Replace String  ${cur_date}  .  -
-    debug
-    ${cur_date}=  Get SubStrings  ${cur_date}  0  10
+    ${cur_date}=   Get Current Date  local  result_format=%d-%m-%Y 
     Set Test Variable  ${FS_DATE}  ${cur_date}
 
 
@@ -139,7 +103,8 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     [Setup]  Script Setup
 
     Set Test Variable  ${TARGET}  Normal
-    Set Test Variable  ${CUR_AMOUNT}    0
+    Set Test Variable  ${CUR_AMOUNT}  0
+    Set Date For FireStore
     ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
     Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}
     Set Test Variable  ${PREV_PATH}  ${OUTPUTS_DIR}/${prev_path_txt}
@@ -192,9 +157,14 @@ Reset Every 00:00
 
     END
 
+    
+    ${cur_date}=   Get Current Date  local  - 7 days  result_format=%d-%m-%Y
+
 Test
     [Tags]  debug
     Import Library    DebugLibrary
+    Set Test Variable  ${FS_DATE}  14-05-2021
+    Delete Older Docs in the Collection  20-05-2021
     debug
     # Save new Prev  14-05-2021  10
     # ${result}=  Get Prev Line Saved  14-05-2021

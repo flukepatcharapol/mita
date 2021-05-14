@@ -101,11 +101,10 @@ Set Date To Today
     Log To Console  ${\n}Set Date To Today!
 
 The Date Should Be Today
-    ${cur_date}=   Get Current Date  local  result_format=%d.%m.%Y 
-    ${cur_date}=  Replace String  ${cur_date}  .  /
+    ${expect_date}=  Replace String    ${FS_DATE}  -  /
     ${web_date}=  Get Value  ${HOM_date}
     ${web_date}=  Get SubString  ${web_date}  0  10
-    Should Be Equal As Strings  ${cur_date}  ${web_date}  msg=Setup Date is not ${cur_date}. It's ${web_date}
+    Should Be Equal As Strings  ${expect_date}  ${web_date}  msg=Setup Date is not ${expect_date}. It's ${web_date}
 
 Click Download Report .CSV File
     BuiltIn.Wait Until Keyword Succeeds  3  3 sec  Expect File Should Exist
@@ -194,8 +193,10 @@ Get New Order Detail
             ${payment}  Get Element Locator From Row    ${row_number}    payment
             ${type}     Get Element Locator From Row    ${row_number}    order_type
             ${amount}   Get Element Locator From Row    ${row_number}    amount
-            
-            ${CUR_AMOUNT}=  Evaluate  ${CUR_AMOUNT}+${amount}
+            ${expect_date}  Replace String    ${FS_DATE}    -    /
+            Should Be True    '${expect_date}'=='${date}'    msg=The Data Date is not what expect. Expect\[${expect_date}\] Actual\[${date}\]
+            Set Test Variable  ${DATA_DATE}  ${date}
+
             ${name}  Remove String  ${name}  \n
             ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
             ${date}  Replace String  ${date}  /  -
@@ -260,7 +261,7 @@ Get New Order Detail
             ${prev_point}=   Set Variable    ${amount}
         END
     END
-    Set New Total Sold Amount
+    # Set New Total Sold Amount
     [Return]  ${newline_detail}
 
 '${comment}' Should Not Have Void

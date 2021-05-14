@@ -89,7 +89,8 @@ Set New Line To The FireStore
         
         #Set the OutPuts/prev.text File = ${CURRENT_ROW}
         ${cur_row}  Convert To String  ${CURRENT_ROW}
-        Update New Prev Number  ${FS_DATE}  ${cur_row}
+        ${date}=  Replace String  ${DATA_DATE}  /  -
+        Update New Prev Number  ${date}  ${cur_row}
 
     ELSE
 
@@ -101,8 +102,9 @@ Set New Line To The FireStore
 
 Get Prev Line Saved
     [Arguments]  ${date}
-    ${num}=    Uploader.getPrevNumber  ${date}
-    [Return]  ${num}
+    ${result}=    Uploader.getPrevNumber  ${date}
+    ${line}=  Get From Dictionary  ${result}  line
+    [Return]  ${line}
 
 Update New Prev Number
     [Documentation]  Date format  11-05-2021
@@ -114,8 +116,13 @@ Delete Prev Number From Date
     Uploader.deletePrevNumDoc   ${date}
 
 Set New Total Sold Amount
-    [Arguments]  ${date}=${FS_DATE}  ${amount}=${CUR_AMOUNT}
+    [Arguments]  ${date}=${DATA_DATE}  ${amount}=${CUR_AMOUNT}
+    ${date}=  Replace String    ${date}    /    -
     ${updated_amount}=  Uploader.setAllAmountNumber  ${date}  ${amount}
     LineCaller.Sent Alert To Line Group By ID  message=Update current delivery sold ${updated_amount} for ${FS_DATE}.
     EventLogger.Log to Logger File  log_status=UNKNOWN  event=SOLD AMOUNT  message=Update current delivery sold ${updated_amount} for ${FS_DATE}.
     
+Delete Older Docs in the Collection
+    [Arguments]  ${date}
+    ${list}=  Uploader.deleteAllOlderDoc  ${date}
+    log to console  ${\n}Result: ${list}

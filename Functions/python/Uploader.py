@@ -10,16 +10,12 @@ from google.cloud.firestore import ArrayUnion
 from datetime import datetime
 
 #Set Firestore DB Credential
-# cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
-# firebase_admin.initialize_app(cred)
-# db=firestore.client()
+cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+firebase_admin.initialize_app(cred)
+db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,product_list):
-        
-        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")  #("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-prod.json")
-        firebase_admin.initialize_app(cred)
-        db=firestore.client()
         
         print("delivery type",delivery)
         print("earn date",earnedDate)
@@ -59,51 +55,51 @@ class Uploader ():
 
     def getPrevNumber (self, date):
         str_orderDate = str(date)
-        
-        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
-        firebase_admin.initialize_app(cred)
-        db=firestore.client()
 
         #Set destination
         line=db.collection("Mita").document(str_orderDate).get()
         if line.exists:
             return line.to_dict()
         else:
-            return False
+            result = {"line": "False"}
+            return result
 
     def setPrevNumber (self, date, prev_number):
+        prev_number = int(prev_number)
         str_orderDate = str(date)
-        
-        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
-        firebase_admin.initialize_app(cred)
-        db=firestore.client()
 
-        prev=db.collection("Mita").document(str_orderDate)
-        prev.set({
-            "line": prev_number
-        })
+        prev=db.collection("Mita").document(str_orderDate).get()
+        if prev.exists:
+            db.collection("Mita").document(str_orderDate).update({
+                "line": prev_number
+            })
+        else:
+            db.collection("Mita").document(str_orderDate).set({
+                "line": prev_number,
+                "amount": 0
+            })
     
+        
+        
     def setAllAmountNumber (self, date, cur_amount):
         cur_amount = int(cur_amount)
         str_orderDate = str(date)
-        
-        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
-        firebase_admin.initialize_app(cred)
-        db=firestore.client()
 
-        amount=db.collection("Mita").document(str_orderDate).get()
-        if amount.exists:
-            amount_dict =  amount.to_dict()
-            amount_int = int(amount_dict[amount])
+        doc=db.collection("Mita").document(str_orderDate).get()
+        if doc.exists:
+            amount_dict =  doc.to_dict()
+            amount_int = int(amount_dict["amount"])
             new_amount = amount_int + cur_amount
-            
+            amount=db.collection("Mita").document(str_orderDate)
             amount.update({
                 "amount": new_amount
             })
             return  new_amount
             
         else:
+            amount=db.collection("Mita").document(str_orderDate)
             amount.set({
+                "line": 0,
                 "amount": cur_amount
             })
             
@@ -112,9 +108,22 @@ class Uploader ():
     
     def deletePrevNumDoc (self, date):
         str_orderDate = str(date)
-        
-        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
-        firebase_admin.initialize_app(cred)
         db=firestore.client()
 
         db.collection("Mita").document(str_orderDate).delete()
+
+    def deleteAllOlderDoc (self, date):
+        str_orderDate = str(date)
+        print(str_orderDate)
+        col=db.collection("Mita").get()
+        result= []
+        for doc in col:
+            if doc.id < 'str_orderDate':
+                result.append(doc.id)
+        print("result:",result)
+
+        for doc_id in result:
+            db.collection("Mita").document(doc_id).delete()
+
+        return  result
+        

@@ -40,6 +40,6 @@ Sent Alert To Line Group By ID
     [Arguments]  ${message}
     ${cur_time}=  Get Time
 
-    ${body_message}=  Set Variable  ${message} at \[${cur_time}\]
+    ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
     Send Text To Line User  text=${body_message}  receiver=${LINE}[FLUKE_UID]
     # Send Text To Line User  text=${body_message}  receiver=U2e38cbaf2f18ee4bb4b16b303c5903c8
