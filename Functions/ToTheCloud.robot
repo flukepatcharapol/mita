@@ -88,9 +88,8 @@ Set New Line To The FireStore
         EventLogger.Log to Logger File  log_status=SUCCESS  event=Add New Line  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records.
         
         #Set the OutPuts/prev.text File = ${CURRENT_ROW}
-        Remove File    ${PREV_PATH}
         ${cur_row}  Convert To String  ${CURRENT_ROW}
-        Append To File  ${PREV_PATH}  ${cur_row}
+        Update New Prev Number  ${FS_DATE}  ${cur_row}
 
     ELSE
 
@@ -102,14 +101,21 @@ Set New Line To The FireStore
 
 Get Prev Line Saved
     [Arguments]  ${date}
-    ${num}=  getPrevNumber  ${date}
+    ${num}=    Uploader.getPrevNumber  ${date}
     [Return]  ${num}
 
-Save new Prev
+Update New Prev Number
+    [Documentation]  Date format  11-05-2021
     [Arguments]  ${date}  ${number}
-    setPrevNumber  ${date}  ${number}
+    Uploader.setPrevNumber    ${date}    ${number}
 
 Delete Prev Number From Date
     [Arguments]  ${date}
-    ${is_exist}=  deletePrevNumDoc  ${date}
-    [Return]  ${is_exist}
+    Uploader.deletePrevNumDoc   ${date}
+
+Set New Total Sold Amount
+    [Arguments]  ${date}=${FS_DATE}  ${amount}=${CUR_AMOUNT}
+    ${updated_amount}=  Uploader.setAllAmountNumber  ${date}  ${amount}
+    LineCaller.Sent Alert To Line Group By ID  message=Update current delivery sold ${updated_amount} for ${FS_DATE}.
+    EventLogger.Log to Logger File  log_status=UNKNOWN  event=SOLD AMOUNT  message=Update current delivery sold ${updated_amount} for ${FS_DATE}.
+    

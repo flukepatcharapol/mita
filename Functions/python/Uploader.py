@@ -10,12 +10,16 @@ from google.cloud.firestore import ArrayUnion
 from datetime import datetime
 
 #Set Firestore DB Credential
-cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
-firebase_admin.initialize_app(cred)
-db=firestore.client()
+# cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+# firebase_admin.initialize_app(cred)
+# db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,product_list):
+        
+        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")  #("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-prod.json")
+        firebase_admin.initialize_app(cred)
+        db=firestore.client()
         
         print("delivery type",delivery)
         print("earn date",earnedDate)
@@ -46,12 +50,19 @@ class Uploader ():
         #Check that Order-date-OrderDeatil-BillId should exist and return result
         check = doc.get()
         if check.exists:
+            
             return True
+        
         else:
+            
             return False
 
     def getPrevNumber (self, date):
         str_orderDate = str(date)
+        
+        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+        firebase_admin.initialize_app(cred)
+        db=firestore.client()
 
         #Set destination
         line=db.collection("Mita").document(str_orderDate).get()
@@ -62,13 +73,48 @@ class Uploader ():
 
     def setPrevNumber (self, date, prev_number):
         str_orderDate = str(date)
+        
+        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+        firebase_admin.initialize_app(cred)
+        db=firestore.client()
 
         prev=db.collection("Mita").document(str_orderDate)
-        prev.update({
+        prev.set({
             "line": prev_number
         })
     
+    def setAllAmountNumber (self, date, cur_amount):
+        cur_amount = int(cur_amount)
+        str_orderDate = str(date)
+        
+        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+        firebase_admin.initialize_app(cred)
+        db=firestore.client()
+
+        amount=db.collection("Mita").document(str_orderDate).get()
+        if amount.exists:
+            amount_dict =  amount.to_dict()
+            amount_int = int(amount_dict[amount])
+            new_amount = amount_int + cur_amount
+            
+            amount.update({
+                "amount": new_amount
+            })
+            return  new_amount
+            
+        else:
+            amount.set({
+                "amount": cur_amount
+            })
+            
+            return  cur_amount
+    
+    
     def deletePrevNumDoc (self, date):
         str_orderDate = str(date)
+        
+        cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+        firebase_admin.initialize_app(cred)
+        db=firestore.client()
 
         db.collection("Mita").document(str_orderDate).delete()

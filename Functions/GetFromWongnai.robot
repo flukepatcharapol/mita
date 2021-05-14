@@ -195,6 +195,7 @@ Get New Order Detail
             ${type}     Get Element Locator From Row    ${row_number}    order_type
             ${amount}   Get Element Locator From Row    ${row_number}    amount
             
+            ${CUR_AMOUNT}=  Evaluate  ${CUR_AMOUNT}+${amount}
             ${name}  Remove String  ${name}  \n
             ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
             ${date}  Replace String  ${date}  /  -
@@ -259,6 +260,7 @@ Get New Order Detail
             ${prev_point}=   Set Variable    ${amount}
         END
     END
+    Set New Total Sold Amount
     [Return]  ${newline_detail}
 
 '${comment}' Should Not Have Void
