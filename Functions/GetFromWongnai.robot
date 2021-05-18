@@ -37,6 +37,12 @@ ${tid_nom}              ติดนม
 ${tid_char_tid_nom}     ติดชาติดนม
 ${look_tid}             ลูกติด
 
+#2 Points List
+${kuhoo_lookme}         คู่หูลูกหมี
+${kuhoo_dad}            คู่หูพ่อลูก
+${kuhoo_mom}            คู่หูแม่ลูก
+${kun_dad_mom}          คุณพ่อคุณแม่
+
 #1 Point List
 ${koko}         โกโก้
 ${thai}         ชาไทย
@@ -294,7 +300,7 @@ Recalculate Price For The Set Product
     ...  ${name}      
 
     ${is_2}  Run Keyword And Return Status  Should Contain Any
-    ...  ${name}      
+    ...  ${name}      ${kuhoo_lookme}  ${kuhoo_dad}  ${kuhoo_mom}  ${kun_dad_mom}
 
     ${is_1}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
@@ -345,7 +351,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      
 
     ${is_2}  Run Keyword And Return Status  Should Contain Any
-    ...  ${name}      
+    ...  ${name}      ${kuhoo_lookme}  ${kuhoo_dad}  ${kuhoo_mom}  ${kun_dad_mom}   
 
     ${is_1}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
