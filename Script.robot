@@ -77,37 +77,6 @@ Count Row and Compare With Previous Run
 Check If Have New Record
     [Arguments]  ${current_row}
 
-    # Log To Console And Debug With Message 'Check If Have New Record'
-
-    # ${is_prev_exist}  Run Keyword And Return Status  File Should Exist  ${PREV_PATH}
-
-    # IF  ${is_prev_exist}
-
-    #     # Log To Console And Debug With Message 'Prev is Exist'
-        
-    #     # Check First prev.txt should not be empty, if empty add 0 to file and re-read again
-    #     ${prev_length}=  Get File  ${PREV_PATH}
-    #     ${is_empty}=      Run Keyword And Return Status    Should Be Empty    ${prev_length}
-    #     IF  ${is_empty}
-    #         Append To FIle  ${PREV_PATH}  0
-    #     END
-
-    #     ${prev_length}=  Get File  ${PREV_PATH}
-    #     ${is_new_line}  Run Keyword And Return Status  Should Be True  '${current_row}'>'${prev_length}'  msg= There are no new order yet. Latest[ ${current_row} ] Prev[ ${prev_length} ]
-    #     Set Test Variable  ${IS_NEW}    ${is_new_line}
-    #     Set Test Variable  ${PREV_LENGTH}  ${prev_length}
-
-    # ELSE
-
-    #     # Log To Console And Debug With Message 'Prev is NOT Exist'
-    #     Append To FIle  ${PREV_PATH}  0
-    #     Set Test Variable    ${IS_NEW}    True
-    #     Set Test Variable  ${PREV_LENGTH}  0
-
-    # END
-
-    
-
     ${prev}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
     IF  '${prev}'=='False'
 
@@ -139,7 +108,6 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     [Setup]  Script Setup
 
     Set Test Variable  ${TARGET}  Normal
-    Set Test Variable  ${CUR_AMOUNT}    0
     ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
     Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}
     Set Test Variable  ${PREV_PATH}  ${OUTPUTS_DIR}/${prev_path_txt}
