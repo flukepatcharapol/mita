@@ -34,6 +34,7 @@ class Uploader ():
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         # print("converted time",date_time_obj)
         str_orderDate = str(orderDate)
+        str_orderDate.replace('-','')
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
