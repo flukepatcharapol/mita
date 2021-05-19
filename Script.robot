@@ -13,7 +13,7 @@ Variables      ${CURDIR}/Config.yaml
 ${ATTEMPT}             5x
 ${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${BROWSER}             HeadlessChrome
+${BROWSER}             Chrome
 ${GOLBAL_SLEEP}        0.5 sec
 
 
@@ -103,7 +103,6 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     [Setup]  Script Setup
 
     Set Test Variable  ${TARGET}  Normal
-    Set Test Variable  ${CUR_AMOUNT}  0
     Set Date For FireStore
     ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
     Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}

@@ -15,19 +15,25 @@ firebase_admin.initialize_app(cred)
 db=firestore.client()
 
 class Uploader ():
-    def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,product_list):
+    def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
         
         print("delivery type",delivery)
         print("earn date",earnedDate)
         print("lineUserId",lineUserId)
         print("orderDate",orderDate)
         print("point",point)
+        print("price",price)
+        print("amount",amount)
         print("bill",bill)
         print("product list",product_list)
 
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         # print("converted time",date_time_obj)
         str_orderDate = str(orderDate)
+        str_orderDate = str_orderDate.replace('-','')
+        int_point = int(point)
+        float_price = float(price)
+        int_amount = int(amount)
         #Set destination
         db=firestore.client()
         doc=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill)
@@ -40,7 +46,9 @@ class Uploader ():
             "LineUserId":lineUserId,
             "OrderDate":date_time_obj,
             "ProductList":product_list,
-            "Point":point
+            "Amount Of Cups": int_amount,
+            "Point":int_point,
+            "SubTotal Bill Price":float_price
         })
         
         #Check that Order-date-OrderDeatil-BillId should exist and return result
@@ -78,32 +86,6 @@ class Uploader ():
                 "line": prev_number,
                 "amount": 0
             })
-    
-        
-        
-    def setAllAmountNumber (self, date, cur_amount):
-        cur_amount = int(cur_amount)
-        str_orderDate = str(date)
-
-        doc=db.collection("Mita").document(str_orderDate).get()
-        if doc.exists:
-            amount_dict =  doc.to_dict()
-            amount_int = int(amount_dict["amount"])
-            new_amount = amount_int + cur_amount
-            amount=db.collection("Mita").document(str_orderDate)
-            amount.update({
-                "amount": new_amount
-            })
-            return  new_amount
-            
-        else:
-            amount=db.collection("Mita").document(str_orderDate)
-            amount.set({
-                "line": 0,
-                "amount": cur_amount
-            })
-            
-            return  cur_amount
     
     
     def deletePrevNumDoc (self, date):

@@ -16,6 +16,8 @@ Transform To Firestore Format And Sent To FireStore
             #Get info
             ${order_date}    Get From Dictionary  ${body}  Order_date
             ${point}         Get From Dictionary  ${body}  Point
+            ${price}         Get From Dictionary  ${body}  Price
+            ${amount}        Get From Dictionary  ${body}  Amount
             ${bill}          Get From Dictionary  ${body}  Bill_id
             ${type}          Get From Dictionary  ${body}  Type
             ${product_list}  Get From Dictionary  ${body}  Product_list
@@ -28,8 +30,8 @@ Transform To Firestore Format And Sent To FireStore
 
             #Set into Doc info to Document format
             ${result_body}=  Create Dictionary    Delivery=${type}    EarnedDate=    
-            ...    LineUserId=    OrderDate=${order_date}    Point=${point}
-            ...    BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
+            ...    LineUserId=    OrderDate=${order_date}    Point=${point}    Price=${price}
+            ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
 
             #Append Info to Document
             Append To List    ${result}    ${result_body}
@@ -55,6 +57,8 @@ Set New Line To The FireStore
         ${bill}        Get From Dictionary  ${INDEX}  BillId
         ${prod_list}   Get From Dictionary  ${INDEX}  ProductList
         ${is_valid}    Get From Dictionary  ${INDEX}  isValid
+        ${price}       Get From Dictionary  ${INDEX}  Price
+        ${amount}      Get From Dictionary  ${INDEX}  Amount
 
         # Get Point and convert to Int
         ${point}       Get From Dictionary  ${INDEX}  Point
@@ -64,7 +68,7 @@ Set New Line To The FireStore
         #Call uploader to send info to firestore
         IF  ${is_valid}
             ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${earn}  ${line}
-            ...    ${date}  ${point}  ${bill}  ${prod_list}
+            ...    ${date}  ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
 
             #Validate Upload result
             IF  ${upload_result}
@@ -115,14 +119,4 @@ Delete Prev Number From Date
     [Arguments]  ${date}
     Uploader.deletePrevNumDoc   ${date}
 
-Set New Total Sold Amount
-    [Arguments]  ${date}=${DATA_DATE}  ${amount}=${CUR_AMOUNT}
-    ${date}=  Replace String    ${date}    /    -
-    ${updated_amount}=  Uploader.setAllAmountNumber  ${date}  ${amount}
-    LineCaller.Sent Alert To Line Group By ID  message=Update current delivery sold ${updated_amount} for ${FS_DATE}.
-    EventLogger.Log to Logger File  log_status=UNKNOWN  event=SOLD AMOUNT  message=Update current delivery sold ${updated_amount} for ${FS_DATE}.
     
-Delete Older Docs in the Collection
-    [Arguments]  ${date}
-    ${list}=  Uploader.deleteAllOlderDoc  ${date}
-    log to console  ${\n}Result: ${list}

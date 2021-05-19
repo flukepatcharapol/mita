@@ -26,6 +26,7 @@ ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr
 ${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[3]
 ${TAB_product_name}         xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[6]
 ${TAB_amount}               xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[8]
+${TAB_price}                xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[10]
 ${TAB_payment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[18]
 ${TAB_comment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[19]
 ${TAB_order_type}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[21]
@@ -35,6 +36,12 @@ ${tid_char}             ติดชา
 ${tid_nom}              ติดนม
 ${tid_char_tid_nom}     ติดชาติดนม
 ${look_tid}             ลูกติด
+
+#2 Points List
+${kuhoo_lookme}         คู่หูลูกหมี
+${kuhoo_dad}            คู่หูพ่อลูก
+${kuhoo_mom}            คู่หูแม่ลูก
+${kun_dad_mom}          คุณพ่อคุณแม่
 
 #1 Point List
 ${koko}         โกโก้
@@ -70,8 +77,8 @@ Check Should Be On Home Page
     BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
 
 Check and Clear If Promo is Exist
-    ${is_exist}  Run Keyword And Return Status  Element Should Not Be Visible  ${HOM_promo_model}
-    IF  False==${is_exist}
+    ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
+    IF  ${is_exist}
         Click Element When Ready  ${HOM_promo_model}
     END
     Reload Page
@@ -167,7 +174,9 @@ Get New Order Detail
     ${new_line_amount}=    Evaluate    ${row}-${latest_number}
     # log to console  ${\n}Dict: ${newline_detail} ${\n}Current row:${row} ${\n}Previous: ${latest_number} ${\n}Amount:${new_line_amount}
     ${prev_point}    Set Variable
-    ${prev_bill}    Set Variable
+    ${prev_bill}     Set Variable
+    ${prev_price}    Set Variable
+    ${prev_amount}   Set Variable
     ${product_list}  Create List
     FOR    ${INDEX}    IN RANGE    ${new_line_amount}
 
@@ -193,18 +202,23 @@ Get New Order Detail
             ${payment}  Get Element Locator From Row    ${row_number}    payment
             ${type}     Get Element Locator From Row    ${row_number}    order_type
             ${amount}   Get Element Locator From Row    ${row_number}    amount
-            ${expect_date}  Replace String    ${FS_DATE}    -    /
-            Should Be True    '${expect_date}'=='${date}'    msg=The Data Date is not what expect. Expect\[${expect_date}\] Actual\[${date}\]
+            
             Set Test Variable  ${DATA_DATE}  ${date}
 
+            ${price}    Get Element Locator From Row    ${row_number}    price
+            
+            
             ${name}  Remove String  ${name}  \n
             ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
             ${date}  Replace String  ${date}  /  -
 
             #Validate Information
-            ${product_point}    Recalculate Amount For The Set Product    ${name}
-            ${amount}  Evaluate  ${product_point}*${amount}
-            # log to console    ${\n}Amount: ${amount}
+            ${product_point}    Recalculate Price For The Set Product    ${name}
+            ${point}  Evaluate  ${product_point}*${amount}
+
+            #Check amount information
+            ${product_amount}  Recalculate Amount For The Set Product  ${name}
+            ${amount}  Evaluate  ${product_amount}*${amount}
 
             #Check if หน้าร้าน Type
             ${is_counter}    Check If From Counter    ${type}
@@ -234,10 +248,17 @@ Get New Order Detail
             #Check If the bill are many items and calculate the point
             IF  '${bill_id}'=='${prev_bill}'
 
-                #Re-calculate point
+                
                 Set To Dictionary  ${detail}  Dup  True
-                ${amount}=  Evaluate  ${prev_point}+${amount}
-                Set To Dictionary  ${detail}  Point  ${amount}
+                #Re-calculate point
+                ${point}=  Evaluate  ${prev_point}+${point}
+                Set To Dictionary  ${detail}  Point  ${point}
+                #Re-calculate pprice
+                ${price}=   Evaluate  ${prev_price}+${price}
+                Set To Dictionary  ${detail}  Price  ${price}
+                #Re-calculate amount
+                ${amount}=  Evaluate  ${prev_amount}+${amount}
+                Set To Dictionary  ${detail}  Amount  ${amount}
                 
                 # Append current product to the list ID by bill
                 Append To List  ${PROD_LIST_${bill_id}}  ${name}
@@ -246,7 +267,9 @@ Get New Order Detail
 
             ELSE
                 
-                Set To Dictionary  ${detail}  Point  ${amount}
+                Set To Dictionary  ${detail}  Point  ${point}
+                Set To Dictionary  ${detail}  Price  ${price}
+                Set To Dictionary  ${detail}  Amount  ${amount}
                 
                 # Create new list and append current product to list
                 ${product_list}=  Create List  ${name}
@@ -258,7 +281,9 @@ Get New Order Detail
             #Set Detail to NEW LINE DETAIL DICT
             Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
             ${prev_bill}=    Set Variable    ${bill_id}
-            ${prev_point}=   Set Variable    ${amount}
+            ${prev_point}=   Set Variable    ${point}
+            ${prev_amount}=  Set Variable    ${amount}
+            ${prev_price}=   Set Variable    ${price}
         END
     END
     # Set New Total Sold Amount
@@ -267,7 +292,7 @@ Get New Order Detail
 '${comment}' Should Not Have Void
     Should Contain  ${comment}  Void
 
-Recalculate Amount For The Set Product
+Recalculate Price For The Set Product
     [Arguments]  ${name}
 
     ${is_4}  Run Keyword And Return Status  Should Contain Any
@@ -277,7 +302,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      
 
     ${is_2}  Run Keyword And Return Status  Should Contain Any
-    ...  ${name}      
+    ...  ${name}      ${kuhoo_lookme}  ${kuhoo_dad}  ${kuhoo_mom}  ${kun_dad_mom}
 
     ${is_1}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
@@ -317,3 +342,43 @@ Check Payment For Lineman Type
     ${is_lineman}    Run Keyword And Return Status  Should Contain Any  ${payment}  ${lineman_detecter}
     # log to console   ${\n}Checker: ${is_lineman}
     [Return]  ${is_lineman}
+
+Recalculate Amount For The Set Product  
+    [Arguments]  ${name}
+
+    ${is_4}  Run Keyword And Return Status  Should Contain Any
+    ...  ${name}      ${tid_char}  ${tid_nom}  ${tid_char_tid_nom}  ${look_tid}
+
+    ${is_3}  Run Keyword And Return Status  Should Contain Any
+    ...  ${name}      
+
+    ${is_2}  Run Keyword And Return Status  Should Contain Any
+    ...  ${name}      ${kuhoo_lookme}  ${kuhoo_dad}  ${kuhoo_mom}  ${kun_dad_mom}   
+
+    ${is_1}  Run Keyword And Return Status  Should Contain Any
+    ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
+    ...               ${hokkaido}  ${latte}  ${espreso}
+    ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
+    ...               ${wip}
+    
+    IF  ${is_4}
+
+        BuiltIn.Return From Keyword   4
+
+    ELSE IF  ${is_3}
+
+        BuiltIn.Return From Keyword   3
+
+    ELSE IF  ${is_2}
+
+        BuiltIn.Return From Keyword   2
+
+    ELSE IF  ${is_1}
+
+        BuiltIn.Return From Keyword   1
+
+    ELSE
+
+        BuiltIn.Return From Keyword   0
+
+    END
