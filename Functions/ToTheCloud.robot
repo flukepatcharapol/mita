@@ -16,6 +16,8 @@ Transform To Firestore Format And Sent To FireStore
             #Get info
             ${order_date}    Get From Dictionary  ${body}  Order_date
             ${point}         Get From Dictionary  ${body}  Point
+            ${price}         Get From Dictionary  ${body}  Price
+            ${amount}        Get From Dictionary  ${body}  Amount
             ${bill}          Get From Dictionary  ${body}  Bill_id
             ${type}          Get From Dictionary  ${body}  Type
             ${product_list}  Get From Dictionary  ${body}  Product_list
@@ -28,8 +30,8 @@ Transform To Firestore Format And Sent To FireStore
 
             #Set into Doc info to Document format
             ${result_body}=  Create Dictionary    Delivery=${type}    EarnedDate=    
-            ...    LineUserId=    OrderDate=${order_date}    Point=${point}
-            ...    BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
+            ...    LineUserId=    OrderDate=${order_date}    Point=${point}    Price=${price}
+            ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
 
             #Append Info to Document
             Append To List    ${result}    ${result_body}
@@ -55,6 +57,8 @@ Set New Line To The FireStore
         ${bill}        Get From Dictionary  ${INDEX}  BillId
         ${prod_list}   Get From Dictionary  ${INDEX}  ProductList
         ${is_valid}    Get From Dictionary  ${INDEX}  isValid
+        ${price}       Get From Dictionary  ${INDEX}  Price
+        ${amount}      Get From Dictionary  ${INDEX}  Amount
 
         # Get Point and convert to Int
         ${point}       Get From Dictionary  ${INDEX}  Point
@@ -64,7 +68,7 @@ Set New Line To The FireStore
         #Call uploader to send info to firestore
         IF  ${is_valid}
             ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${earn}  ${line}
-            ...    ${date}  ${point}  ${bill}  ${prod_list}
+            ...    ${date}  ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
 
             #Validate Upload result
             IF  ${upload_result}
@@ -88,9 +92,9 @@ Set New Line To The FireStore
         EventLogger.Log to Logger File  log_status=SUCCESS  event=Add New Line  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records.
         
         #Set the OutPuts/prev.text File = ${CURRENT_ROW}
-        Remove File    ${PREV_PATH}
         ${cur_row}  Convert To String  ${CURRENT_ROW}
-        Append To File  ${PREV_PATH}  ${cur_row}
+        ${date}=  Replace String  ${DATA_DATE}  /  -
+        Update New Prev Number  ${date}  ${cur_row}
 
     ELSE
 
@@ -102,14 +106,17 @@ Set New Line To The FireStore
 
 Get Prev Line Saved
     [Arguments]  ${date}
-    ${num}=  getPrevNumber  ${date}
-    [Return]  ${num}
+    ${result}=    Uploader.getPrevNumber  ${date}
+    ${line}=  Get From Dictionary  ${result}  line
+    [Return]  ${line}
 
-Save new Prev
+Update New Prev Number
+    [Documentation]  Date format  11-05-2021
     [Arguments]  ${date}  ${number}
-    setPrevNumber  ${date}  ${number}
+    Uploader.setPrevNumber    ${date}    ${number}
 
 Delete Prev Number From Date
     [Arguments]  ${date}
-    ${is_exist}=  deletePrevNumDoc  ${date}
-    [Return]  ${is_exist}
+    Uploader.deletePrevNumDoc   ${date}
+
+    
