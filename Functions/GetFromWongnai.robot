@@ -202,12 +202,11 @@ Get New Order Detail
             ${payment}  Get Element Locator From Row    ${row_number}    payment
             ${type}     Get Element Locator From Row    ${row_number}    order_type
             ${amount}   Get Element Locator From Row    ${row_number}    amount
-            
-            Set Test Variable  ${DATA_DATE}  ${date}
-
             ${price}    Get Element Locator From Row    ${row_number}    price
             
+            ${bill_id}  Convert To Upper Case  ${bill_id}
             
+            Set Test Variable  ${DATA_DATE}  ${date}
             ${name}  Remove String  ${name}  \n
             ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
             ${date}  Replace String  ${date}  /  -

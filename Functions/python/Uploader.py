@@ -30,36 +30,48 @@ class Uploader ():
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         # print("converted time",date_time_obj)
         str_orderDate = str(orderDate)
-        str_orderDate = str_orderDate.replace('-','')
+        str_orderDate = str_orderDate.replace( '-' , '' )
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
-        #Set destination
-        db=firestore.client()
-        doc=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill)
         
-        #Set Information to document destination
-        doc.set({
+        #Check and create Document
+        db=firestore.client()
+        doc_date=db.collection("Order").document(str_orderDate).get()
+        if doc_date.exists:
+            #Set destination
+            doc=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill)
+
+            #Set Information to document destination
+            doc.set({
             "Delivery":delivery,
             "BillID":bill,
             "EarnedDate":earnedDate,
             "LineUserId":lineUserId,
             "OrderDate":date_time_obj,
             "ProductList":product_list,
-            "Amount Of Cups": int_amount,
+            "AmountOfCups": int_amount,
             "Point":int_point,
             "SubTotal Bill Price":float_price
         })
         
-        #Check that Order-date-OrderDeatil-BillId should exist and return result
-        check = doc.get()
-        if check.exists:
+            #Check that Order-date-OrderDeatil-BillId should exist and return result
+            check = doc.get()
+            if check.exists:
             
-            return True
+                return True
         
-        else:
+            else:
             
-            return False
+                return False
+            
+        else: #Create the document if the document is not yet exist
+            
+            doc_date.set({
+                
+            })
+        
+        
 
     def getPrevNumber (self, date):
         str_orderDate = str(date)
@@ -101,7 +113,7 @@ class Uploader ():
         result= []
         for doc in col:
             if doc.id < 'str_orderDate':
-                result.append(doc.id)
+                result.append(doc.id) 
         print("result:",result)
 
         for doc_id in result:
