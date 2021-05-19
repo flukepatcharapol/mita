@@ -10,7 +10,7 @@ from google.cloud.firestore import ArrayUnion
 from datetime import datetime
 
 #Set Firestore DB Credential
-cred=credentials.Certificate("D:\\Code\\Firebear-v-0-2\\Firebear\\Functions\\python\\accessKey-test.json")
+cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
 firebase_admin.initialize_app(cred)
 db=firestore.client()
 
@@ -46,13 +46,13 @@ class Uploader ():
             doc.set({
             "Delivery":delivery,
             "BillID":bill,
-            "EarnedDate":earnedDate,
-            "LineUserId":lineUserId,
+            "EarnedDate":None,
+            "LineUserId":None,
             "OrderDate":date_time_obj,
             "ProductList":product_list,
             "AmountOfCups": int_amount,
             "Point":int_point,
-            "SubTotal Bill Price":float_price
+            "SubTotalBillPrice":float_price
         })
         
             #Check that Order-date-OrderDeatil-BillId should exist and return result
@@ -67,7 +67,7 @@ class Uploader ():
             
         else: #Create the document if the document is not yet exist
             
-            doc_date.set({
+            doc_date=db.collection("Order").document(str_orderDate).set({
                 
             })
         
