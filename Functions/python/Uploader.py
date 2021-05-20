@@ -16,7 +16,11 @@ db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
-        
+        #Set Firestore DB Credential
+        cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
+        fb_app = firebase_admin.initialize_app(cred)
+        db=firestore.client()
+
         print("delivery type",delivery)
         print("earn date",earnedDate)
         print("lineUserId",lineUserId)
@@ -121,3 +125,12 @@ class Uploader ():
 
         return  result
         
+
+cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
+fb_app = firebase_admin.initialize_app(cred)
+print(fb_app)
+db = firestore.client(fb_app)
+db2 = firebase_admin.get_app(fb_app)
+
+print("db",db)
+print("db2",db2)
