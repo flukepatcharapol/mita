@@ -21,7 +21,7 @@ steps:
 # [END cloudbuild_python_dependencies_yaml]
   - name: python
     entrypoint: python3
-    args: ["robot", "-v", "POS_USER:firebear.sothorn@gmail.com", "-v", "POS_PASS:Makham@home1", "-i", "test-connect", "Script.robot"]
+    args: ["Script.robot", "robot", "-v", "POS_USER:firebear.sothorn@gmail.com", "-v", "POS_PASS:Makham@home1", "-i", "test-connect"]
   # [START cloudbuild_python_image_yaml]
   # Docker Build
   # - name: 'gcr.io/cloud-builders/docker'
