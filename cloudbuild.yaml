@@ -14,10 +14,12 @@
 # [START cloudbuild_python_yaml]
 # [START cloudbuild_python_dependencies_yaml]
 steps:
+   - name: 'list recursively'
+   args: ['ls', '-R']
   # Install dependencies
   - name: python
     entrypoint: pip
-    args: ["install", "-r", "/Mita/requirements.txt", "--user"]
+    args: ["install", "-r", "requirements.txt"]
 # [END cloudbuild_python_dependencies_yaml]
   - name: python
     entrypoint: python3
