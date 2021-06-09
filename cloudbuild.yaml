@@ -21,7 +21,7 @@ steps:
 # [END cloudbuild_python_dependencies_yaml]
   - name: python
     entrypoint: python3
-    args: ["-m", "robot", "-v", "POS_USER:firebear.sothorn@gmail.com", "-v", "POS_PASS:Makham@home1","-v", "LINE_FLUKE_UID:Ue1db4c959e5938f9e1d658c1f2b5fcd2", "-v", "LINE_ACCESS_TOKEN:Bearer TmLRfyXZ5lKKDHVJwemH4yB828m8yamE4fy+i+ROF9kCJvHlla1s9GSVcS0jqk/9v4tbygRrO3sXTCOk2dnwpmgzgRcB/xfLs4LSG968JDTTEUtAiiUx9ag1xs/O2/+amtuXT+ds36LcUt8c2ugpPQdB04t89/1O/w1cDnyilFU=" "-i", "test-connect", "Script.robot"]
+    args: ["-m", "robot", "-v", "POS_USER:firebear.sothorn@gmail.com", "-v", "POS_PASS:Makham@home1","-v", "LINE_FLUKE_UID:Ue1db4c959e5938f9e1d658c1f2b5fcd2", "-v", "LINE_ACCESS_TOKEN:Bearer TmLRfyXZ5lKKDHVJwemH4yB828m8yamE4fy+i+ROF9kCJvHlla1s9GSVcS0jqk/9v4tbygRrO3sXTCOk2dnwpmgzgRcB/xfLs4LSG968JDTTEUtAiiUx9ag1xs/O2/+amtuXT+ds36LcUt8c2ugpPQdB04t89/1O/w1cDnyilFU=", "-i", "test-connect", "Script.robot"]
   # [START cloudbuild_python_image_yaml]
   # Docker Build
   # - name: 'gcr.io/cloud-builders/docker'
