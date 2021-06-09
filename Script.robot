@@ -163,6 +163,10 @@ Reset Every 00:00
 
 Test connection with google cloud build
     [Tags]  test-connect
+    log to console  ${\n}POS_USER: ${POS_USER}
+    log to console  ${\n}POS_PASS: ${POS_PASS}
+    log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
+    log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
     ${cur_date}  Get Time
     Set Test Variable  ${DATA_DATE}  ${cur_date}
     LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!!!!!!
