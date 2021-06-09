@@ -17,7 +17,7 @@ steps:
   # Install dependencies
   - name: python
     entrypoint: pip
-    args: ["install", "-r", "requirements.txt", "--user"]
+    args: ["install", "-r", "/Mita/requirements.txt", "--user"]
 # [END cloudbuild_python_dependencies_yaml]
   - name: python
     entrypoint: python3
