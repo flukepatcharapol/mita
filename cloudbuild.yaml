@@ -18,10 +18,6 @@ steps:
   - name: python
     entrypoint: pip
     args: ["install", "-r", "/workspace/requirements.txt", "--user"]
-    #debug
-  - name: python
-    entrypoint: pip
-    args: ["list"]
 # [END cloudbuild_python_dependencies_yaml]
   - name: python
     entrypoint: python3
