@@ -1,14 +1,8 @@
 # URL
 POS_WONGNAI_URL:  "https://pos.wongnai.com/login"
 
-
 # Line
 LINE:
   URL: "https://api.line.me/v2/bot"
-  acccess_token:  "Bearer TmLRfyXZ5lKKDHVJwemH4yB828m8yamE4fy+i+ROF9kCJvHlla1s9GSVcS0jqk/9v4tbygRrO3sXTCOk2dnwpmgzgRcB/xfLs4LSG968JDTTEUtAiiUx9ag1xs/O2/+amtuXT+ds36LcUt8c2ugpPQdB04t89/1O/w1cDnyilFU="
-  FB_LINE_OA_ID:  
-  FLUKE_UID:  "Ue1db4c959e5938f9e1d658c1f2b5fcd2"
-  KATE_UID:   "U2097258f13d65c1adfac12dd69dcbee5"
-  LINE_ALT_GROUP_ID: "C5e14a02bb6390c2b5029563aa4d0d31f"
   path:
     push_message:  "message/push"
