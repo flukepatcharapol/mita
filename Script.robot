@@ -54,8 +54,10 @@ Do This When Script Failed
 ############################################################################################################################################
 
 Login to Firebear Sothorn POS
-    Input Text  ${LOG_user}  firebear.sothorn${pos_wn_username}  clear=true
-    Input Text  ${LOG_pass}  Makham${pos_wn_password}  clear=true
+    # Input Text  ${LOG_user}  firebear.sothorn${pos_wn_username}  clear=true
+    # Input Text  ${LOG_pass}  Makham${pos_wn_password}  clear=true
+    Input Text  ${LOG_user}  ${POS_USER}  clear=true  
+    Input Text  ${LOG_pass}  ${POS_PASS}  clear=true
     Click Element  ${LOG_submit_btn}
     Check Should Be On Home Page
     Log To Console  ${\n}Loged in to Wongnai!
@@ -159,18 +161,8 @@ Reset Every 00:00
     
     ${cur_date}=   Get Current Date  local  - 7 days  result_format=%d-%m-%Y
 
-Test
-    [Tags]  debug
-    Import Library    DebugLibrary
-    Set Test Variable  ${FS_DATE}  14-05-2021
-    Delete Older Docs in the Collection  20-05-2021
-    debug
-    # Save new Prev  14-05-2021  10
-    # ${result}=  Get Prev Line Saved  14-05-2021
-    # IF  ${result}==False
-    #     log to console  ${\n}It not exist
-    # ELSE
-    #     ${line}=  Get From Dictionary  ${result}  line
-    #     log to console  ${\n}Prev Line is ${line}
-    # END
-    # Delete Prev Number From Date
+Test connection with google cloud build
+    [Tags]  test-connect
+    ${cur_date}  Get Time
+    Set Test Variable  ${DATA_DATE}  ${cur_date}
+    LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!!!!!!
