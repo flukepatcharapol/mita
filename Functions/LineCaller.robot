@@ -32,12 +32,12 @@ Send Text To Line User
 ####################################################################################################################################################################################
 
 Get My Bot Header
-    [Arguments]  ${token}=${LINE_ACCESS_TOKEN}
+    [Arguments]  ${token}=${LINE}[acccess_token]
     ${header}=  Create Dictionary  Content-Type=application/json  Authorization=${token}
     [Return]  ${header}
 
 Sent Alert To Line Group By ID
-    [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
+    [Arguments]  ${message}  ${receiver}=${LINE}[FLUKE_UID]
     ${cur_time}=  Get Time
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
