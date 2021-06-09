@@ -1,7 +1,7 @@
 ***Keywords***
 ####################################################################################################################################################################################
 Send Text To Line User
-    [Arguments]  ${text}  ${receiver}=${LINE}[FLUKE_UID]
+    [Arguments]  ${text}  ${receiver}
     ${header}=  Get MY Bot Header
 
     # ${message_body}=  Create Dictionary  type=text  text=${text}
