@@ -56,8 +56,8 @@ Do This When Script Failed
 Login to Firebear Sothorn POS
     # Input Text  ${LOG_user}  firebear.sothorn${pos_wn_username}  clear=true
     # Input Text  ${LOG_pass}  Makham${pos_wn_password}  clear=true
-    Input Text  ${LOG_user}  ${POS_USER}  clear=true  
-    Input Text  ${LOG_pass}  ${POS_PASS}  clear=true
+    Input Text  ${LOG_user}  ${_POS_USER}  clear=true  
+    Input Text  ${LOG_pass}  ${_POS_PASS}  clear=true
     Click Element  ${LOG_submit_btn}
     Check Should Be On Home Page
     Log To Console  ${\n}Loged in to Wongnai!
