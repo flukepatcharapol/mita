@@ -1,7 +1,7 @@
 ***Keywords***
 ####################################################################################################################################################################################
 Send Text To Line User
-    [Arguments]  ${text}  ${receiver}=${LINE}[FB_LINE_OA_ID]
+    [Arguments]  ${text}  ${receiver}=${LINE}[FLUKE_UID]
     ${header}=  Get MY Bot Header
 
     # ${message_body}=  Create Dictionary  type=text  text=${text}
@@ -32,14 +32,14 @@ Send Text To Line User
 ####################################################################################################################################################################################
 
 Get My Bot Header
-    [Arguments]  ${token}=${LINE}[acccess_token]
+    [Arguments]  ${token}=${LINE_ACCESS_TOKEN}
     ${header}=  Create Dictionary  Content-Type=application/json  Authorization=${token}
     [Return]  ${header}
 
 Sent Alert To Line Group By ID
-    [Arguments]  ${message}
+    [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
     ${cur_time}=  Get Time
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
-    Send Text To Line User  text=${body_message}  receiver=${LINE}[FLUKE_UID]
+    Send Text To Line User  text=${body_message}  ${receiver}
     # Send Text To Line User  text=${body_message}  receiver=U2e38cbaf2f18ee4bb4b16b303c5903c8

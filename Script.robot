@@ -6,7 +6,7 @@ Resource       ${CURDIR}/Functions/GetFromWongnai.robot
 Resource       ${CURDIR}/Functions/LineCaller.robot
 Resource       ${CURDIR}/Functions/ToTheCloud.robot
 
-Variables      ${CURDIR}/../Config.yaml
+# Variables      ${CURDIR}/Config.yaml
 
 ***Variables***
 #Config Variable
