@@ -170,3 +170,4 @@ Test connection with google cloud build
     # log to console  ${\n}test date: ${test_date}
     # log to console  ${\n}cur date: ${cur_date}
     ToTheCloud.Test cred Acc
+    log to console  ${\n}ROBOT: ${GOOGLE_APPLICATION_CREDENTIALS}
