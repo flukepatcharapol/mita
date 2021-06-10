@@ -170,5 +170,6 @@ Test connection with google cloud build
     # log to console  ${\n}test date: ${test_date}
     # log to console  ${\n}cur date: ${cur_date}
     # ToTheCloud.Test cred Acc
-    ${list}=  Get Environment Variables
-    log to console  ${\n}ROBOT: ${list}
+    ${list}  List Files In Directory  ${CURDIR}
+    log to console  ${\n}${CURDIR}
+    log to console  ${\n}${list}
