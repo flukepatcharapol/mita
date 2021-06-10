@@ -119,4 +119,6 @@ Delete Prev Number From Date
     [Arguments]  ${date}
     Uploader.deletePrevNumDoc   ${date}
 
-    
+Delete Prev Number Where older Than '${date}'
+    ${result}  Uploader.deleteAllOlderDoc  ${date}
+    [Return]  ${result}

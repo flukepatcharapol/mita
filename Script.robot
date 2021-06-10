@@ -93,7 +93,7 @@ Check If Have New Record
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  local  result_format=%d-%m-%Y 
+    ${cur_date}=   Get Current Date  UTC+7  result_format=%d-%m-%Y 
     Set Test Variable  ${FS_DATE}  ${cur_date}
 
 
@@ -134,32 +134,28 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 
 Reset Every 00:00
     [Tags]    Morning-Reset
+    #Get the date older than today for 4 days
+    ${cur_date}  Get Current Date  UTC+7  - 4 days  result_format=%d-%m-%Y
 
-    # Set Test Variable  ${TARGET}  Normal
-    # ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
-    # Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}
+    #Delete the doc which older than ${cur_date}
+    ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
+    ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
 
-    # Empty Directory    ${OUTPUTS_DIR}
-    # ${is_empty}=  Run Keyword And Return Status  Directory Should Be Empty    ${OUTPUTS_DIR}
-    # ${cur_time}=  Get TIme
-    Set Date For FireStore
-    ToTheCloud.Delete Prev Number From Date  ${FS_DATE}
-    ${is_exist}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
-
-    IF  ${is_exist}==False
+    #Sent noti to line is success or not
+    IF  ${is_empty}
 
         LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The Prev Line for ${FS_DATE}
         EventLogger.Log to Logger File  log_status=SUCCESS  event=Reset Daily  message=Finish Empty The Prev Line for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${is_empty}
         EventLogger.Log to Logger File  log_status=FAILED  event=Reset Daily  message=FAILED To Empty The Prev Line for ${FS_DATE}
 
     END
 
     
-    ${cur_date}=   Get Current Date  local  - 7 days  result_format=%d-%m-%Y
+    # ${cur_date}=   Get Current Date  local  - 7 days  result_format=%d-%m-%Y
 
 Test connection with google cloud build
     [Tags]  test-connect
@@ -167,6 +163,6 @@ Test connection with google cloud build
     log to console  ${\n}POS_PASS: ${POS_PASS}
     log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
     log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
-    ${cur_date}  Get Time
+    ${cur_date}  Get Current Date  UTC+7  result_format=%d-%m-%Y
     Set Test Variable  ${DATA_DATE}  ${cur_date}
     LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!!!!!!

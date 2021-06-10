@@ -112,25 +112,28 @@ class Uploader ():
 
     def deleteAllOlderDoc (self, date):
         str_orderDate = str(date)
-        print(str_orderDate)
+        
+        #Get all doc from collection Mita
         col=db.collection("Mita").get()
         result= []
+        
+        #Search and get every doc that older than $date
         for doc in col:
-            if doc.id < 'str_orderDate':
+            if doc.id <= str_orderDate:
                 result.append(doc.id) 
         print("result:",result)
 
+        #Delete every doc from the list
         for doc_id in result:
             db.collection("Mita").document(doc_id).delete()
-
-        return  result
         
+        #Check and if not failed add to list
+        list_of_failed = []
+        for check_doc in result:
+            check_result=db.collection("Order").document(check_doc).get()
+            if check_result.exists:
+                list_of_failed.append(check_doc)
 
-cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
-fb_app = firebase_admin.initialize_app(cred)
-print(fb_app)
-db = firestore.client(fb_app)
-db2 = firebase_admin.get_app(fb_app)
-
-print("db",db)
-print("db2",db2)
+        #Return the list of failed doc
+        return  list_of_failed
+        
