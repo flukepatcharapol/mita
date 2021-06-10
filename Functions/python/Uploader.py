@@ -11,9 +11,9 @@ from google.cloud.firestore import ArrayUnion
 from datetime import datetime
 
 #Set Firestore DB Credential
-cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
-firebase_admin.initialize_app(cred)
-db=firestore.client()
+# cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
+# firebase_admin.initialize_app(cred)
+# db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
