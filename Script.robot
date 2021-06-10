@@ -169,5 +169,5 @@ Test connection with google cloud build
     # ${test_date}  Get Current Date  UTC  + 7 hours - 4 days
     # log to console  ${\n}test date: ${test_date}
     # log to console  ${\n}cur date: ${cur_date}
-    ToTheCloud.Test cred Acc
+    # ToTheCloud.Test cred Acc
     log to console  ${\n}ROBOT: ${GOOGLE_APPLICATION_CREDENTIALS}
