@@ -93,7 +93,7 @@ Check If Have New Record
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  UTC+7  result_format=%d-%m-%Y 
+    ${cur_date}=   Get Current Date  UTC  result_format=%d-%m-%Y 
     Set Test Variable  ${FS_DATE}  ${cur_date}
 
 
@@ -135,7 +135,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 Reset Every 00:00
     [Tags]    Morning-Reset
     #Get the date older than today for 4 days
-    ${cur_date}  Get Current Date  UTC+7  - 4 days  result_format=%d-%m-%Y
+    ${cur_date}  Get Current Date  UTC  + 7 hours - 4 days  result_format=%d-%m-%Y
 
     #Delete the doc which older than ${cur_date}
     ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
@@ -163,6 +163,8 @@ Test connection with google cloud build
     log to console  ${\n}POS_PASS: ${POS_PASS}
     log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
     log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
-    ${cur_date}  Get Current Date  UTC+7  result_format=%d-%m-%Y
+    ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     Set Test Variable  ${DATA_DATE}  ${cur_date}
     LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!!!!!!
+    ${test_date}  Get Current Date  UTC  + 7 hours - 4 days  result_format=%d-%m-%Y
+    log to console  ${\n}${test_date}
