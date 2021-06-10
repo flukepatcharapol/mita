@@ -134,7 +134,7 @@ class Uploader ():
         
     def testServicAccount (self):
         from google.cloud import storage
-        storage_client = storage.Client.from_service_account_json('service_account.json')
+        storage_client = storage.Client()
         buckets = list(storage_client.list_buckets())
         return buckets
 
