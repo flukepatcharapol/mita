@@ -10,30 +10,17 @@ from google.cloud.firestore import ArrayUnion
 
 from datetime import datetime
 
-#Set Firestore DB Credential
+# Set Firestore DB Credential
 # cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
+# cred=credentials.Certificate(GOOGLE_APPLICATION_CREDENTIALS)
 # firebase_admin.initialize_app(cred)
 # db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
-        #Set Firestore DB Credential
-        cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
-        fb_app = firebase_admin.initialize_app(cred)
-        db=firestore.client()
 
-        print("delivery type",delivery)
-        print("earn date",earnedDate)
-        print("lineUserId",lineUserId)
-        print("orderDate",orderDate)
-        print("point",point)
-        print("price",price)
-        print("amount",amount)
-        print("bill",bill)
-        print("product list",product_list)
-
+        #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
-        # print("converted time",date_time_obj)
         str_orderDate = str(orderDate)
         str_orderDate = str_orderDate.replace( '-' , '' )
         int_point = int(point)
@@ -44,11 +31,25 @@ class Uploader ():
         db=firestore.client()
         doc_date=db.collection("Order").document(str_orderDate).get()
         if doc_date.exists:
-            #Set destination
-            doc=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill)
-
-            #Set Information to document destination
-            doc.set({
+            #Set destination and add the data to target document
+            db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).set({
+            "Delivery":delivery,
+            "BillID":bill,
+            "EarnedDate":None,
+            "LineUserId":None,
+            "OrderDate":date_time_obj,
+            "ProductList":product_list,
+            "AmountOfCups": int_amount,
+            "Point":int_point,
+            "SubTotalBillPrice":float_price
+        })
+            
+        else: #Create the document if the document is not yet exist
+            # Create Document for this date
+            db.collection("Order").document(str_orderDate).set({})
+            
+            #Add the data to the document
+            db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).set({
             "Delivery":delivery,
             "BillID":bill,
             "EarnedDate":None,
@@ -60,22 +61,15 @@ class Uploader ():
             "SubTotalBillPrice":float_price
         })
         
-            #Check that Order-date-OrderDeatil-BillId should exist and return result
-            check = doc.get()
-            if check.exists:
+        #Check that Order-date-OrderDeatil-BillId should exist and return result
+        check=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).get()
+        if check.exists:
             
-                return True
+            return True
         
-            else:
+        else:
             
-                return False
-            
-        else: #Create the document if the document is not yet exist
-            
-            doc_date=db.collection("Order").document(str_orderDate).set({
-                
-            })
-        
+            return False
         
 
     def getPrevNumber (self, date):
