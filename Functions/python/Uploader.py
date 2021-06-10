@@ -1,3 +1,4 @@
+import os
 import datetime
 import collections
 import firebase_admin
@@ -137,3 +138,6 @@ class Uploader ():
         #Return the list of failed doc
         return  list_of_failed
         
+    def testServicAccount ():
+        filename=os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+        return filename

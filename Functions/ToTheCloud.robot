@@ -122,3 +122,7 @@ Delete Prev Number From Date
 Delete Prev Number Where older Than '${date}'
     ${result}  Uploader.deleteAllOlderDoc  ${date}
     [Return]  ${result}
+
+Test cred Acc
+    ${result}  Uploader.testServicAccount
+    log to console  ${\n}Service account return: ${result}
