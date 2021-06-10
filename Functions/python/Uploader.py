@@ -133,5 +133,12 @@ class Uploader ():
         return  list_of_failed
         
     def testServicAccount (self):
-        filename=os.environ['GOOGLE_APPLICATION_CREDENTIALS']
-        return filename
+        from google.cloud import storage
+        storage_client = storage.Client.from_service_account_json('service_account.json')
+        buckets = list(storage_client.list_buckets())
+        return buckets
+
+# from google.cloud import storage
+# storage_client = storage.Client()
+# filename=os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+# print(filename)
