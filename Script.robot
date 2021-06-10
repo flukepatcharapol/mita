@@ -166,5 +166,6 @@ Test connection with google cloud build
     ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     Set Test Variable  ${DATA_DATE}  ${cur_date}
     LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!!!!!!
-    ${test_date}  Get Current Date  UTC  + 7 hours - 4 days  result_format=%d-%m-%Y
-    log to console  ${\n}${test_date}
+    ${test_date}  Get Current Date  UTC  + 7 hours - 4 days
+    log to console  ${\n}test date: ${test_date}
+    log to console  ${\n}cur date: ${cur_date}
