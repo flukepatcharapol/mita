@@ -16,9 +16,11 @@ from datetime import datetime
 # firebase_admin.initialize_app(cred)
 # db=firestore.client()
 
-path=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-cred=credentials.Certificate(path)
-firebase_admin.initialize_app(cred)
+# path=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+# cred=credentials.Certificate(path)
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "D:\\Code\\accessKey-test.json"
+app=firebase_admin.initialize_app()
+print(app)
 db=firestore.client()
 check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
 print(check.id)
