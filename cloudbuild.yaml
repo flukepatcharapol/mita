@@ -15,10 +15,10 @@
 # [START cloudbuild_python_dependencies_yaml]
 steps:
   # Install dependencies
-  - name: 'gcr.io/$PROJECT_ID/javac:8'
+  - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: apt
     args: ["install", "chromium-chromedriver"]
-    
+
   - name: python
     entrypoint: pip
     args: ["install", "-r", "/workspace/requirements.txt", "--user"]
