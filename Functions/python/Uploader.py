@@ -1,13 +1,13 @@
-import os
+# import os
 import datetime
-import collections
-import firebase_admin
+# import collections
+# import firebase_admin
 import firestore
-import google.cloud.firestore
-from firebase_admin import credentials
+# import google.cloud.firestore
+# from firebase_admin import credentials
 from firebase_admin import firestore
 from google.cloud.firestore import ArrayUnion
-
+from google.cloud import storage
 from datetime import datetime
 
 # Set Firestore DB Credential
@@ -15,6 +15,8 @@ from datetime import datetime
 # cred=credentials.Certificate(GOOGLE_APPLICATION_CREDENTIALS)
 # firebase_admin.initialize_app(cred)
 # db=firestore.client()
+
+db = storage.Client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
@@ -44,7 +46,8 @@ class Uploader ():
             "SubTotalBillPrice":float_price
         })
             
-        else: #Create the document if the document is not yet exist
+        #Create the document if the document is not yet exist
+        else: 
             # Create Document for this date
             db.collection("Order").document(str_orderDate).set({})
             
@@ -137,8 +140,3 @@ class Uploader ():
         storage_client = storage.Client()
         buckets = list(storage_client.list_buckets())
         return buckets
-
-# from google.cloud import storage
-# storage_client = storage.Client()
-# filename=os.environ['GOOGLE_APPLICATION_CREDENTIALS']
-# print(filename)
