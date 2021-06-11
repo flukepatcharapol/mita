@@ -17,7 +17,7 @@ from datetime import datetime
 # db=firestore.client()
 
 
-if is_pc:
+if _IS_PC:
     # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'D:\Code\\acc-mita.json'
     cred=credentials.Certificate('D:\Code\\acc-mita.json')
     firebase_admin.initialize_app(cred)
