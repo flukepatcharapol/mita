@@ -1,10 +1,10 @@
-# import os
+import os
 import datetime
 # import collections
-# import firebase_admin
+import firebase_admin
 import firestore
 # import google.cloud.firestore
-# from firebase_admin import credentials
+from firebase_admin import credentials
 from firebase_admin import firestore
 from google.cloud.firestore import ArrayUnion
 from google.cloud import storage
@@ -16,7 +16,16 @@ from datetime import datetime
 # firebase_admin.initialize_app(cred)
 # db=firestore.client()
 
-db = storage.Client()
+
+if is_pc:
+    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'D:\Code\\acc-mita.json'
+    cred=credentials.Certificate('D:\Code\\acc-mita.json')
+    firebase_admin.initialize_app(cred)
+    print('done')
+
+db=firestore.client()
+check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
+print(check.id)
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
@@ -30,7 +39,6 @@ class Uploader ():
         int_amount = int(amount)
         
         #Check and create Document
-        db=firestore.client()
         doc_date=db.collection("Order").document(str_orderDate).get()
         if doc_date.exists:
             #Set destination and add the data to target document
@@ -104,7 +112,6 @@ class Uploader ():
     
     def deletePrevNumDoc (self, date):
         str_orderDate = str(date)
-        db=firestore.client()
 
         db.collection("Mita").document(str_orderDate).delete()
 
