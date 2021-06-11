@@ -16,13 +16,9 @@ from datetime import datetime
 # firebase_admin.initialize_app(cred)
 # db=firestore.client()
 
-
-if _IS_PC:
-    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'D:\Code\\acc-mita.json'
-    cred=credentials.Certificate('D:\Code\\acc-mita.json')
-    firebase_admin.initialize_app(cred)
-    print('done')
-
+path=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+cred=credentials.Certificate(path)
+firebase_admin.initialize_app(cred)
 db=firestore.client()
 check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
 print(check.id)
