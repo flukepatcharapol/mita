@@ -30,4 +30,5 @@ WORKDIR /mita
 #Install lib according to requirements list
 RUN pip install -r requirements.txt
 #Run robot command
-RUN robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -i $_TAG Script.robot
+RUN robot -i $_TAG Script.robot
+RUN "robot -v POS_USER:\$_POS_USER -v POS_PASS:\$_POS_PASS -v LINE_FLUKE_UID:\$_FLUKE_UID -v LINE_ACCESS_TOKEN:\$_ACCESS_TOKEN -i \$_TAG Script.robot"
