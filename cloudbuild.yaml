@@ -1,13 +1,12 @@
 steps:
   # Install dependencies
-  # - name: "gcr.io/cloud-builders/docker"
-  #   args: [ "build", "-t", "gcr.io/$PROJECT_ID/mita", "." ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: [ "build", "-t", "gcr.io/$PROJECT_ID/mita", "." ]
+images: ["gcr.io/$PROJECT_ID/mita"]
 
   # - name: "gcr.io/cloud-builders/docker"
   #   args: [ "push", "gcr.io/$PROJECT_ID/mita"]
 
-  - name: "gcr.io/cloud-builders/docker"
-    args: [ "run", "-d", "--name", "con_mita", "gcr.io/$PROJECT_ID/mita" ]
   - name: "gcr.io/cloud-builders/docker"
     args: [ "ps"]
   # - name: python
