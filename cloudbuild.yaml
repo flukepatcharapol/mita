@@ -5,12 +5,15 @@ steps:
 
   - name: "gcr.io/cloud-builders/docker"
     args: [ "push", "gcr.io/$PROJECT_ID/mita"]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: [ "run", "-d", "--name", "con_mita", "gcr.io/$PROJECT_ID/mita" ]
   # - name: python
   #   entrypoint: pip
   #   args: ["install", "-r", "/workspace/requirements.txt", "--user"]
   # #Run python Script
   - name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "gcr.io/$PROJECT_ID/mita", "pip", "list"]
+    args: ["exec", "con_mita", "pip", "list"]
   # - name: "gcr.io/cloud-builders/docker"
   #   args: [ "exec", "gcr.io/$PROJECT_ID/mita", "-m", "robot", "-v", "POS_USER:$_POS_USER", "-v", "POS_PASS:$_POS_PASS","-v", "LINE_FLUKE_UID:$_FLUKE_UID", "-v", "LINE_ACCESS_TOKEN:$_ACCESS_TOKEN", "-i", "$_TAG", "Script.robot"]", "-v", "POS_PASS:$_POS_PASS","-v", "LINE_FLUKE_UID:$_FLUKE_UID", "-v", "LINE_ACCESS_TOKEN:$_ACCESS_TOKEN", "-i", "$_TAG", "Script.robot" ]
 
