@@ -11,12 +11,12 @@ from google.cloud import storage
 from datetime import datetime
 
 # Set Firestore DB Credential For Local
-IS_LOCAL = False
-if IS_LOCAL:
-    cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
-    firebase_admin.initialize_app(cred)
-else:
-    firebase_admin.initialize_app()
+# IS_LOCAL = False
+# if IS_LOCAL:
+#     cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
+#     firebase_admin.initialize_app(cred)
+# else:
+#     firebase_admin.initialize_app()
 
 db=firestore.client()
 
