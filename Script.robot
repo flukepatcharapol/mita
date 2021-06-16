@@ -170,7 +170,8 @@ Test connection with google cloud build
     # ${test_date}  Get Current Date  UTC  + 7 hours - 4 days
     # log to console  ${\n}test date: ${test_date}
     # log to console  ${\n}cur date: ${cur_date}
-    Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
-    Capture Page Screenshot  Manual.png
+    # Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
+    # Capture Page Screenshot  Manual.png
     # ToTheCloud.Test cred Acc
     # Test cred Acc
+    log to console  ${\n}Success
