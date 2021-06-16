@@ -32,7 +32,7 @@ Send Text To Line User
 ####################################################################################################################################################################################
 
 Get My Bot Header
-    [Arguments]  ${token}=${LINE_ACCESS_TOKEN}
+    [Arguments]  ${token}=${LINE_ACCESS_TOKEN_1}${LINE_ACCESS_TOKEN_2}
     ${header}=  Create Dictionary  Content-Type=application/json  Authorization=${token}
     [Return]  ${header}
 
