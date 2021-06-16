@@ -10,20 +10,16 @@ from google.cloud.firestore import ArrayUnion
 from google.cloud import storage
 from datetime import datetime
 
-# Set Firestore DB Credential
-# cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
-# cred=credentials.Certificate(GOOGLE_APPLICATION_CREDENTIALS)
-# firebase_admin.initialize_app(cred)
-# db=firestore.client()
+# Set Firestore DB Credential For Local
+IS_LOCAL = False
+if IS_LOCAL:
+    cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
+    firebase_admin.initialize_app(cred)
+else:
+    app=firebase_admin.initialize_app()
 
-# path=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-# cred=credentials.Certificate(path)
-# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "D:\\Code\\accessKey-test.json"
-app=firebase_admin.initialize_app()
-print(app)
 db=firestore.client()
-check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
-print(check.id)
+
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
@@ -141,7 +137,6 @@ class Uploader ():
         return  list_of_failed
         
     def testServicAccount (self):
-        from google.cloud import storage
-        storage_client = storage.Client()
-        buckets = list(storage_client.list_buckets())
-        return buckets
+        check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
+        print(check.id)
+        return check.id

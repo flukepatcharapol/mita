@@ -13,7 +13,7 @@ Variables      ${CURDIR}/Config.yaml
 ${ATTEMPT}             5x
 ${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${BROWSER}             Chrome
+${BROWSER}             HeadlessChrome
 ${GOLBAL_SLEEP}        0.5 sec
 
 
@@ -34,7 +34,7 @@ ${prev_path_txt}       prev.txt
 Script Setup
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     Empty Directory  ${CURDIR}\\FailedScreenshot\\
-    Selenium2Library.Set Selenium Speed    0.001
+    SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
     Maximize Browser Window
     Login to Firebear Sothorn POS
@@ -63,7 +63,7 @@ Login to Firebear Sothorn POS
     Log To Console  ${\n}Loged in to Wongnai!
 
 Open Wongnai POS WEB on Headless and Maximize Window
-    Selenium2Library.Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
+    SeleniumLibrary.Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
     Log To Console  ${\n}Browser is open!
     Maximize Browser Window
 
@@ -116,7 +116,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Count Row and Compare With Previous Run
-    Selenium2Library.Set Selenium Speed    0
+    SeleniumLibrary.Set Selenium Speed    0
 
     IF  ${IS_NEW}  
 
@@ -159,15 +159,18 @@ Reset Every 00:00
 
 Test connection with google cloud build
     [Tags]  test-connect
-    # log to console  ${\n}POS_USER: ${POS_USER}
-    # log to console  ${\n}POS_PASS: ${POS_PASS}
-    # log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
-    # log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
+    # Import Variables  ${CURDIR}/localConfig.yaml
+    log to console  ${\n}POS_USER: ${POS_USER}
+    log to console  ${\n}POS_PASS: ${POS_PASS}
+    log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
+    log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
     # ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     # Set Test Variable  ${DATA_DATE}  ${cur_date}
     # LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!!!!!!
     # ${test_date}  Get Current Date  UTC  + 7 hours - 4 days
     # log to console  ${\n}test date: ${test_date}
     # log to console  ${\n}cur date: ${cur_date}
+    Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
+    Capture Page Screenshot  Manual.png
     # ToTheCloud.Test cred Acc
     Test cred Acc

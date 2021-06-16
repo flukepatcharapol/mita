@@ -1,21 +1,19 @@
-FROM alpine:latest AS dl
-
-COPY . /app
-
-WORKDIR /app
-
+FROM alpine:latest AS al
+#Download curl
+RUN echo $PROJECT_ID
 RUN apk add curl unzip --update
-
+# Get latest version, download, and unzip chromedriver
 RUN curl -sO https://dl-ssl.google.com/linux/linux_signing_key.pub
 RUN export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
     curl -sO http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip chromedriver_linux64.zip
 
-FROM python:3.7-slim
-
-COPY --from=dl /linux_signing_key.pub .
-COPY --from=dl /chromedriver /usr/local/bin/chromedriver
-
+FROM python:3.7-slim AS py
+#Copy chromedriver from above stage(al) and paste to /bin
+COPY --from=al /linux_signing_key.pub .
+COPY --from=al /chromedriver /usr/local/bin/chromedriver
+# COPY --from=al /chromedriver /mita/chromedriver
+#Install thai
 RUN apt-get update && \
     apt-get install --no-install-recommends gnupg fonts-tlwg-loma fonts-tlwg-loma-otf -y -q
 
@@ -25,7 +23,12 @@ RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >
     apt-get install --no-install-recommends google-chrome-stable -y -q && \
     rm linux_signing_key.pub && \
     chmod +x /usr/local/bin/chromedriver
-
-RUN pip -r install requirements.txt
-
-RUN python3 -m robot -i test-connect Script.robot
+    
+#Copy source code dir from local to docker at /mita
+# COPY . /mita
+# #Set mita as working diretory
+# WORKDIR /mita
+# #Install lib according to requirements list
+# RUN pip install -r requirements.txt
+# #Run robot command
+# RUN robot -i test-connect Script.robot
