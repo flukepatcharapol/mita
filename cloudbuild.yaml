@@ -8,6 +8,8 @@ steps:
 
   - name: "gcr.io/cloud-builders/docker"
     args: [ "run", "-d", "--name", "con_mita", "gcr.io/$PROJECT_ID/mita" ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: [ "ps"]
   # - name: python
   #   entrypoint: pip
   #   args: ["install", "-r", "/workspace/requirements.txt", "--user"]
