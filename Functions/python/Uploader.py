@@ -16,7 +16,7 @@ if IS_LOCAL:
     cred=credentials.Certificate("D:\\Code\\accessKey-test.json")
     firebase_admin.initialize_app(cred)
 else:
-    app=firebase_admin.initialize_app()
+    firebase_admin.initialize_app()
 
 db=firestore.client()
 
