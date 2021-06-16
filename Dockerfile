@@ -1,6 +1,5 @@
 FROM alpine:latest AS al
 #Download curl
-RUN echo $PROJECT_ID
 RUN apk add curl unzip --update
 # Get latest version, download, and unzip chromedriver
 RUN curl -sO https://dl-ssl.google.com/linux/linux_signing_key.pub
@@ -23,12 +22,13 @@ RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >
     apt-get install --no-install-recommends google-chrome-stable -y -q && \
     rm linux_signing_key.pub && \
     chmod +x /usr/local/bin/chromedriver
-    
+
 #Copy source code dir from local to docker at /mita
-# COPY . /mita
-# #Set mita as working diretory
-# WORKDIR /mita
-# #Install lib according to requirements list
-# RUN pip install -r requirements.txt
-# #Run robot command
-# RUN robot -i test-connect Script.robot
+COPY . /mita
+#Set mita as working diretory
+WORKDIR /mita
+#Install lib according to requirements list
+RUN pip install -r requirements.txt
+#Run robot command
+RUN robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID \
+    -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -i $_TAG Script.robot

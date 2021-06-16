@@ -2,16 +2,10 @@ steps:
   # Install dependencies
   - name: "gcr.io/cloud-builders/docker"
     args: [ "build", "-t", "gcr.io/$PROJECT_ID/mita", "." ]
-  - name: python
-    entrypoint: pip
-    args: ["install", "-r", "/workspace/requirements.txt", "--user"]
-
-  #Debug
-  - name: python
-    entrypoint: pip
-    args: ["list"]
-
-  #Run python Script
-  - name: python
-    entrypoint: python3
-    args: ["-m", "robot", "-v", "POS_USER:$_POS_USER", "-v", "POS_PASS:$_POS_PASS","-v", "LINE_FLUKE_UID:$_FLUKE_UID", "-v", "LINE_ACCESS_TOKEN:$_ACCESS_TOKEN", "-i", "$_TAG", "Script.robot"]
+  # - name: python
+  #   entrypoint: pip
+  #   args: ["install", "-r", "/workspace/requirements.txt", "--user"]
+  # #Run python Script
+  # - name: python
+  #   entrypoint: python3
+  #   args: ["-m", "robot", "-v", "POS_USER:$_POS_USER", "-v", "POS_PASS:$_POS_PASS","-v", "LINE_FLUKE_UID:$_FLUKE_UID", "-v", "LINE_ACCESS_TOKEN:$_ACCESS_TOKEN", "-i", "$_TAG", "Script.robot"]", "-v", "POS_PASS:$_POS_PASS","-v", "LINE_FLUKE_UID:$_FLUKE_UID", "-v", "LINE_ACCESS_TOKEN:$_ACCESS_TOKEN", "-i", "$_TAG", "Script.robot"]
