@@ -18,8 +18,18 @@ from datetime import datetime
 # else:
 #     firebase_admin.initialize_app()
 
-db=firestore.client()
+# db=firestore.client()
 
+for k, v in sorted(os.environ.items()):
+    print(k+':', v)
+    
+# print(PROJECT_ID_RUN)
+# cred = credentials.ApplicationDefault()
+# firebase_admin.initialize_app(cred, {
+#   'projectId': PROJECT_ID,
+# })
+
+# db = firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
