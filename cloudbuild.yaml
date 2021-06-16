@@ -1,7 +1,7 @@
 steps:
   # Install dependencies
   - name: "gcr.io/cloud-builders/docker"
-    args: [ "build", "-t", "gcr.io/$PROJECT_ID/mita", "." ]
+    args: [ "build", "-t", "gcr.io/$PROJECT_ID/mita","--build-arg", "_POS_USER=$_POS_USER", "." ]
     id: Docker
   # - name: python
   #   entrypoint: pip

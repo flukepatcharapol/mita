@@ -30,5 +30,6 @@ WORKDIR /mita
 #Install lib according to requirements list
 RUN pip install -r requirements.txt
 #Run robot command
+ARG _POS_USER
 RUN robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -v TAGY:$_TAG -i test-connect Script.robot
 RUN cp /usr/local/bin/chromedriver .
