@@ -30,8 +30,15 @@ from datetime import datetime
 # db = firestore.client()
 
 class Uploader ():
-    def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
-
+    def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list,project_id):
+        
+        #Set up creadential
+        cred = credentials.ApplicationDefault()
+        update_data = firebase_admin.initialize_app(cred, {
+        'projectId': project_id,
+        })
+        db = firestore.client(update_data)
+        
         #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         str_orderDate = str(orderDate)
@@ -73,9 +80,13 @@ class Uploader ():
             "Point":int_point,
             "SubTotalBillPrice":float_price
         })
+            
         
         #Check that Order-date-OrderDeatil-BillId should exist and return result
         check=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).get()
+        
+        #Delete the current app
+        firebase_admin.delete_app(update_data)
         if check.exists:
             
             return True
@@ -83,22 +94,40 @@ class Uploader ():
         else:
             
             return False
-        
 
-    def getPrevNumber (self, date):
+    def getPrevNumber (self, date,project_id):
         str_orderDate = str(date)
-
+        
+        #Set up creadential
+        cred = credentials.ApplicationDefault()
+        get_prev = firebase_admin.initialize_app(cred, {
+        'projectId': project_id,
+        })
+        db = firestore.client(get_prev)
+        
         #Set destination
         line=db.collection("Mita").document(str_orderDate).get()
+        
+        #Delete the current app
+        firebase_admin.delete_app(get_prev)
+        
         if line.exists:
             return line.to_dict()
         else:
             result = {"line": "False"}
             return result
+        
 
-    def setPrevNumber (self, date, prev_number):
+    def setPrevNumber (self, date, prev_number, project_id):
         prev_number = int(prev_number)
         str_orderDate = str(date)
+        
+        #Set up creadential
+        cred = credentials.ApplicationDefault()
+        set_prev = firebase_admin.initialize_app(cred, {
+        'projectId': project_id,
+        })
+        db = firestore.client(set_prev)
 
         prev=db.collection("Mita").document(str_orderDate).get()
         if prev.exists:
@@ -110,14 +139,17 @@ class Uploader ():
                 "line": prev_number,
                 "amount": 0
             })
+            
+        #Delete the current app
+        firebase_admin.delete_app(set_prev)
     
     
-    def deletePrevNumDoc (self, date):
-        str_orderDate = str(date)
+    # def deletePrevNumDoc (self, date):
+    #     str_orderDate = str(date)
 
-        db.collection("Mita").document(str_orderDate).delete()
+    #     db.collection("Mita").document(str_orderDate).delete()
 
-    def deleteAllOlderDoc (self, date):
+    def deleteAllOlderDoc (self, date, project_id):
         str_orderDate = str(date)
         
         #Get all doc from collection Mita
@@ -144,11 +176,28 @@ class Uploader ():
         #Return the list of failed doc
         return  list_of_failed
         
-    def testServicAccount (self):
-        # check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
-        # print(check.id)
-        # return check.id
-        list = []
-        for k, v in sorted(os.environ.items()):
-            print(k+':', v)
-        return list
+    def testServicAccount (self, project_id):
+        #Set up creadential
+        cred = credentials.ApplicationDefault()
+        test = firebase_admin.initialize_app(cred, {
+        'projectId': project_id,
+        })
+        db = firestore.client(test)
+        
+        check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
+        print(check.id)
+        
+        #Delete the current app
+        firebase_admin.delete_app(test)
+        return check.id
+        
+    def initFirestoreApp (self, project_id):
+        
+        #Set up creadential
+        cred = credentials.ApplicationDefault()
+        app = firebase_admin.initialize_app(cred, {
+        'projectId': project_id,
+        })
+        db = firestore.client(app)
+        
+        return db

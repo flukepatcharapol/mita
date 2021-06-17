@@ -68,7 +68,7 @@ Set New Line To The FireStore
         #Call uploader to send info to firestore
         IF  ${is_valid}
             ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${earn}  ${line}
-            ...    ${date}  ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
+            ...    ${date}  ${point}  ${bill}  ${price}  ${amount}  ${prod_list}  ${PROJECT_ID_RUN}
 
             #Validate Upload result
             IF  ${upload_result}
@@ -106,23 +106,24 @@ Set New Line To The FireStore
 
 Get Prev Line Saved
     [Arguments]  ${date}
-    ${result}=    Uploader.getPrevNumber  ${date}
+    ${result}=    Uploader.getPrevNumber  ${date}  ${PROJECT_ID_RUN}
     ${line}=  Get From Dictionary  ${result}  line
     [Return]  ${line}
 
 Update New Prev Number
     [Documentation]  Date format  11-05-2021
     [Arguments]  ${date}  ${number}
-    Uploader.setPrevNumber    ${date}    ${number}
+    Uploader.setPrevNumber    ${date}  ${number}  ${PROJECT_ID_RUN}
 
 Delete Prev Number From Date
     [Arguments]  ${date}
-    Uploader.deletePrevNumDoc   ${date}
+    Uploader.deletePrevNumDoc   ${date}  ${PROJECT_ID_RUN}
 
 Delete Prev Number Where older Than '${date}'
-    ${result}  Uploader.deleteAllOlderDoc  ${date}
+    [Documentation]  Date format  11-05-2021
+    ${result}  Uploader.deleteAllOlderDoc  ${date}  ${PROJECT_ID_RUN}
     [Return]  ${result}
 
 Test cred Acc
-    ${result}  Uploader.testServicAccount
+    ${result}  Uploader.testServicAccount  ${PROJECT_ID_RUN}
     log to console  ${\n}Service account return: ${result}
