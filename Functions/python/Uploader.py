@@ -20,8 +20,6 @@ from datetime import datetime
 
 # db=firestore.client()
 
-for k, v in sorted(os.environ.items()):
-    print(k+':', v)
     
 # print(PROJECT_ID_RUN)
 # cred = credentials.ApplicationDefault()
@@ -147,6 +145,10 @@ class Uploader ():
         return  list_of_failed
         
     def testServicAccount (self):
-        check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
-        print(check.id)
-        return check.id
+        # check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
+        # print(check.id)
+        # return check.id
+        list = []
+        for k, v in sorted(os.environ.items()):
+            print(k+':', v)
+        return list

@@ -175,15 +175,15 @@ Reset Every 00:00
 Test connection with google cloud build
     [Tags]  test-connect
     # Import Variables  ${CURDIR}/Config-local.yaml
-    log to console  ${\n}POS_USER: ${POS_USER}
-    log to console  ${\n}POS_PASS: ${POS_PASS}
-    log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
-    log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
+    # log to console  ${\n}POS_USER: ${POS_USER}
+    # log to console  ${\n}POS_PASS: ${POS_PASS}
+    # log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
+    # log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
     log to console  ${\n}PROJECT_ID: ${PROJECT_ID}
     Set Global Variable  ${PROJECT_ID_RUN}  ${PROJECT_ID}
-    ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
-    Set Test Variable  ${DATA_DATE}  ${cur_date}
-    LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!
-    Open Wongnai POS WEB on Headless and Maximize Window
-    Capture Page Screenshot  Manual.png
-    # ToTheCloud.Test cred Acc
+    # ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
+    # Set Test Variable  ${DATA_DATE}  ${cur_date}
+    # LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!
+    # Open Wongnai POS WEB on Headless and Maximize Window
+    # Capture Page Screenshot  Manual.png
+    ToTheCloud.Test cred Acc
