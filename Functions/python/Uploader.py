@@ -178,8 +178,7 @@ class Uploader ():
         
     def testServicAccount (self, project_id):
         #Set up creadential
-        cred = credentials.ApplicationDefault()
-        test = firebase_admin.initialize_app(cred, {
+        test = firebase_admin.initialize_app({
         'projectId': project_id,
         })
         db = firestore.client(test)
