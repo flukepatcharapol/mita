@@ -7,7 +7,7 @@ from firebase_admin import firestore
 from datetime import datetime
 
 # Set Firestore DB Credential For Local
-cred = credentials.Certificate('/functions/python/accessKey-prod.json')
+cred = credentials.Certificate('/Functions/python/accessKey-prod.json')
 firebase_admin.initialize_app('cred')
 db=firestore.client()
 
