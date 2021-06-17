@@ -39,6 +39,6 @@ ARG _FLUKE_UID
 ARG _ACCESS_TOKEN
 ARG _PROJECT_ID
 ARG _SCRIPT_TAG
-RUN echp "$ls"
+RUN echo "$ls"
 RUN python mita/functions/python/uploader.py
 RUN robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -v PROJECT_ID:$_PROJECT_ID -i $_SCRIPT_TAG Script.robot
