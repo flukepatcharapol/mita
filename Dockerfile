@@ -14,10 +14,17 @@ COPY --from=al /chromedriver /usr/local/bin/chromedriver
 #Install thai
 RUN apt-get update && \
     apt-get install --no-install-recommends gnupg fonts-tlwg-loma fonts-tlwg-loma-otf wget -y -q
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt install -y ./google-chrome-stable_current_amd64.deb;exit 0 && \
-    apt --fix-broken install && \
+# RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+#     apt install -y ./google-chrome-stable_current_amd64.deb;exit 0 && \
+#     apt --fix-broken install && \
+#     chmod +x /usr/local/bin/chromedriver
+RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+    apt-key add linux_signing_key.pub && \
+    apt-get update && \
+    apt-get install --no-install-recommends google-chrome-stable -y -q && \
+    rm linux_signing_key.pub && \
     chmod +x /usr/local/bin/chromedriver
+
 #Copy source code dir from local to docker at /mita
 COPY . /mita
 #Set mita as working diretory

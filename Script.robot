@@ -63,9 +63,24 @@ Login to Firebear Sothorn POS
     Log To Console  ${\n}Loged in to Wongnai!
 
 Open Wongnai POS WEB on Headless and Maximize Window
-    SeleniumLibrary.Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
+    Open Browser Headless   url=${POS_WONGNAI_URL}
     Log To Console  ${\n}Browser is open!
     Maximize Browser Window
+
+Open Browser Headless
+    [Arguments]  ${url}
+    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    ${is_headless}  Set Variable  True
+    IF  ${is_headless}
+        BuiltIn.Call Method    ${chrome options}    add_argument    test-type
+        BuiltIn.Call Method    ${chrome options}    add_argument    --disable-extensions
+        BuiltIn.Call Method    ${chrome options}    add_argument    --headless
+        BuiltIn.Call Method    ${chrome options}    add_argument    --disable-gpu
+        BuiltIn.Call Method    ${chrome options}    add_argument    --no-sandbox
+        BuiltIn.Call Method    ${chrome options}    add_argument    start-maximized
+    END
+    Create Webdriver    Chrome    chrome_options=${chrome options}
+    Goto    ${url}
 
 Clean Download Directory
     Empty Directory  ${DOWNLOAD_DIR}
@@ -169,9 +184,6 @@ Test connection with google cloud build
     ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     Set Test Variable  ${DATA_DATE}  ${cur_date}
     LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!
-    ${test_date}  Get Current Date  UTC  + 7 hours - 4 days
-    log to console  ${\n}test date: ${test_date}
-    log to console  ${\n}cur date: ${cur_date}
-    Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
+    Open Wongnai POS WEB on Headless and Maximize Window
     Capture Page Screenshot  Manual.png
     # ToTheCloud.Test cred Acc
