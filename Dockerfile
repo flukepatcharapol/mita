@@ -27,6 +27,7 @@ RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >
 
 #Copy source code dir from local to docker at /mita
 COPY . /mita
+RUN echo "$PWD"
 #Set mita as working diretory
 WORKDIR /mita
 #Install lib according to requirements list
