@@ -6,18 +6,9 @@ from firebase_admin import firestore
 from datetime import datetime
 
 # Set Firestore DB Credential For Local
-
-firebase_admin.initialize_app('matinomita.json')
+cred = credentials.Certificate('matinomita.json')
+firebase_admin.initialize_app('cred')
 db=firestore.client()
-
-    
-# print(PROJECT_ID_RUN)
-# cred = credentials.ApplicationDefault()
-# firebase_admin.initialize_app(cred, {
-#   'projectId': PROJECT_ID,
-# })
-
-# db = firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
