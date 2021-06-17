@@ -1,7 +1,7 @@
 steps:
   # Install dependencies
 - name: 'bash'
-  args: ['find', 'accessKey-prod.json']
+  args: ['ls']
 - name: "gcr.io/cloud-builders/docker"
   args: [ "build", "-t", "gcr.io/$PROJECT_ID/mita","--build-arg", "_POS_USER=$_POS_USER","--build-arg", "_POS_PASS=$_POS_PASS","--build-arg", "_FLUKE_UID=$_FLUKE_UID","--build-arg", "_ACCESS_TOKEN=$_ACCESS_TOKEN", "--build-arg", "_PROJECT_ID=$PROJECT_ID", "--build-arg", "_SCRIPT_TAG=$_SCRIPT_TAG", "." ]
 
