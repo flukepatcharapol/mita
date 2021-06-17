@@ -144,7 +144,7 @@ class Uploader ():
         #Return the list of failed doc
         return  list_of_failed
         
-    def testServicAccount ():
+    def testServicAccount (self):
         # check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
         # print(check.id)
         # return check.id
