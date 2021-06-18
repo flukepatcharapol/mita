@@ -1,4 +1,5 @@
 FROM alpine:latest AS alpine
+
 #Download curl
 RUN apk add curl unzip --update
 
@@ -10,9 +11,10 @@ RUN export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis
 
 
 FROM python:3.7-slim AS python
+
 #Copy chromedriver from above stage(al) and paste to /bin
-COPY --from=al /linux_signing_key.pub .
-COPY --from=al /chromedriver /usr/local/bin/chromedriver
+COPY --from=alpine /linux_signing_key.pub .
+COPY --from=alpine /chromedriver /usr/local/bin/chromedriver
 
 #Install thai and install google chrome stable version
 RUN apt-get update && \
