@@ -181,6 +181,8 @@ Test connection with google cloud build
     # log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
     log to console  ${\n}PROJECT_ID: ${PROJECT_ID}
     Set Global Variable  ${PROJECT_ID_RUN}  ${PROJECT_ID}
+    ${test_env}  Get Environment Variable   TOTOTEST
+    log to console  ${\n}TOTOTEST: ${test_env}
     # ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     # Set Test Variable  ${DATA_DATE}  ${cur_date}
     # LineCaller.Sent Alert To Line Group By ID  message=The Could is successfully run!
