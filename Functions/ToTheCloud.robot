@@ -127,3 +127,4 @@ Delete Prev Number Where older Than '${date}'
 Test cred Acc
     ${result}  Uploader.testServicAccount
     log to console  ${\n}Service account return: ${result}
+    [Return]  ${result}
