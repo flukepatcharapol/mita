@@ -9,7 +9,7 @@ from datetime import datetime
 # Set Firestore DB Credential For Local
 private_key_id = os.getenv('FS_KEY_ID')
 client_id = os.getenv('FS_CLI_ID')
-cred = {{
+cred = {
   "type": "service_account",
   "project_id": "line-bot-firebear-sothorn-aqve",
   "private_key_id": private_key_id,
@@ -20,7 +20,7 @@ cred = {{
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-he355%40line-bot-firebear-sothorn-aqve.iam.gserviceaccount.com"
-}}
+}
 firebase_admin.initialize_app(cred)
 db=firestore.client()
 
