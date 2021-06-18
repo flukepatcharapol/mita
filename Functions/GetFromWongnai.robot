@@ -168,7 +168,7 @@ Get Element Locator From Row
     [Return]  ${text}
 
 Get New Order Detail
-    [Arguments]    ${latest_number}    ${target}=${TARGET}
+    [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
     ${row}=  Count Row
     ${new_line_amount}=    Evaluate    ${row}-${latest_number}

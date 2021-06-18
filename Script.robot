@@ -20,8 +20,6 @@ ${GOLBAL_SLEEP}        0.5 sec
 #Script Variable
 ${Desired_menu}        #แต้มออนไลน์ Interim
 
-${out_dir}             ${CURDIR}\\$TARGET\\Outputs\\
-${prev_path_txt}       prev.txt
 
 
 
@@ -116,14 +114,10 @@ Set Date For FireStore
 ***Test Cases***
 ############################################################################################################################################
 Get Report From POS Wongnai, and Send Data to Firestore Cloud
-    [Tags]    Get-New-Line-For-Normal
+    [Tags]    Get-New-Line
     [Setup]  Script Setup
 
-    Set Test Variable  ${TARGET}  Normal
     Set Date For FireStore
-    ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
-    Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}
-    Set Test Variable  ${PREV_PATH}  ${OUTPUTS_DIR}/${prev_path_txt}
 
     GetFromWongnai.Got To Daily Billing Page
     GetFromWongnai.Set Date To Today
