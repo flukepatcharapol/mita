@@ -8,9 +8,8 @@ from datetime import datetime
 
 # Set Firestore DB Credential For Local
 
-cred = credentials.Certificate('/functions/python/accessKey-prod.json')
-firebase_admin.initialize_app('cred')
-db=firestore.client()
+# firebase_admin.initialize_app(cred)
+# db=firestore.client()
 
 class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
@@ -133,9 +132,11 @@ class Uploader ():
         
     def testServicAccount (self):
 
-        check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
-        print(check.id)
-        return check.id
+        # check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
+        # print(check.id)
+        # return check.id
+        test_env = os.getenv('TOTOTEST')
+        return test_env
         
     def initFirestoreApp (self, project_id):
         
