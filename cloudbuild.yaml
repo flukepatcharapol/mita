@@ -8,7 +8,7 @@ images:
 
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'run', 'gcr.io/$PROJECT_ID/mita', 'bash', 'python -m robot -i $_SCRIPT_TAG Scripts.robot'
+  args: [ 'run', '--rm', 'gcr.io/$PROJECT_ID/mita:latest', 'bash', 'python -m robot -i $_SCRIPT_TAG Scripts.robot'
 
   #Run python Script
   # - name: python
