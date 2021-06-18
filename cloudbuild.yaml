@@ -8,9 +8,4 @@ images:
 
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'run', '--rm', 'gcr.io/$PROJECT_ID/mita:latest', 'bash', 'python -m robot -i $_SCRIPT_TAG Scripts.robot'
-
-  #Run python Script
-  # - name: python
-  #   entrypoint: python3
-  #   args: ['-m', 'robot', '-v', 'POS_USER:$_POS_USER', '-v', 'POS_PASS:$_POS_PASS','-v', 'LINE_FLUKE_UID:$_FLUKE_UID', '-v', 'LINE_ACCESS_TOKEN:$_ACCESS_TOKEN', '-i', '$_TAG', 'Script.robot']
+  args: [ 'run', '--rm', 'gcr.io/$PROJECT_ID/mita:latest', 'bash', 'python -m robot -i $_SCRIPT_TAG Scripts.robot']
