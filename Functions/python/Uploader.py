@@ -21,7 +21,8 @@ cred = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-he355%40line-bot-firebear-sothorn-aqve.iam.gserviceaccount.com"
 }
-firebase_admin.initialize_app(cred)
+creds = firebase_admin.credentials.Certificate(cred)
+firebase_admin.initialize_app(creds)
 db=firestore.client()
 
 class Uploader ():
