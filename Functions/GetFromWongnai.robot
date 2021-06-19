@@ -207,9 +207,6 @@ Get New Order Detail
             ${bill_id}  Convert To Upper Case  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}
-            ${name}  Remove String  ${name}  \n
-            ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
-            ${date}  Replace String  ${date}  /  -
 
             #Validate Information
             ${product_point}    Recalculate Price For The Set Product    ${name}
@@ -218,6 +215,11 @@ Get New Order Detail
             #Check amount information
             ${product_amount}  Recalculate Amount For The Set Product  ${name}
             ${amount}  Evaluate  ${product_amount}*${amount}
+
+            # Update produce name
+            ${name}  Remove String  ${name}  \n
+            ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
+            ${date}  Replace String  ${date}  /  -
 
             #Check if หน้าร้าน Type
             ${is_counter}    Check If From Counter    ${type}
