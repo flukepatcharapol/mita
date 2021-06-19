@@ -10,8 +10,8 @@ Variables      ${CURDIR}/Config.yaml
 
 ***Variables***
 #Config Variable
-${ATTEMPT}             5x
-${WAIT}                2 sec
+${ATTEMPT}             15x
+${WAIT}                1 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
 
@@ -38,8 +38,6 @@ End Script
     Close All Browsers
 
 Do This When Script Failed
-    ${cur_time}=  Get Time
-    # Capture Page Screenshot  ${CURDIR}\\FailedScreenshot\\${cur_time}.png
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
     LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error ${TEST MESSAGE}
@@ -105,7 +103,7 @@ Set Date For FireStore
     ${check_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
     Set Test Variable  ${FS_DATE}  ${cur_date}
     Set Test Variable  ${CHECK_DATE}  ${check_date}
-    Log to console  ${\n}Set FS_DATE: ${FS_DATE},${\n} CHECK_DATE: ${CHECK_DATE}
+    Log to console  ${\n}Set FS_DATE: ${FS_DATE},${\n}CHECK_DATE: ${CHECK_DATE}
 
 
 ############################################################################################################################################
@@ -124,18 +122,18 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     Count Row and Compare With Previous Run
     SeleniumLibrary.Set Selenium Speed    0
 
-    IF  ${IS_NEW}  
+    # IF  ${IS_NEW}  
 
-        Sleep  ${GOLBAL_SLEEP}
-        ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-        ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
+    #     Sleep  ${GOLBAL_SLEEP}
+    #     ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+    #     ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
 
-    ELSE
+    # ELSE
 
-        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
-        LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
-        # EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
-    END
+    #     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
+    #     LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
+    #     # EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
+    # END
 
     [Teardown]  End Script
 

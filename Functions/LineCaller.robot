@@ -35,6 +35,11 @@ Get My Bot Header
 Sent Alert To Line Group By ID
     [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
     ${cur_time}=  Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
+    ${is_empty}  Run Keyword And return Status  Should Be Empty  ${DATA_DATE}
+
+    IF  ${is_empty}
+        Set Test Variable  ${DATA_DATE}  ${CHECK_DATE}
+    END
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
     Send Text To Line User  ${body_message}  ${receiver}
