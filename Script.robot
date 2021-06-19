@@ -102,8 +102,10 @@ Check If Have New Record
 
 Set Date For FireStore
     ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%Y-%m-%d
+    ${check_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
     Set Test Variable  ${FS_DATE}  ${cur_date}
-    Log to console  ${\n}Set FS_DATE: ${FS_DATE}
+    Set Test Variable  ${CHECK_DATE}  ${check_date}
+    Log to console  ${\n}Set FS_DATE: ${FS_DATE},${\n} CHECK_DATE: ${CHECK_DATE}
 
 
 ############################################################################################################################################

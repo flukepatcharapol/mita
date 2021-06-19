@@ -29,7 +29,7 @@ class Uploader ():
     def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
              
         #Convert to expected format and data type
-        date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
+        date_time_obj = datetime.strptime(orderDate, '%Y-%m-%d')
         str_orderDate = str(orderDate)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         int_point = int(point)
@@ -40,11 +40,9 @@ class Uploader ():
         doc_date=db.collection("Order").document(str_orderDate).get()
         if doc_date.exists:
             #Set destination and add the data to target document
-            db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).set({
+            db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).update({
             "Delivery":delivery,
             "BillID":bill,
-            "EarnedDate":None,
-            "LineUserId":None,
             "OrderDate":date_time_obj,
             "ProductList":product_list,
             "AmountOfCups": int_amount,
@@ -61,8 +59,6 @@ class Uploader ():
             db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).set({
             "Delivery":delivery,
             "BillID":bill,
-            "EarnedDate":None,
-            "LineUserId":None,
             "OrderDate":date_time_obj,
             "ProductList":product_list,
             "AmountOfCups": int_amount,
@@ -110,7 +106,6 @@ class Uploader ():
         else:
             db.collection("Mita").document(str_orderDate).set({
                 "line": prev_number,
-                "amount": 0
             })
             
     
