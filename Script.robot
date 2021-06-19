@@ -101,7 +101,7 @@ Check If Have New Record
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y 
+    ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%Y-%m-%d
     Set Test Variable  ${FS_DATE}  ${cur_date}
     Log to console  ${\n}Set FS_DATE: ${FS_DATE}
 
@@ -129,7 +129,8 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
         ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
 
     ELSE
-        ${cur_time}=  Get Time
+
+        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
         LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
         # EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
     END
@@ -139,7 +140,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 Reset Every 00:00
     [Tags]    Morning-Reset
     #Get the date older than today for 4 days
-    ${cur_date}  Get Current Date  UTC  + 7 hours - 4 days  result_format=%d-%m-%Y
+    ${cur_date}  Get Current Date  UTC  + 7 hours - 4 days  result_format=%Y-%m-%d
 
     #Delete the doc which older than ${cur_date}
     ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
@@ -158,8 +159,6 @@ Reset Every 00:00
 
     END
 
-    
-    # ${cur_date}=   Get Current Date  local  - 7 days  result_format=%d-%m-%Y
 
 Test connection with google cloud build
     [Tags]  test-connect
@@ -171,7 +170,7 @@ Test connection with google cloud build
     # Open Wongnai POS WEB on Headless and Maximize Window
     # Capture Page Screenshot  Manual.png
     # ${result}=  ToTheCloud.Test cred Acc
-    # ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
+    # ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%Y-%m-%d
     # Set Test Variable  ${DATA_DATE}  ${cur_date}
     # LineCaller.Sent Alert To Line Group By ID  message=Connected Result:${result}
     no Operation

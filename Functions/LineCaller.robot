@@ -34,7 +34,7 @@ Get My Bot Header
 
 Sent Alert To Line Group By ID
     [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
-    ${cur_time}=  Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y 
+    ${cur_time}=  Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
     Send Text To Line User  ${body_message}  ${receiver}

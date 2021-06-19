@@ -33,7 +33,7 @@ WORKDIR /mita
 #Install lib according to requirements list
 RUN pip install -r requirements.txt
 
-#Run robot command
+#Get variable and set env variable
 ARG _POS_USER
 ARG _POS_PASS
 ARG _FLUKE_UID
@@ -43,4 +43,6 @@ ARG _FS_KEY_ID
 ARG _FS_CLI_ID
 ENV FS_KEY_ID=$_FS_KEY_ID
 ENV FS_CLI_ID=$_FS_CLI_ID
+
+#Run robot command
 RUN robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -i $_SCRIPT_TAG Script.robot
