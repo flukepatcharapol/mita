@@ -117,5 +117,10 @@ Update New Prev Number
 
 Delete Prev Number Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
+    ${result}  Uploader.deleteAllOlderPrev  ${date}
+    [Return]  ${result}
+
+Delete Document Where older Than '${date}'
+    [Documentation]  Date format  11-05-2021
     ${result}  Uploader.deleteAllOlderDoc  ${date}
     [Return]  ${result}

@@ -172,7 +172,6 @@ Get New Order Detail
     ${newline_detail}  Create Dictionary
     ${row}=  Count Row
     ${new_line_amount}=    Evaluate    ${row}-${latest_number}
-    # log to console  ${\n}Dict: ${newline_detail} ${\n}Current row:${row} ${\n}Previous: ${latest_number} ${\n}Amount:${new_line_amount}
     ${prev_point}    Set Variable
     ${prev_bill}     Set Variable
     ${prev_price}    Set Variable

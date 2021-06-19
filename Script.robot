@@ -132,8 +132,10 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 Reset Every 00:00
     [Tags]    Morning-Reset
     #Get the date older than today for 4 days
+    Set Date For FireStore
     ${expire_due_date}=  Set Variable  7
     ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
+    Log to console  ${\n}Delete every [Mita]prev before ${cur_date}
 
     #Delete the doc which older than ${cur_date}
     ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
@@ -142,13 +144,31 @@ Reset Every 00:00
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The [Mita]Prev Line for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The [Mita]Prev Line for ${FS_DATE} Failed list: ${result}
+        log to console  ${\n}Failed list: ${result}
 
     END
+
+    ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
+    ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
+    Log to console  ${\n}Delete every [Order]document before ${cur_date}
+
+    #Sent noti to line is success or not
+    IF  ${is_empty}
+
+        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The [Order]Document for ${FS_DATE}
+
+    ELSE
+
+        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The [Order]Document for ${FS_DATE} Failed list: ${result}
+        log to console  ${\n}Failed list: ${result}
+
+    END
+
 
 
 Test connection with google cloud build
