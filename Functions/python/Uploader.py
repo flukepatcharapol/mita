@@ -30,7 +30,7 @@ class Uploader ():
              
         #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
-        new_format = orderDate.strftime('%Y-%m-%d')
+        new_format = datetime.strftime(orderDate,'%Y-%m-%d')
         str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         int_point = int(point)
@@ -80,7 +80,7 @@ class Uploader ():
             return False
 
     def getPrevNumber (self, date):
-        new_format = date.strftime('%Y-%m-%d')
+        new_format = datetime.strftime(date,'%Y-%m-%d')
         str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
@@ -96,7 +96,7 @@ class Uploader ():
         
 
     def setPrevNumber (self, date, prev_number):
-        new_format = date.strftime('%Y-%m-%d')
+        new_format = datetime.strftime(date,'%Y-%m-%d')
         prev_number = int(prev_number)
         str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
@@ -111,14 +111,11 @@ class Uploader ():
                 'line': prev_number,
             })
             
-    
-    def deletePrevNumDoc (self, date):
-        str_orderDate = str(date)
-
-        db.collection('Mita').document(str_orderDate).delete()
 
     def deleteAllOlderDoc (self, date):
-        str_orderDate = str(date)
+        new_format = datetime.strftime(date,'%Y-%m-%d')
+        str_orderDate = str(new_format)
+        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
@@ -144,7 +141,9 @@ class Uploader ():
         return  list_of_failed
         
     def deleteAllOlderPrev (self, date):
-        str_orderDate = str(date)
+        new_format = datetime.strftime(date,'%Y-%m-%d')
+        str_orderDate = str(new_format)
+        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Get all doc from collection Mita
         col=db.collection('Mita').get()
