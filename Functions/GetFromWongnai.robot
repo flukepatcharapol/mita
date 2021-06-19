@@ -207,6 +207,7 @@ Get New Order Detail
             ${bill_id}  Convert To Upper Case  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}
+            Log to console  ${\n}DATA_DATE: ${DATA_DATE}
 
             #Validate Information
             ${product_point}    Recalculate Price For The Set Product    ${name}
