@@ -93,7 +93,7 @@ Check Daily Billing Should Show
     Element Should Be Visible With Retry  ${HOM_header}
     Element Should Contain  ${HOM_header}  ${HOM_bill_report_lbl}
 
-Got To Daily Billing Page
+Go To Daily Billing Page
     Click Report At Nav Bar
     Click Billing Report Button
     Check Daily Billing Should Show

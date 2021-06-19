@@ -121,18 +121,17 @@ class Uploader ():
         str_orderDate = str(date)
         
         #Get all doc from collection Mita
-        col=db.collection("Mita").get()
+        col=db.collection("Order").get()
         result= []
         
         #Search and get every doc that older than $date
         for doc in col:
             if doc.id <= str_orderDate:
-                result.append(doc.id) 
-        print("result:",result)
+                result.append(doc.id)
 
         #Delete every doc from the list
         for doc_id in result:
-            db.collection("Mita").document(doc_id).delete()
+            db.collection("Order").document(doc_id).delete()
         
         #Check and if not failed add to list
         list_of_failed = []
@@ -144,18 +143,28 @@ class Uploader ():
         #Return the list of failed doc
         return  list_of_failed
         
-    def testServicAccount (self):
-        check=db.collection("Order").document('19052021').collection("OrderDetail").document('271QZ').get()
-        print(check.id)
-        return check.id
+    def deleteAllOlderPrev (self, date):
+        str_orderDate = str(date)
         
-    def initFirestoreApp (self, project_id):
+        #Get all doc from collection Mita
+        col=db.collection("Mita").get()
+        result= []
         
-        #Set up creadential
-        cred = credentials.ApplicationDefault()
-        app = firebase_admin.initialize_app(cred, {
-        'projectId': project_id,
-        })
-        db = firestore.client(app)
+        #Search and get every doc that older than $date
+        for doc in col:
+            if doc.id <= str_orderDate:
+                result.append(doc.id)
+
+        #Delete every doc from the list
+        for doc_id in result:
+            db.collection("Mita").document(doc_id).delete()
         
-        return db
+        #Check and if not failed add to list
+        list_of_failed = []
+        for check_doc in result:
+            check_result=db.collection("Mita").document(check_doc).get()
+            if check_result.exists:
+                list_of_failed.append(check_doc)
+
+        #Return the list of failed doc
+        return  list_of_failed

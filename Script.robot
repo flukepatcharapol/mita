@@ -31,7 +31,7 @@ ${Desired_menu}        #แต้มออนไลน์ Interim
 ############################################################################################################################################
 Script Setup
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
-    Empty Directory  ${CURDIR}\\FailedScreenshot\\
+    Run Keyword And Continue On Failure  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
     Maximize Browser Window
@@ -47,13 +47,11 @@ Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
     LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error ${TEST MESSAGE}
-    EventLogger.Log to Logger File  log_status=FAILED  event=TearDown  message=The \[${TEST NAME}\] was Failed, with error message: ${TEST MESSAGE}
+    # EventLogger.Log to Logger File  log_status=FAILED  event=TearDown  message=The \[${TEST NAME}\] was Failed, with error message: ${TEST MESSAGE}
 
 ############################################################################################################################################
 
 Login to Firebear Sothorn POS
-    # Input Text  ${LOG_user}  firebear.sothorn${pos_wn_username}  clear=true
-    # Input Text  ${LOG_pass}  Makham${pos_wn_password}  clear=true
     Input Text  ${LOG_user}  ${_POS_USER}  clear=true  
     Input Text  ${LOG_pass}  ${_POS_PASS}  clear=true
     Click Element  ${LOG_submit_btn}
@@ -61,7 +59,8 @@ Login to Firebear Sothorn POS
     Log To Console  ${\n}Loged in to Wongnai!
 
 Open Wongnai POS WEB on Headless and Maximize Window
-    Open Browser Headless   url=${POS_WONGNAI_URL}
+    # Open Browser Headless   url=${POS_WONGNAI_URL}
+    Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
     Log To Console  ${\n}Browser is open!
     Maximize Browser Window
 
@@ -116,10 +115,9 @@ Set Date For FireStore
 Get Report From POS Wongnai, and Send Data to Firestore Cloud
     [Tags]    Get-New-Line
     [Setup]  Script Setup
-
     Set Date For FireStore
 
-    GetFromWongnai.Got To Daily Billing Page
+    GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Today
     GetFromWongnai.Click To Expected Time Order
     GetFromWongnai.Click Show All Row
@@ -136,7 +134,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     ELSE
         ${cur_time}=  Get Time
         LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
-        EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
+        # EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
     END
 
     [Teardown]  End Script
@@ -154,12 +152,12 @@ Reset Every 00:00
     IF  ${is_empty}
 
         LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The Prev Line for ${FS_DATE}
-        EventLogger.Log to Logger File  log_status=SUCCESS  event=Reset Daily  message=Finish Empty The Prev Line for ${FS_DATE}
+        # EventLogger.Log to Logger File  log_status=SUCCESS  event=Reset Daily  message=Finish Empty The Prev Line for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${is_empty}
-        EventLogger.Log to Logger File  log_status=FAILED  event=Reset Daily  message=FAILED To Empty The Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
+        # EventLogger.Log to Logger File  log_status=FAILED  event=Reset Daily  message=FAILED To Empty The Prev Line for ${FS_DATE}
 
     END
 

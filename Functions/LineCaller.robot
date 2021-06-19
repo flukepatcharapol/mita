@@ -16,15 +16,15 @@ Send Text To Line User
     ${is_success}=  Run Keyword And Return Status  Should Be Equal As Strings  ${response.status_code}  200  
     ...    msg=Failed To send Message with code:${response.status_code} body:${response.json()}
 
-    IF  ${is_success}
+    # IF  ${is_success}
 
-        EventLogger.Log to Logger File  log_status=PASSED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
+    #     # EventLogger.Log to Logger File  log_status=PASSED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
 
-    ELSE
+    # ELSE
 
-        EventLogger.Log to Logger File  log_status=FAILED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
+    #     # EventLogger.Log to Logger File  log_status=FAILED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
         
-    END
+    # END
 
     #Validate Send text result
     Should Be Equal As Strings  ${response.status_code}  200   msg=Failed To send Message with code:${response.status_code} body:${response.json()}
