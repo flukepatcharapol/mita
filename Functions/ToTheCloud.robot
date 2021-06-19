@@ -115,16 +115,7 @@ Update New Prev Number
     [Arguments]  ${date}  ${number}
     Uploader.setPrevNumber    ${date}  ${number}
 
-Delete Prev Number From Date
-    [Arguments]  ${date}
-    Uploader.deletePrevNumDoc   ${date}
-
 Delete Prev Number Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
     ${result}  Uploader.deleteAllOlderDoc  ${date}
-    [Return]  ${result}
-
-Test cred Acc
-    ${result}  Uploader.testServicAccount
-    log to console  ${\n}Service account return: ${result}
     [Return]  ${result}

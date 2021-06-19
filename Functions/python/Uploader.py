@@ -32,7 +32,6 @@ class Uploader ():
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
@@ -40,23 +39,41 @@ class Uploader ():
         #Check and create Document
         doc_date=db.collection('Order').document(str_orderDate).get()
         if doc_date.exists:
-            #Set destination and add the data to target document
-            db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
-            'Delivery':delivery,
-            'BillID':bill,
-            'OrderDate':date_time_obj,
-            'ProductList':product_list,
-            'AmountOfCups': int_amount,
-            'Point':int_point,
-            'SubTotalBillPrice':float_price
-        })
+            
+            #Check the existance if the target bill in the doc_date=str_orderDate
+            bill_db=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
+            
+            if bill_db.exists:  #If the bill is already exist, do the update
+                
+                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
+                    'Delivery':delivery,
+                    'BillID':bill,
+                    'OrderDate':date_time_obj,
+                    'ProductList':product_list,
+                    'AmountOfCups': int_amount,
+                    'Point':int_point,
+                    'SubTotalBillPrice':float_price
+                })
+            else:  #If the bill is not exist, do the set new doc
+                
+                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
+                    'Delivery':delivery,
+                    'BillID':bill,
+                    'OrderDate':date_time_obj,
+                    'ProductList':product_list,
+                    'AmountOfCups': int_amount,
+                    'Point':int_point,
+                    'SubTotalBillPrice':float_price
+                })
+            
             
         #Create the document if the document is not yet exist
         else: 
-            # Create Document for this date
+            
+            #Create Document for this date=str_orderDate
             db.collection('Order').document(str_orderDate).set({})
             
-            #Add the data to the document
+            #Add the bill data to the date document
             db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
             'Delivery':delivery,
             'BillID':bill,
@@ -83,7 +100,6 @@ class Uploader ():
         date_time_obj = datetime.strptime(date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Set destination
         line=db.collection('Mita').document(str_orderDate).get()
@@ -110,7 +126,6 @@ class Uploader ():
         date_time_obj = datetime.strptime(date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
@@ -139,7 +154,6 @@ class Uploader ():
         date_time_obj = datetime.strptime(date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Get all doc from collection Mita
         col=db.collection('Mita').get()
