@@ -133,6 +133,7 @@ Reset Every 00:00
     [Tags]    Morning-Reset
     #Get the date older than today for 4 days
     Set Date For FireStore
+    Set Test Variable  ${DATA_DATE}  ${FS_DATE}
     ${expire_due_date}=  Set Variable  7
     ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
     Log to console  ${\n}Delete every [Mita]prev before ${cur_date}
