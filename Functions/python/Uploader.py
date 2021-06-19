@@ -26,49 +26,50 @@ firebase_admin.initialize_app(creds)
 db=firestore.client()
 
 class Uploader ():
-    def sendToFireStoreCollection (self,delivery,earnedDate,lineUserId,orderDate,point,bill,price,amount,product_list):
+    def sendToFireStoreCollection (self,delivery,orderDate,point,bill,price,amount,product_list):
              
         #Convert to expected format and data type
-        date_time_obj = datetime.strptime(orderDate, '%Y-%m-%d')
-        str_orderDate = str(orderDate)
+        date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
+        new_format = orderDate.strftime('%Y-%m-%d')
+        str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
         
         #Check and create Document
-        doc_date=db.collection("Order").document(str_orderDate).get()
+        doc_date=db.collection('Order').document(str_orderDate).get()
         if doc_date.exists:
             #Set destination and add the data to target document
-            db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).update({
-            "Delivery":delivery,
-            "BillID":bill,
-            "OrderDate":date_time_obj,
-            "ProductList":product_list,
-            "AmountOfCups": int_amount,
-            "Point":int_point,
-            "SubTotalBillPrice":float_price
+            db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
+            'Delivery':delivery,
+            'BillID':bill,
+            'OrderDate':date_time_obj,
+            'ProductList':product_list,
+            'AmountOfCups': int_amount,
+            'Point':int_point,
+            'SubTotalBillPrice':float_price
         })
             
         #Create the document if the document is not yet exist
         else: 
             # Create Document for this date
-            db.collection("Order").document(str_orderDate).set({})
+            db.collection('Order').document(str_orderDate).set({})
             
             #Add the data to the document
-            db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).set({
-            "Delivery":delivery,
-            "BillID":bill,
-            "OrderDate":date_time_obj,
-            "ProductList":product_list,
-            "AmountOfCups": int_amount,
-            "Point":int_point,
-            "SubTotalBillPrice":float_price
+            db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
+            'Delivery':delivery,
+            'BillID':bill,
+            'OrderDate':date_time_obj,
+            'ProductList':product_list,
+            'AmountOfCups': int_amount,
+            'Point':int_point,
+            'SubTotalBillPrice':float_price
         })
             
         
         #Check that Order-date-OrderDeatil-BillId should exist and return result
-        check=db.collection("Order").document(str_orderDate).collection("OrderDetail").document(bill).get()
+        check=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
         
         if check.exists:
             
@@ -83,13 +84,13 @@ class Uploader ():
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Set destination
-        line=db.collection("Mita").document(str_orderDate).get()
+        line=db.collection('Mita').document(str_orderDate).get()
 
         
         if line.exists:
             return line.to_dict()
         else:
-            result = {"line": "False"}
+            result = {'line': 'False'}
             return result
         
 
@@ -98,27 +99,27 @@ class Uploader ():
         str_orderDate = str(date)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
 
-        prev=db.collection("Mita").document(str_orderDate).get()
+        prev=db.collection('Mita').document(str_orderDate).get()
         if prev.exists:
-            db.collection("Mita").document(str_orderDate).update({
-                "line": prev_number
+            db.collection('Mita').document(str_orderDate).update({
+                'line': prev_number
             })
         else:
-            db.collection("Mita").document(str_orderDate).set({
-                "line": prev_number,
+            db.collection('Mita').document(str_orderDate).set({
+                'line': prev_number,
             })
             
     
     def deletePrevNumDoc (self, date):
         str_orderDate = str(date)
 
-        db.collection("Mita").document(str_orderDate).delete()
+        db.collection('Mita').document(str_orderDate).delete()
 
     def deleteAllOlderDoc (self, date):
         str_orderDate = str(date)
         
         #Get all doc from collection Mita
-        col=db.collection("Order").get()
+        col=db.collection('Order').get()
         result= []
         
         #Search and get every doc that older than $date
@@ -128,12 +129,12 @@ class Uploader ():
 
         #Delete every doc from the list
         for doc_id in result:
-            db.collection("Order").document(doc_id).delete()
+            db.collection('Order').document(doc_id).delete()
         
         #Check and if not failed add to list
         list_of_failed = []
         for check_doc in result:
-            check_result=db.collection("Order").document(check_doc).get()
+            check_result=db.collection('Order').document(check_doc).get()
             if check_result.exists:
                 list_of_failed.append(check_doc)
 
@@ -144,7 +145,7 @@ class Uploader ():
         str_orderDate = str(date)
         
         #Get all doc from collection Mita
-        col=db.collection("Mita").get()
+        col=db.collection('Mita').get()
         result= []
         
         #Search and get every doc that older than $date
@@ -154,12 +155,12 @@ class Uploader ():
 
         #Delete every doc from the list
         for doc_id in result:
-            db.collection("Mita").document(doc_id).delete()
+            db.collection('Mita').document(doc_id).delete()
         
         #Check and if not failed add to list
         list_of_failed = []
         for check_doc in result:
-            check_result=db.collection("Mita").document(check_doc).get()
+            check_result=db.collection('Mita').document(check_doc).get()
             if check_result.exists:
                 list_of_failed.append(check_doc)
 

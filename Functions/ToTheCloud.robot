@@ -29,8 +29,8 @@ Transform To Firestore Format And Sent To FireStore
             # ${time_stamp}=  Catenate  ${day}\/${month}\/${year}
 
             #Set into Doc info to Document format
-            ${result_body}=  Create Dictionary    Delivery=${type}    EarnedDate=    
-            ...    LineUserId=    OrderDate=${order_date}    Point=${point}    Price=${price}
+            ${result_body}=  Create Dictionary    Delivery=${type}    
+            ...    OrderDate=${order_date}    Point=${point}    Price=${price}
             ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
 
             #Append Info to Document
@@ -52,8 +52,6 @@ Set New Line To The FireStore
 
         #Get information from ordered dict
         ${delivery}    Get From Dictionary  ${INDEX}  Delivery
-        ${earn}        Get From Dictionary  ${INDEX}  EarnedDate
-        ${line}        Get From Dictionary  ${INDEX}  LineUserId
         ${date}        Get From Dictionary  ${INDEX}  OrderDate
         ${bill}        Get From Dictionary  ${INDEX}  BillId
         ${prod_list}   Get From Dictionary  ${INDEX}  ProductList
@@ -68,8 +66,8 @@ Set New Line To The FireStore
 
         #Call uploader to send info to firestore
         IF  ${is_valid}
-            ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${earn}  ${line}
-            ...    ${date}  ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
+            ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
+            ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
 
             #Validate Upload result
             IF  ${upload_result}
