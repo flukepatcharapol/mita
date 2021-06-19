@@ -30,9 +30,9 @@ class Uploader ():
              
         #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
-        new_format = datetime.strftime(orderDate,'%Y-%m-%d')
+        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
+        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
@@ -80,9 +80,10 @@ class Uploader ():
             return False
 
     def getPrevNumber (self, date):
-        new_format = datetime.strftime(date,'%Y-%m-%d')
+        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
+        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
+        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Set destination
         line=db.collection('Mita').document(str_orderDate).get()
@@ -96,10 +97,11 @@ class Uploader ():
         
 
     def setPrevNumber (self, date, prev_number):
-        new_format = datetime.strftime(date,'%Y-%m-%d')
+        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
+        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         prev_number = int(prev_number)
         str_orderDate = str(new_format)
-        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
+        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
 
         prev=db.collection('Mita').document(str_orderDate).get()
         if prev.exists:
@@ -113,9 +115,10 @@ class Uploader ():
             
 
     def deleteAllOlderDoc (self, date):
-        new_format = datetime.strftime(date,'%Y-%m-%d')
+        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
+        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
-        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
+        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
@@ -141,7 +144,8 @@ class Uploader ():
         return  list_of_failed
         
     def deleteAllOlderPrev (self, date):
-        new_format = datetime.strftime(date,'%Y-%m-%d')
+        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
+        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
