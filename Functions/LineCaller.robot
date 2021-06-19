@@ -4,10 +4,6 @@ Send Text To Line User
     [Arguments]  ${text}  ${receiver}
     ${header}=  Get MY Bot Header
 
-    # ${message_body}=  Create Dictionary  type=text  text=${text}
-    # ${list_msg}=  Create List  ${message_body}
-    # ${body}=  Create Dictionary  to=${receiver}  message=${list_msg}
-
     ${body}  Set Variable  {"to": "${receiver}","messages": [{"type": "text","text": "${text}"}]} 
     Create Session  Send Text  ${LINE}[URL]  headers=${header}  verify=True
     ${response}=  POST Request  Send Text  ${LINE}[path][push_message]  data=${body}     # [interim]${response}=  POST On Session  alias=Send Text  url=${LINE}[path][push_message]  data=${body}
@@ -38,8 +34,7 @@ Get My Bot Header
 
 Sent Alert To Line Group By ID
     [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
-    ${cur_time}=  Get Time
+    ${cur_time}=  Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y 
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
     Send Text To Line User  ${body_message}  ${receiver}
-    # Send Text To Line User  text=${body_message}  receiver=U2e38cbaf2f18ee4bb4b16b303c5903c8

@@ -31,7 +31,7 @@ class Uploader ():
         #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         str_orderDate = str(orderDate)
-        str_orderDate = str_orderDate.replace( '-' , '' )
+        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
@@ -84,6 +84,7 @@ class Uploader ():
 
     def getPrevNumber (self, date):
         str_orderDate = str(date)
+        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Set destination
         line=db.collection("Mita").document(str_orderDate).get()
@@ -99,6 +100,7 @@ class Uploader ():
     def setPrevNumber (self, date, prev_number):
         prev_number = int(prev_number)
         str_orderDate = str(date)
+        str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
 
         prev=db.collection("Mita").document(str_orderDate).get()
         if prev.exists:

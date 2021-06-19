@@ -13,12 +13,8 @@ Variables      ${CURDIR}/Config.yaml
 ${ATTEMPT}             5x
 ${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${BROWSER}             HeadlessChrome
 ${GOLBAL_SLEEP}        0.5 sec
 
-
-#Script Variable
-${Desired_menu}        #แต้มออนไลน์ Interim
 
 
 
@@ -105,7 +101,7 @@ Check If Have New Record
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  UTC  result_format=%d-%m-%Y 
+    ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y 
     Set Test Variable  ${FS_DATE}  ${cur_date}
 
 
