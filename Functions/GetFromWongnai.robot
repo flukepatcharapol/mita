@@ -108,7 +108,7 @@ Set Date To Today
     Log To Console  ${\n}Set Date To Today!
 
 The Date Should Be Today
-    ${expect_date}=  Replace String    ${CHECK_DATE}  -  /
+    ${expect_date}=  Replace String    ${FS_DATE}  -  /
     ${web_date}=  Get Value  ${HOM_date}
     ${web_date}=  Get SubString  ${web_date}  0  10
     Should Be Equal As Strings  ${expect_date}  ${web_date}  msg=Setup Date is not ${expect_date}. It's ${web_date}
@@ -207,7 +207,6 @@ Get New Order Detail
             ${bill_id}  Convert To Upper Case  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}
-            Log to console  ${\n}DATA_DATE: ${DATA_DATE}
 
             #Validate Information
             ${product_point}    Recalculate Price For The Set Product    ${name}
@@ -288,7 +287,7 @@ Get New Order Detail
             ${prev_price}=   Set Variable    ${price}
         END
     END
-    # Set New Total Sold Amount
+    Log to console  ${\n}DATA_DATE: ${DATA_DATE}
     [Return]  ${newline_detail}
 
 '${comment}' Should Not Have Void

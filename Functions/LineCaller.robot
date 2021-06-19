@@ -38,7 +38,7 @@ Sent Alert To Line Group By ID
     ${is_empty}  Run Keyword And return Status  Should Be Empty  ${DATA_DATE}
 
     IF  ${is_empty}
-        Set Test Variable  ${DATA_DATE}  ${CHECK_DATE}
+        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
     END
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]

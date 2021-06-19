@@ -10,15 +10,10 @@ Variables      ${CURDIR}/Config.yaml
 
 ***Variables***
 #Config Variable
-${ATTEMPT}             15x
-${WAIT}                1 sec
+${ATTEMPT}             10x
+${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
-
-
-
-
-
 
 ############################################################################################################################################
 ***Keywords***
@@ -41,7 +36,6 @@ Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
     LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error ${TEST MESSAGE}
-    # EventLogger.Log to Logger File  log_status=FAILED  event=TearDown  message=The \[${TEST NAME}\] was Failed, with error message: ${TEST MESSAGE}
 
 ############################################################################################################################################
 
@@ -100,10 +94,8 @@ Check If Have New Record
 
 Set Date For FireStore
     ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
-    ${check_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
     Set Test Variable  ${FS_DATE}  ${cur_date}
-    Set Test Variable  ${CHECK_DATE}  ${check_date}
-    Log to console  ${\n}Set FS_DATE: ${FS_DATE},${\n}CHECK_DATE: ${CHECK_DATE}
+    Log to console  ${\n}Set FS_DATE: ${FS_DATE}
 
 
 ############################################################################################################################################
@@ -140,7 +132,8 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 Reset Every 00:00
     [Tags]    Morning-Reset
     #Get the date older than today for 4 days
-    ${cur_date}  Get Current Date  UTC  + 7 hours - 4 days  result_format=%d-%m-%Y
+    ${expire_due_date}=  Set Variable  7
+    ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
 
     #Delete the doc which older than ${cur_date}
     ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
@@ -150,27 +143,14 @@ Reset Every 00:00
     IF  ${is_empty}
 
         LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The Prev Line for ${FS_DATE}
-        # EventLogger.Log to Logger File  log_status=SUCCESS  event=Reset Daily  message=Finish Empty The Prev Line for ${FS_DATE}
 
     ELSE
 
         LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
-        # EventLogger.Log to Logger File  log_status=FAILED  event=Reset Daily  message=FAILED To Empty The Prev Line for ${FS_DATE}
 
     END
 
 
 Test connection with google cloud build
     [Tags]  test-connect
-    # Import Variables  ${CURDIR}/Config-local.yaml
-    # log to console  ${\n}POS_USER: ${POS_USER}
-    # log to console  ${\n}POS_PASS: ${POS_PASS}
-    # log to console  ${\n}LINE_FLUKE_UID: ${LINE_FLUKE_UID}
-    # log to console  ${\n}LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
-    # Open Wongnai POS WEB on Headless and Maximize Window
-    # Capture Page Screenshot  Manual.png
-    # ${result}=  ToTheCloud.Test cred Acc
-    # ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
-    # Set Test Variable  ${DATA_DATE}  ${cur_date}
-    # LineCaller.Sent Alert To Line Group By ID  message=Connected Result:${result}
     no Operation
