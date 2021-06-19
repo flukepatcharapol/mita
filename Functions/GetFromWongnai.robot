@@ -77,10 +77,10 @@ Check Should Be On Home Page
     BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
 
 Check and Clear If Promo is Exist
-    ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
-    IF  ${is_exist}
-        Click Element When Ready  ${HOM_promo_model}
-    END
+    # ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
+    # IF  ${is_exist}
+    #     Click Element When Ready  ${HOM_promo_model}
+    # END
     Reload Page
 
 Click Report At Nav Bar
