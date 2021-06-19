@@ -122,18 +122,18 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     Count Row and Compare With Previous Run
     SeleniumLibrary.Set Selenium Speed    0
 
-    # IF  ${IS_NEW}  
+    IF  ${IS_NEW}
 
-    #     Sleep  ${GOLBAL_SLEEP}
-    #     ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-    #     ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
+        log to console  ${\n}There are new line
+        Sleep  ${GOLBAL_SLEEP}
+        ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+        ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
 
-    # ELSE
-
-    #     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
-    #     LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
-    #     # EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
-    # END
+    ELSE
+        log to console  ${\n}No new line
+        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
+    END
 
     [Teardown]  End Script
 
