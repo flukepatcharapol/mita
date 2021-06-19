@@ -161,7 +161,7 @@ class Uploader ():
         
         #Search and get every doc that older than $date
         for doc in col:
-            if doc.id <= str_orderDate:
+            if doc.id < str_orderDate:
                 result.append(doc.id)
 
         #Delete every doc from the list
