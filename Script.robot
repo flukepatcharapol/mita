@@ -31,7 +31,7 @@ ${Desired_menu}        #แต้มออนไลน์ Interim
 ############################################################################################################################################
 Script Setup
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
-    Run Keyword And Continue On Failure  Import Variables  ${CURDIR}/Config-local.yaml
+    # Run Keyword And Continue On Failure  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
     Maximize Browser Window
@@ -59,8 +59,8 @@ Login to Firebear Sothorn POS
     Log To Console  ${\n}Loged in to Wongnai!
 
 Open Wongnai POS WEB on Headless and Maximize Window
-    # Open Browser Headless   url=${POS_WONGNAI_URL}
-    Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
+    Open Browser Headless   url=${POS_WONGNAI_URL}
+    # Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
     Log To Console  ${\n}Browser is open!
     Maximize Browser Window
 
