@@ -11,7 +11,7 @@ Variables      ${CURDIR}/Config.yaml
 ***Variables***
 #Config Variable
 ${ATTEMPT}             5x
-${WAIT}                0.5 sec
+${WAIT}                2 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
 
