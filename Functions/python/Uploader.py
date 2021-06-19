@@ -80,7 +80,8 @@ class Uploader ():
             return False
 
     def getPrevNumber (self, date):
-        str_orderDate = str(date)
+        new_format = date.strftime('%Y-%m-%d')
+        str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
         
         #Set destination
@@ -95,8 +96,9 @@ class Uploader ():
         
 
     def setPrevNumber (self, date, prev_number):
+        new_format = date.strftime('%Y-%m-%d')
         prev_number = int(prev_number)
-        str_orderDate = str(date)
+        str_orderDate = str(new_format)
         str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
 
         prev=db.collection('Mita').document(str_orderDate).get()
