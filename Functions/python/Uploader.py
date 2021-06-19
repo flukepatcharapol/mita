@@ -101,15 +101,7 @@ class Uploader ():
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
         prev_number = int(prev_number)
         str_orderDate = str(new_format)
-        # str_orderDate = str_orderDate.replace( '-' , '' )  #Remove - from input date
-
-        prev=db.collection('Mita').document(str_orderDate).get()
-        if prev.exists:
-            db.collection('Mita').document(str_orderDate).update({
-                'line': prev_number
-            })
-        else:
-            db.collection('Mita').document(str_orderDate).set({
+        db.collection('Mita').document(str_orderDate).set({
                 'line': prev_number,
             })
             
