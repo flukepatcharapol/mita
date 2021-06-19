@@ -6,25 +6,14 @@ Resource       ${CURDIR}/Functions/GetFromWongnai.robot
 Resource       ${CURDIR}/Functions/LineCaller.robot
 Resource       ${CURDIR}/Functions/ToTheCloud.robot
 
-Variables      ${CURDIR}/../Config.yaml
+Variables      ${CURDIR}/Config.yaml
 
 ***Variables***
 #Config Variable
-${ATTEMPT}             5x
-${WAIT}                0.5 sec
+${ATTEMPT}             10x
+${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${BROWSER}             Chrome
 ${GOLBAL_SLEEP}        0.5 sec
-
-
-#Script Variable
-${Desired_menu}        #แต้มออนไลน์ Interim
-
-${out_dir}             ${CURDIR}\\$TARGET\\Outputs\\
-${prev_path_txt}       prev.txt
-
-
-
 
 ############################################################################################################################################
 ***Keywords***
@@ -33,8 +22,8 @@ ${prev_path_txt}       prev.txt
 ############################################################################################################################################
 Script Setup
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
-    Empty Directory  ${CURDIR}\\FailedScreenshot\\
-    Selenium2Library.Set Selenium Speed    0.001
+    # Run Keyword And Continue On Failure  Import Variables  ${CURDIR}/Config-local.yaml
+    SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
     Maximize Browser Window
     Login to Firebear Sothorn POS
@@ -44,26 +33,39 @@ End Script
     Close All Browsers
 
 Do This When Script Failed
-    ${cur_time}=  Get Time
-    # Capture Page Screenshot  ${CURDIR}\\FailedScreenshot\\${cur_time}.png
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
     LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error ${TEST MESSAGE}
-    EventLogger.Log to Logger File  log_status=FAILED  event=TearDown  message=The \[${TEST NAME}\] was Failed, with error message: ${TEST MESSAGE}
 
 ############################################################################################################################################
 
 Login to Firebear Sothorn POS
-    Input Text  ${LOG_user}  firebear.sothorn${pos_wn_username}  clear=true
-    Input Text  ${LOG_pass}  Makham${pos_wn_password}  clear=true
+    Input Text  ${LOG_user}  ${_POS_USER}  clear=true  
+    Input Text  ${LOG_pass}  ${_POS_PASS}  clear=true
     Click Element  ${LOG_submit_btn}
     Check Should Be On Home Page
     Log To Console  ${\n}Loged in to Wongnai!
 
 Open Wongnai POS WEB on Headless and Maximize Window
-    Selenium2Library.Open Browser   url=${POS_WONGNAI_URL}    browser=${BROWSER}
+    Open Browser Headless   url=${POS_WONGNAI_URL}
+    # Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
     Log To Console  ${\n}Browser is open!
     Maximize Browser Window
+
+Open Browser Headless
+    [Arguments]  ${url}
+    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    ${is_headless}  Set Variable  True
+    IF  ${is_headless}
+        BuiltIn.Call Method    ${chrome options}    add_argument    test-type
+        BuiltIn.Call Method    ${chrome options}    add_argument    --disable-extensions
+        BuiltIn.Call Method    ${chrome options}    add_argument    --headless
+        BuiltIn.Call Method    ${chrome options}    add_argument    --disable-gpu
+        BuiltIn.Call Method    ${chrome options}    add_argument    --no-sandbox
+        BuiltIn.Call Method    ${chrome options}    add_argument    start-maximized
+    END
+    Create Webdriver    Chrome    chrome_options=${chrome options}
+    Goto    ${url}
 
 Clean Download Directory
     Empty Directory  ${DOWNLOAD_DIR}
@@ -91,86 +93,85 @@ Check If Have New Record
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  local  result_format=%d-%m-%Y 
+    ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
     Set Test Variable  ${FS_DATE}  ${cur_date}
+    Log to console  ${\n}Set FS_DATE: ${FS_DATE}
 
 
 ############################################################################################################################################
 ***Test Cases***
 ############################################################################################################################################
 Get Report From POS Wongnai, and Send Data to Firestore Cloud
-    [Tags]    Get-New-Line-For-Normal
+    [Tags]    Get-New-Line
     [Setup]  Script Setup
-
-    Set Test Variable  ${TARGET}  Normal
     Set Date For FireStore
-    ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
-    Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}
-    Set Test Variable  ${PREV_PATH}  ${OUTPUTS_DIR}/${prev_path_txt}
 
-    GetFromWongnai.Got To Daily Billing Page
+    GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Today
     GetFromWongnai.Click To Expected Time Order
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Count Row and Compare With Previous Run
-    Selenium2Library.Set Selenium Speed    0
+    SeleniumLibrary.Set Selenium Speed    0
 
-    IF  ${IS_NEW}  
+    IF  ${IS_NEW}
 
+        log to console  ${\n}There are new line
         Sleep  ${GOLBAL_SLEEP}
         ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
         ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
 
     ELSE
-        ${cur_time}=  Get Time
+        log to console  ${\n}No new line
+        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
         LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
-        EventLogger.Log to Logger File  log_status=SUCCESS  event=No New Line  message=No New Line To Add
     END
 
     [Teardown]  End Script
 
 Reset Every 00:00
     [Tags]    Morning-Reset
-
-    # Set Test Variable  ${TARGET}  Normal
-    # ${out_dir}=  Replace String  ${out_dir}  $TARGET  ${TARGET}
-    # Set Test Variable  ${OUTPUTS_DIR}  ${out_dir}
-
-    # Empty Directory    ${OUTPUTS_DIR}
-    # ${is_empty}=  Run Keyword And Return Status  Directory Should Be Empty    ${OUTPUTS_DIR}
-    # ${cur_time}=  Get TIme
+    #Get the date older than today for 4 days
     Set Date For FireStore
-    ToTheCloud.Delete Prev Number From Date  ${FS_DATE}
-    ${is_exist}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
+    Set Test Variable  ${DATA_DATE}  ${FS_DATE}
+    ${expire_due_date}=  Set Variable  7
+    ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
+    Log to console  ${\n}Delete every [Mita]prev before ${cur_date}
 
-    IF  ${is_exist}==False
+    #Delete the doc which older than ${cur_date}
+    ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
+    ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
 
-        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The Prev Line for ${FS_DATE}
-        EventLogger.Log to Logger File  log_status=SUCCESS  event=Reset Daily  message=Finish Empty The Prev Line for ${FS_DATE}
+    #Sent noti to line is success or not
+    IF  ${is_empty}
+
+        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The [Mita]Prev Line for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The Prev Line for ${FS_DATE}
-        EventLogger.Log to Logger File  log_status=FAILED  event=Reset Daily  message=FAILED To Empty The Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The [Mita]Prev Line for ${FS_DATE} Failed list: ${result}
+        log to console  ${\n}Failed list: ${result}
 
     END
 
-    
-    ${cur_date}=   Get Current Date  local  - 7 days  result_format=%d-%m-%Y
+    ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
+    ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
+    Log to console  ${\n}Delete every [Order]document before ${cur_date}
 
-Test
-    [Tags]  debug
-    Import Library    DebugLibrary
-    Set Test Variable  ${FS_DATE}  14-05-2021
-    Delete Older Docs in the Collection  20-05-2021
-    debug
-    # Save new Prev  14-05-2021  10
-    # ${result}=  Get Prev Line Saved  14-05-2021
-    # IF  ${result}==False
-    #     log to console  ${\n}It not exist
-    # ELSE
-    #     ${line}=  Get From Dictionary  ${result}  line
-    #     log to console  ${\n}Prev Line is ${line}
-    # END
-    # Delete Prev Number From Date
+    #Sent noti to line is success or not
+    IF  ${is_empty}
+
+        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The [Order]Document for ${FS_DATE}
+
+    ELSE
+
+        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The [Order]Document for ${FS_DATE} Failed list: ${result}
+        log to console  ${\n}Failed list: ${result}
+
+    END
+
+
+
+Test connection with google cloud build
+    [Tags]  test-connect
+    no Operation

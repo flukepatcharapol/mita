@@ -77,10 +77,10 @@ Check Should Be On Home Page
     BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
 
 Check and Clear If Promo is Exist
-    ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
-    IF  ${is_exist}
-        Click Element When Ready  ${HOM_promo_model}
-    END
+    # ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
+    # IF  ${is_exist}
+    #     Click Element When Ready  ${HOM_promo_model}
+    # END
     Reload Page
 
 Click Report At Nav Bar
@@ -93,7 +93,7 @@ Check Daily Billing Should Show
     Element Should Be Visible With Retry  ${HOM_header}
     Element Should Contain  ${HOM_header}  ${HOM_bill_report_lbl}
 
-Got To Daily Billing Page
+Go To Daily Billing Page
     Click Report At Nav Bar
     Click Billing Report Button
     Check Daily Billing Should Show
@@ -168,11 +168,10 @@ Get Element Locator From Row
     [Return]  ${text}
 
 Get New Order Detail
-    [Arguments]    ${latest_number}    ${target}=${TARGET}
+    [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
     ${row}=  Count Row
     ${new_line_amount}=    Evaluate    ${row}-${latest_number}
-    # log to console  ${\n}Dict: ${newline_detail} ${\n}Current row:${row} ${\n}Previous: ${latest_number} ${\n}Amount:${new_line_amount}
     ${prev_point}    Set Variable
     ${prev_bill}     Set Variable
     ${prev_price}    Set Variable
@@ -207,9 +206,6 @@ Get New Order Detail
             ${bill_id}  Convert To Upper Case  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}
-            ${name}  Remove String  ${name}  \n
-            ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
-            ${date}  Replace String  ${date}  /  -
 
             #Validate Information
             ${product_point}    Recalculate Price For The Set Product    ${name}
@@ -218,6 +214,11 @@ Get New Order Detail
             #Check amount information
             ${product_amount}  Recalculate Amount For The Set Product  ${name}
             ${amount}  Evaluate  ${product_amount}*${amount}
+
+            # Update produce name
+            ${name}  Remove String  ${name}  \n
+            ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
+            ${date}  Replace String  ${date}  /  -
 
             #Check if หน้าร้าน Type
             ${is_counter}    Check If From Counter    ${type}
@@ -285,7 +286,7 @@ Get New Order Detail
             ${prev_price}=   Set Variable    ${price}
         END
     END
-    # Set New Total Sold Amount
+    Log to console  ${\n}DATA_DATE: ${DATA_DATE}
     [Return]  ${newline_detail}
 
 '${comment}' Should Not Have Void

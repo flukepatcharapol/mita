@@ -29,8 +29,8 @@ Transform To Firestore Format And Sent To FireStore
             # ${time_stamp}=  Catenate  ${day}\/${month}\/${year}
 
             #Set into Doc info to Document format
-            ${result_body}=  Create Dictionary    Delivery=${type}    EarnedDate=    
-            ...    LineUserId=    OrderDate=${order_date}    Point=${point}    Price=${price}
+            ${result_body}=  Create Dictionary    Delivery=${type}    
+            ...    OrderDate=${order_date}    Point=${point}    Price=${price}
             ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
 
             #Append Info to Document
@@ -45,14 +45,13 @@ Set New Line To The FireStore
     [Arguments]    ${list}
     ${I}    Set Variable    0
     ${fail_list}    Create List
+    ${success_list}  Create List
     ${new_data_length}  Get Length  ${list}
 
     FOR  ${INDEX}  IN  @{list}
 
         #Get information from ordered dict
         ${delivery}    Get From Dictionary  ${INDEX}  Delivery
-        ${earn}        Get From Dictionary  ${INDEX}  EarnedDate
-        ${line}        Get From Dictionary  ${INDEX}  LineUserId
         ${date}        Get From Dictionary  ${INDEX}  OrderDate
         ${bill}        Get From Dictionary  ${INDEX}  BillId
         ${prod_list}   Get From Dictionary  ${INDEX}  ProductList
@@ -67,17 +66,17 @@ Set New Line To The FireStore
 
         #Call uploader to send info to firestore
         IF  ${is_valid}
-            ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${earn}  ${line}
-            ...    ${date}  ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
+            ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
+            ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
 
             #Validate Upload result
             IF  ${upload_result}
 
-                No Operation
+                Append To List  ${success_list}  ${bill}
 
             ELSE
 
-                Append TO List  ${fail_list}  ${bill}
+                Append To List  ${fail_list}  ${bill}
 
             END
         END
@@ -88,19 +87,20 @@ Set New Line To The FireStore
 
     IF  ${is_success}
 
-        LineCaller.Sent Alert To Line Group By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records.
-        EventLogger.Log to Logger File  log_status=SUCCESS  event=Add New Line  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records.
+        #Sent success notify and update the prev number
+        LineCaller.Sent Alert To Line Group By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Success list: ${success_list}
+        # EventLogger.Log to Logger File  log_status=SUCCESS  event=Add New Line  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records.
         
-        #Set the OutPuts/prev.text File = ${CURRENT_ROW}
         ${cur_row}  Convert To String  ${CURRENT_ROW}
         ${date}=  Replace String  ${DATA_DATE}  /  -
         Update New Prev Number  ${date}  ${cur_row}
 
     ELSE
 
+        #Just sent fail notification and wait for retry on the next time
         LineCaller.Sent Alert To Line Group By ID  message=Failed To Upload new Line To Firestore. Fail list: ${fail_list}.
-        EventLogger.Log to Logger File  log_status=FAILED  event=Add New Line  message=Failed To Upload new Line To Firestore ${fail_list}
-        #Not Set anything wait for retry on the next time
+        # EventLogger.Log to Logger File  log_status=FAILED  event=Add New Line  message=Failed To Upload new Line To Firestore ${fail_list}
+        
 
     END
 
@@ -113,10 +113,14 @@ Get Prev Line Saved
 Update New Prev Number
     [Documentation]  Date format  11-05-2021
     [Arguments]  ${date}  ${number}
-    Uploader.setPrevNumber    ${date}    ${number}
+    Uploader.setPrevNumber    ${date}  ${number}
 
-Delete Prev Number From Date
-    [Arguments]  ${date}
-    Uploader.deletePrevNumDoc   ${date}
+Delete Prev Number Where older Than '${date}'
+    [Documentation]  Date format  11-05-2021
+    ${result}  Uploader.deleteAllOlderPrev  ${date}
+    [Return]  ${result}
 
-    
+Delete Document Where older Than '${date}'
+    [Documentation]  Date format  11-05-2021
+    ${result}  Uploader.deleteAllOlderDoc  ${date}
+    [Return]  ${result}

@@ -1,12 +1,8 @@
 ***Keywords***
 ####################################################################################################################################################################################
 Send Text To Line User
-    [Arguments]  ${text}  ${receiver}=${LINE}[FB_LINE_OA_ID]
+    [Arguments]  ${text}  ${receiver}
     ${header}=  Get MY Bot Header
-
-    # ${message_body}=  Create Dictionary  type=text  text=${text}
-    # ${list_msg}=  Create List  ${message_body}
-    # ${body}=  Create Dictionary  to=${receiver}  message=${list_msg}
 
     ${body}  Set Variable  {"to": "${receiver}","messages": [{"type": "text","text": "${text}"}]} 
     Create Session  Send Text  ${LINE}[URL]  headers=${header}  verify=True
@@ -16,15 +12,15 @@ Send Text To Line User
     ${is_success}=  Run Keyword And Return Status  Should Be Equal As Strings  ${response.status_code}  200  
     ...    msg=Failed To send Message with code:${response.status_code} body:${response.json()}
 
-    IF  ${is_success}
+    # IF  ${is_success}
 
-        EventLogger.Log to Logger File  log_status=PASSED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
+    #     # EventLogger.Log to Logger File  log_status=PASSED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
 
-    ELSE
+    # ELSE
 
-        EventLogger.Log to Logger File  log_status=FAILED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
+    #     # EventLogger.Log to Logger File  log_status=FAILED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
         
-    END
+    # END
 
     #Validate Send text result
     Should Be Equal As Strings  ${response.status_code}  200   msg=Failed To send Message with code:${response.status_code} body:${response.json()}
@@ -32,14 +28,18 @@ Send Text To Line User
 ####################################################################################################################################################################################
 
 Get My Bot Header
-    [Arguments]  ${token}=${LINE}[acccess_token]
+    [Arguments]  ${token}=Bearer ${LINE_ACCESS_TOKEN}
     ${header}=  Create Dictionary  Content-Type=application/json  Authorization=${token}
     [Return]  ${header}
 
 Sent Alert To Line Group By ID
-    [Arguments]  ${message}
-    ${cur_time}=  Get Time
+    [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
+    ${cur_time}=  Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
+    ${is_empty}  Run Keyword And return Status  Should Be Empty  ${DATA_DATE}
+
+    IF  ${is_empty}
+        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
+    END
 
     ${body_message}=  Set Variable  ${message} DATA_DATE: ${DATA_DATE} at \[${cur_time}\]
-    Send Text To Line User  text=${body_message}  receiver=${LINE}[FLUKE_UID]
-    # Send Text To Line User  text=${body_message}  receiver=U2e38cbaf2f18ee4bb4b16b303c5903c8
+    Send Text To Line User  ${body_message}  ${receiver}

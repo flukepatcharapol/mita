@@ -1,0 +1,8 @@
+# URL
+POS_WONGNAI_URL:  "https://pos.wongnai.com/login"
+
+# Line
+LINE:
+  URL: "https://api.line.me/v2/bot"
+  path:
+    push_message:  "message/push"
