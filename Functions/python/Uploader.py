@@ -103,26 +103,23 @@ class Uploader ():
 
     def getPrevNumber (self, date):
         str_orderDate=self.setExpectedTimeFormat(date)
-        # date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        # new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        # str_orderDate = str(new_format)
         
         #Set destination
-        line=db.collection('Mita').document(str_orderDate).get()
+        data_line=db.collection('Mita').document(str_orderDate).data('line')
 
         
-        if line.exists:
-            return line.to_dict()
+        if data_line.exists:
+            
+            return data_line.to_dict()
+        
         else:
+            
             result = {'line': 'False'}
             return result
         
 
     def setPrevNumber (self, date, prev_number):
         str_orderDate=self.setExpectedTimeFormat(date)
-        # date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        # new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        # str_orderDate = str(new_format)
         prev_number = int(prev_number)
         db.collection('Mita').document(str_orderDate).set({
                 'line': prev_number,
@@ -131,9 +128,6 @@ class Uploader ():
 
     def deleteAllOlderDoc (self, date):
         str_orderDate=self.setExpectedTimeFormat(date)
-        # date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        # new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        # str_orderDate = str(new_format)
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
@@ -160,9 +154,6 @@ class Uploader ():
         
     def deleteAllOlderPrev (self, date):
         str_orderDate=self.setExpectedTimeFormat(date)
-        # date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        # new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        # str_orderDate = str(new_format)
         
         #Get all doc from collection Mita
         col=db.collection('Mita').get()
