@@ -111,6 +111,7 @@ The Date Should Be Today
     ${expect_date}=  Replace String    ${FS_DATE}  -  /
     ${web_date}=  Get Value  ${HOM_date}
     ${web_date}=  Get SubString  ${web_date}  0  10
+    Log to console  ${\n}web_date: ${web_date}
     Should Be Equal As Strings  ${expect_date}  ${web_date}  msg=Setup Date is not ${expect_date}. It's ${web_date}
 
 Click Download Report .CSV File
