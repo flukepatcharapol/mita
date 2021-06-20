@@ -105,12 +105,10 @@ class Uploader ():
         str_orderDate=self.setExpectedTimeFormat(date)
         
         #Set destination
-        data_line=db.collection('Mita').document(str_orderDate).data('line')
-
-        
-        if data_line.exists:
+        line=db.collection('Mita').document(str_orderDate).get()
+        if line.exists:
             
-            return data_line.to_dict()
+            return line.to_dict()
         
         else:
             
