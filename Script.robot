@@ -148,7 +148,7 @@ Reset Every 00:00
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line Group By ID  message=[Mita] Finish Empty The Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=[Mita] Success Empty The Prev Line for ${FS_DATE}
 
     ELSE
 

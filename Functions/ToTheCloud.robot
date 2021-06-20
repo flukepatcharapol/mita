@@ -89,17 +89,18 @@ Set New Line To The FireStore
 
         #Sent success notify and update the prev number
         LineCaller.Sent Alert To Line Group By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Success list: ${success_list}
-        # EventLogger.Log to Logger File  log_status=SUCCESS  event=Add New Line  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records.
         
         ${cur_row}  Convert To String  ${CURRENT_ROW}
         ${date}=  Replace String  ${DATA_DATE}  /  -
         Update New Prev Number  ${date}  ${cur_row}
+        log to console  ${\n}Update prev number at ${date} to ${cur_row}
+
+        # Update Sale Total For Document '${date}'
 
     ELSE
 
         #Just sent fail notification and wait for retry on the next time
         LineCaller.Sent Alert To Line Group By ID  message=Failed To Upload new Line To Firestore. Fail list: ${fail_list}.
-        # EventLogger.Log to Logger File  log_status=FAILED  event=Add New Line  message=Failed To Upload new Line To Firestore ${fail_list}
         
 
     END

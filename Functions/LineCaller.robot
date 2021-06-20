@@ -12,16 +12,6 @@ Send Text To Line User
     ${is_success}=  Run Keyword And Return Status  Should Be Equal As Strings  ${response.status_code}  200  
     ...    msg=Failed To send Message with code:${response.status_code} body:${response.json()}
 
-    # IF  ${is_success}
-
-    #     # EventLogger.Log to Logger File  log_status=PASSED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
-
-    # ELSE
-
-    #     # EventLogger.Log to Logger File  log_status=FAILED  event=Send Line  message=code:${response.status_code} body:${response.json()} Text:${body}
-        
-    # END
-
     #Validate Send text result
     Should Be Equal As Strings  ${response.status_code}  200   msg=Failed To send Message with code:${response.status_code} body:${response.json()}
 
@@ -34,7 +24,6 @@ Get My Bot Header
 
 Sent Alert To Line Group By ID
     [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
-    ${cur_time}=  Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
     ${is_exist}  Run Keyword And return Status  Variable Should Exist  ${DATA_DATE}
 
     IF  ${is_exist}
@@ -48,5 +37,5 @@ Sent Alert To Line Group By ID
 
     END
 
-    ${body_message}=  Set Variable  ${message} ${show_date}: ${DATA_DATE} at \[${cur_time}\]
+    ${body_message}=  Set Variable  ${message} ${show_date}: ${DATA_DATE}
     Send Text To Line User  ${body_message}  ${receiver}
