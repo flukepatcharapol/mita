@@ -10,6 +10,7 @@ ${HOM_report_btn}           xpath=//div[@id='menu_report']/ul/li[3]//a[@href='/t
 ${HOM_header}               xpath=//section[@class='header']//div[contains(@class,'col-md-6 col-sm-8')]
 ${HOM_bill_report_lbl}      รายงานยอดขายแยกตามรายละเอียดบิล
 ${HOM_date}                 id=dateranges
+${HOM_sale_total}           id=sale_total_amount
 ${DATE_today_btn}           xpath=//body//div[3]//div[@class='ranges']//li[@data-range-key='วันนี้']
 ${REP_ok_btn}               id=apply-branch 
 ${REP_csv_dwn_btn}          xpath=//div[@id='show_table_billDetail_wrapper']//a[@class='btn btn-default buttons-csv buttons-html5']
@@ -104,13 +105,16 @@ Set Date To Today
     Click Element When Ready  ${DATE_today_btn}
     Click Element When Ready  ${REP_ok_btn}
     The Date Should Be Today
+
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
+
     Log To Console  ${\n}Set Date To Today!
 
 The Date Should Be Today
     ${expect_date}=  Replace String    ${FS_DATE}  -  /
     ${web_date}=  Get Value  ${HOM_date}
     ${web_date}=  Get SubString  ${web_date}  0  10
+    Log to console  ${\n}web_date: ${web_date}
     Should Be Equal As Strings  ${expect_date}  ${web_date}  msg=Setup Date is not ${expect_date}. It's ${web_date}
 
 Click Download Report .CSV File
@@ -167,6 +171,11 @@ Get Element Locator From Row
     ${text}=   Get Text    ${ele}
     [Return]  ${text}
 
+Get Sale total
+    ${sale_total}  Get Text  ${HOM_sale_total}
+    log to console  ${\n}Sale total: ${sale_total}
+    LineCaller.Sent Alert To Line Group By ID  message=Current Sale total for ${FS_DATE} is ${sale_total}
+
 Get New Order Detail
     [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
@@ -202,7 +211,7 @@ Get New Order Detail
             ${type}     Get Element Locator From Row    ${row_number}    order_type
             ${amount}   Get Element Locator From Row    ${row_number}    amount
             ${price}    Get Element Locator From Row    ${row_number}    price
-            
+            log to console  ${\n}Index: ${row_number}, ${bill_id}
             ${bill_id}  Convert To Upper Case  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}

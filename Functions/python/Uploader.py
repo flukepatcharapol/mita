@@ -26,12 +26,17 @@ firebase_admin.initialize_app(creds)
 db=firestore.client()
 
 class Uploader ():
+    def setExpectedTimeFormat (self, str_date):
+        date_time_obj = datetime.strptime(str_date, '%d-%m-%Y')
+        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
+        str_orderDate = str(new_format)
+        return str_orderDate
+        
     def sendToFireStoreCollection (self,delivery,orderDate,point,bill,price,amount,product_list):
              
         #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
-        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        str_orderDate = str(new_format)
+        str_orderDate=self.setExpectedTimeFormat(orderDate)
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
@@ -70,7 +75,7 @@ class Uploader ():
         #Create the document if the document is not yet exist
         else: 
             
-            #Create Document for this date=str_orderDate
+            #Create Document for this date=str_orderDate and init Saletotal 
             db.collection('Order').document(str_orderDate).set({})
             
             #Add the bill data to the date document
@@ -97,35 +102,30 @@ class Uploader ():
             return False
 
     def getPrevNumber (self, date):
-        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        str_orderDate = str(new_format)
+        str_orderDate=self.setExpectedTimeFormat(date)
         
         #Set destination
         line=db.collection('Mita').document(str_orderDate).get()
-
-        
         if line.exists:
+            
             return line.to_dict()
+        
         else:
+            
             result = {'line': 'False'}
             return result
         
 
     def setPrevNumber (self, date, prev_number):
-        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
+        str_orderDate=self.setExpectedTimeFormat(date)
         prev_number = int(prev_number)
-        str_orderDate = str(new_format)
         db.collection('Mita').document(str_orderDate).set({
                 'line': prev_number,
             })
             
 
     def deleteAllOlderDoc (self, date):
-        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        str_orderDate = str(new_format)
+        str_orderDate=self.setExpectedTimeFormat(date)
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
@@ -151,9 +151,7 @@ class Uploader ():
         return  list_of_failed
         
     def deleteAllOlderPrev (self, date):
-        date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-        new_format = datetime.strftime(date_time_obj,'%Y%m%d')
-        str_orderDate = str(new_format)
+        str_orderDate=self.setExpectedTimeFormat(date)
         
         #Get all doc from collection Mita
         col=db.collection('Mita').get()

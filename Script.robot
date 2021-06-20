@@ -14,6 +14,7 @@ ${ATTEMPT}             10x
 ${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
+${IS_LOCAL}            False
 
 ############################################################################################################################################
 ***Keywords***
@@ -21,8 +22,9 @@ ${GOLBAL_SLEEP}        0.5 sec
 # Setup and Teardown Function
 ############################################################################################################################################
 Script Setup
+    
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
-    # Run Keyword And Continue On Failure  Import Variables  ${CURDIR}/Config-local.yaml
+    Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
     Maximize Browser Window
@@ -35,7 +37,7 @@ End Script
 Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
-    LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error ${TEST MESSAGE}
+    LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
 
 ############################################################################################################################################
 
@@ -48,7 +50,7 @@ Login to Firebear Sothorn POS
 
 Open Wongnai POS WEB on Headless and Maximize Window
     Open Browser Headless   url=${POS_WONGNAI_URL}
-    # Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
+    Run Keyword If  ${IS_LOCAL}  Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
     Log To Console  ${\n}Browser is open!
     Maximize Browser Window
 
@@ -86,7 +88,8 @@ Check If Have New Record
 
     ELSE
         log to console  ${\n}Prev is Exist
-        ${is_new_line}  Run Keyword And Return Status  Should Be True  '${current_row}'>'${prev}'  msg= There are no new order yet. Latest[ ${current_row} ] Prev[ ${prev} ]
+        log to console  ${\n}Current row: ${current_row}
+        ${is_new_line}  Run Keyword And Return Status  Should Be True  ${current_row}>=${prev}  msg= There are no new order yet. Latest\[ ${current_row} \] Prev\[ ${prev} \]
         Set Test Variable    ${IS_NEW}       ${is_new_line}
         Set Test Variable    ${PREV_LENGTH}  ${prev}
 
@@ -145,11 +148,11 @@ Reset Every 00:00
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The [Mita]Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=[Mita] Success Empty The Prev Line for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The [Mita]Prev Line for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line Group By ID  message=[Mita] FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
         log to console  ${\n}Failed list: ${result}
 
     END
@@ -161,11 +164,11 @@ Reset Every 00:00
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line Group By ID  message=Finish Empty The [Order]Document for ${FS_DATE}
+        LineCaller.Sent Alert To Line Group By ID  message=[Order] Finish Empty The Document for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=FAILED to Empty The [Order]Document for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line Group By ID  message=[Order] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
         log to console  ${\n}Failed list: ${result}
 
     END
