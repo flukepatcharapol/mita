@@ -125,7 +125,6 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 
     ELSE
         log to console  ${\n}No new line
-        Set Test Variable  ${DATA_DATE}  ${FS_DATE}
         LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
     END
 
