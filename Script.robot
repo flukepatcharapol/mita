@@ -88,7 +88,7 @@ Check If Have New Record
     ELSE
         log to console  ${\n}Prev is Exist
         log to console  ${\n}Current row: ${current_row}
-        ${is_new_line}  Run Keyword And Return Status  Should Be True  ${current_row}>=${prev}  msg= There are no new order yet. Latest\[ ${current_row} \] Prev\[ ${prev} \]
+        ${is_new_line}  Run Keyword And Return Status  Should Be True  ${current_row}>${prev}  msg= There are no new order yet. Latest\[ ${current_row} \] Prev\[ ${prev} \]
         Set Test Variable    ${IS_NEW}       ${is_new_line}
         Set Test Variable    ${PREV_LENGTH}  ${prev}
 
