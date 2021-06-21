@@ -14,7 +14,6 @@ ${ATTEMPT}             10x
 ${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
-${IS_LOCAL}            False
 
 ############################################################################################################################################
 ***Keywords***
@@ -46,12 +45,12 @@ Login to Firebear Sothorn POS
     Input Text  ${LOG_pass}  ${_POS_PASS}  clear=true
     Click Element  ${LOG_submit_btn}
     Check Should Be On Home Page
-    Log To Console  ${\n}Loged in to Wongnai!
+    Log To Console  ${\n}Login to Wongnai
 
 Open Wongnai POS WEB on Headless and Maximize Window
     Open Browser Headless   url=${POS_WONGNAI_URL}
     Run Keyword If  ${IS_LOCAL}  Open Browser  url=${POS_WONGNAI_URL}  browser=chrome
-    Log To Console  ${\n}Browser is open!
+    Log To Console  ${\n}Browser is open
     Maximize Browser Window
 
 Open Browser Headless
@@ -110,7 +109,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     Set Date For FireStore
 
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     GetFromWongnai.Click To Expected Time Order
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
@@ -139,7 +138,7 @@ Reset Every 00:00
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
     ${expire_due_date}=  Set Variable  7
     ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
-    Log to console  ${\n}Delete every [Mita]prev before ${cur_date}
+    Log to console  ${\n}[Mita] Delete every prev before ${cur_date}
 
     #Delete the doc which older than ${cur_date}
     ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
@@ -159,7 +158,7 @@ Reset Every 00:00
 
     ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
     ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
-    Log to console  ${\n}Delete every [Order]document before ${cur_date}
+    Log to console  ${\n}[Order] Delete every document before ${cur_date}
 
     #Sent noti to line is success or not
     IF  ${is_empty}

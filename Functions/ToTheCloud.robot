@@ -93,7 +93,7 @@ Set New Line To The FireStore
         ${cur_row}  Convert To String  ${CURRENT_ROW}
         ${date}=  Replace String  ${DATA_DATE}  /  -
         Update New Prev Number  ${date}  ${cur_row}
-        log to console  ${\n}Update prev number at ${date} to ${cur_row}
+        log to console  ${\n}Update prev number for ${date} to ${cur_row}
 
         # Update Sale Total For Document '${date}'
 

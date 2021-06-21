@@ -98,7 +98,7 @@ Go To Daily Billing Page
     Click Report At Nav Bar
     Click Billing Report Button
     Check Daily Billing Should Show
-    Log To Console  ${\n}Visiting Daily Billing Page!
+    Log To Console  ${\n}Visiting Daily Billing Page
 
 Set Date To Today
     Click Element When Ready  ${HOM_date}
@@ -108,13 +108,12 @@ Set Date To Today
 
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
 
-    Log To Console  ${\n}Set Date To Today!
+    Log To Console  ${\n}Set Date To Today
 
 The Date Should Be Today
     ${expect_date}=  Replace String    ${FS_DATE}  -  /
     ${web_date}=  Get Value  ${HOM_date}
     ${web_date}=  Get SubString  ${web_date}  0  10
-    Log to console  ${\n}web_date: ${web_date}
     Should Be Equal As Strings  ${expect_date}  ${web_date}  msg=Setup Date is not ${expect_date}. It's ${web_date}
 
 Click Download Report .CSV File
@@ -140,7 +139,7 @@ Should Finish Load
 Click Show All Row
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Click Show All Row With Retry
     Click Element When Ready  ${REP_show_all_row}
-    Log To Console  ${\n}Clicked Show All Row!
+    Log To Console  ${\n}Show All Row
 
 Click Show All Row With Retry
     Click Element When Ready  ${REP_show_btn}
@@ -158,7 +157,7 @@ Click To Expected Time Order Need Retry
 
 Click To Expected Time Order
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Click To Expected Time Order Need Retry
-    Log To Console  ${\n}Clicked The Expected Time Order!
+    Log To Console  ${\n}Click to get the latest on top
 
 Count Row
     ${row}    Get Element Count    ${TAB_row}
@@ -391,3 +390,13 @@ Recalculate Amount For The Set Product
         BuiltIn.Return From Keyword   0
 
     END
+
+Validate Data date should be today
+    GetFromWongnai.Set Date To Today
+    ${expect_date}=  Replace String  ${FS_DATE}  -  /
+    ${date}     Get Element Locator From Row    1    order_date
+    log to console  ${\n}Data date: ${date}
+    Should be Equal as Strings  ${expect_date}  ${date}
+
+Set Date To Today and Validate Data Date Should be Today
+    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today
