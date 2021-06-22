@@ -395,8 +395,20 @@ Validate Data date should be today
     GetFromWongnai.Set Date To Today
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     ${date}     Get Element Locator From Row    1    order_date
-    log to console  ${\n}Data date: ${date}
-    Should be Equal as Strings  ${expect_date}  ${date}
+    ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
+
+    IF  ${is_data_empty}
+
+        log to console  ${\n}No data found in table
+        LineCaller.Sent Alert To Line Group By ID  message=No Order in the table
+        Pass Execution  No Order in the table
+
+    ELSE
+
+        log to console  ${\n}Data date: ${date}
+        Should be Equal as Strings  ${expect_date}  ${date}
+
+    END
 
 Set Date To Today and Validate Data Date Should be Today
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today
