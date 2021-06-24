@@ -194,10 +194,8 @@ class Uploader ():
                 is_sucess_list.append('failed')
         
         #If any bill not exist return false
-        # if 'failed' in is_sucess_list:
+        if 'failed' in is_sucess_list:
+            return False
+        else:
             
-        #     return True
-        # else:
-            
-        #     return False
-        return is_sucess_list
+            return True
