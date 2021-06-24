@@ -91,15 +91,15 @@ class Uploader ():
             
         
         #Check that Order-date-OrderDeatil-BillId should exist and return result
-        check=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
+        # check=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
         
-        if check.exists:
+        # if check.exists:
             
-            return True
+        #     return True
         
-        else:
+        # else:
             
-            return False
+        #     return False
 
     def getPrevNumber (self, date):
         str_orderDate=self.setExpectedTimeFormat(date)
@@ -175,3 +175,27 @@ class Uploader ():
 
         #Return the list of failed doc
         return  list_of_failed
+
+    def billShouldExist (self, bill_list, date):
+        str_orderDate=self.setExpectedTimeFormat(date)
+        
+        doc_date=db.collection('Order').document(str_orderDate).collection('OrderDetail').get()
+        
+        doc_list = []
+        for doc in doc_date:
+            doc_list.append(doc.id)
+        
+        # Check if the list of bill exist in the doc date
+        is_sucess_list = []
+        for bill in bill_list:
+            if bill in doc_list:
+                is_sucess_list.append('success')
+            else:
+                is_sucess_list.append('failed')
+        
+        #If any bill not exist return false
+        if 'failed' in is_sucess_list:
+            return False
+        else:
+            
+            return True
