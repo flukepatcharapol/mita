@@ -66,25 +66,11 @@ Set New Line To The FireStore
         IF  ${is_valid}
             Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
             ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
-
-            #Validate Upload result
-            # IF  ${upload_result}
-
-            #     Append To List  ${success_list}  ${bill}
-
-            # ELSE
-
-            #     Append To List  ${fail_list}  ${bill}
-
-            # END
         END
     
     END
 
-    # ${is_success}=  Run Keyword And Return Status  Should Be Empty  ${fail_list}
-
     ${is_success}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
-    log to console  ${\n}is_success_list: ${is_success}
 
     IF  ${is_success}
 
@@ -96,13 +82,10 @@ Set New Line To The FireStore
         Update New Prev Number  ${date}  ${cur_row}
         log to console  ${\n}Update prev number for ${date} to ${cur_row}
 
-        # Update Sale Total For Document '${date}'
-
     ELSE
 
         #Just sent fail notification and wait for retry on the next time
         Set Test Variable  ${TEST MESSAGE}  Failed To Upload new Line To Firestore. Re-try next round. Bill list: ${bill_list}
-        # LineCaller.Sent Alert To Line By ID  message=Failed To Upload new Line To Firestore. Re-try next round. Bill list: ${bill_list}
         Fail
         
 
