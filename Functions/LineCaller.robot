@@ -22,7 +22,7 @@ Get My Bot Header
     ${header}=  Create Dictionary  Content-Type=application/json  Authorization=${token}
     [Return]  ${header}
 
-Sent Alert To Line Group By ID
+Sent Alert To Line By ID
     [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
     ${is_exist}  Run Keyword And return Status  Variable Should Exist  ${DATA_DATE}
 
@@ -37,5 +37,5 @@ Sent Alert To Line Group By ID
 
     END
 
-    ${body_message}=  Set Variable  ${message} ${show_date}: ${DATA_DATE}
+    ${body_message}=  Set Variable  ${message} ${show_date}: ${DATA_DATE} Local: ${IS_LOCAL}
     Send Text To Line User  ${body_message}  ${receiver}

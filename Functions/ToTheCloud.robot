@@ -11,7 +11,6 @@ Transform To Firestore Format And Sent To FireStore
         ${body}=    Get From Dictionary   ${newline_detail}   ${INDEX}  #INDEX is key
         ${is_valid}=    Get From Dictionary    ${body}    Is_valid
         IF  ${is_valid}
-            #Transforming
 
             #Get info
             ${order_date}    Get From Dictionary  ${body}  Order_date
