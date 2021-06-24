@@ -38,7 +38,7 @@ End Script
 Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
 
-    LineCaller.Sent Alert To Line Group By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
+    LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
 
 ############################################################################################################################################
 
@@ -126,7 +126,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 
     ELSE
         log to console  ${\n}No new line
-        LineCaller.Sent Alert To Line Group By ID  message=No New Line To Add
+        LineCaller.Sent Alert To Line By ID  message=No New Line To Add
     END
 
     [Teardown]  End Script
@@ -147,11 +147,11 @@ Reset Every 00:00
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line Group By ID  message=[Mita] Success Empty The Prev Line for ${FS_DATE}
+        LineCaller.Sent Alert To Line By ID  message=[Mita] Success Empty The Prev Line for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=[Mita] FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line By ID  message=[Mita] FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
         log to console  ${\n}Failed list: ${result}
 
     END
@@ -163,11 +163,11 @@ Reset Every 00:00
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line Group By ID  message=[Order] Finish Empty The Document for ${FS_DATE}
+        LineCaller.Sent Alert To Line By ID  message=[Order] Finish Empty The Document for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line Group By ID  message=[Order] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line By ID  message=[Order] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
         log to console  ${\n}Failed list: ${result}
 
     END

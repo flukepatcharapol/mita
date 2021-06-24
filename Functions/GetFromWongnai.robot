@@ -38,6 +38,9 @@ ${tid_nom}              ติดนม
 ${tid_char_tid_nom}     ติดชาติดนม
 ${look_tid}             ลูกติด
 
+#3 Points List
+${samker}               สามเกลอ
+
 #2 Points List
 ${kuhoo_lookme}         คู่หูลูกหมี
 ${kuhoo_dad}            คู่หูพ่อลูก
@@ -173,7 +176,7 @@ Get Element Locator From Row
 Get Sale total
     ${sale_total}  Get Text  ${HOM_sale_total}
     log to console  ${\n}Sale total: ${sale_total}
-    LineCaller.Sent Alert To Line Group By ID  message=Current Sale total for ${FS_DATE} is ${sale_total}
+    LineCaller.Sent Alert To Line By ID  message=Current Sale total for ${FS_DATE} is ${sale_total}
 
 Get New Order Detail
     [Arguments]    ${latest_number}
@@ -307,7 +310,7 @@ Recalculate Price For The Set Product
     ...  ${name}      ${tid_char}  ${tid_nom}  ${tid_char_tid_nom}  ${look_tid}
 
     ${is_3}  Run Keyword And Return Status  Should Contain Any
-    ...  ${name}      
+    ...  ${name}      ${samker}
 
     ${is_2}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${kuhoo_lookme}  ${kuhoo_dad}  ${kuhoo_mom}  ${kun_dad_mom}
@@ -400,7 +403,7 @@ Validate Data date should be today
     IF  ${is_data_empty}
 
         log to console  ${\n}No data found in table
-        LineCaller.Sent Alert To Line Group By ID  message=No Order in the table
+        LineCaller.Sent Alert To Line By ID  message=No Order in the table
         Pass Execution  No Order in the table
 
     ELSE

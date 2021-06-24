@@ -11,7 +11,6 @@ Transform To Firestore Format And Sent To FireStore
         ${body}=    Get From Dictionary   ${newline_detail}   ${INDEX}  #INDEX is key
         ${is_valid}=    Get From Dictionary    ${body}    Is_valid
         IF  ${is_valid}
-            #Transforming
 
             #Get info
             ${order_date}    Get From Dictionary  ${body}  Order_date
@@ -88,7 +87,7 @@ Set New Line To The FireStore
     IF  ${is_success}
 
         #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line Group By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Success list: ${success_list}
+        LineCaller.Sent Alert To Line By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Success list: ${success_list}
         
         ${cur_row}  Convert To String  ${CURRENT_ROW}
         ${date}=  Replace String  ${DATA_DATE}  /  -
@@ -100,7 +99,7 @@ Set New Line To The FireStore
     ELSE
 
         #Just sent fail notification and wait for retry on the next time
-        LineCaller.Sent Alert To Line Group By ID  message=Failed To Upload new Line To Firestore. Fail list: ${fail_list}.
+        LineCaller.Sent Alert To Line By ID  message=Failed To Upload new Line To Firestore. Re-try next round.
         
 
     END
