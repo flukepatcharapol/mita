@@ -41,7 +41,7 @@ Set New Line To The FireStore
     ${success_list}  Create List
     ${bill_list}  Create List
     ${new_data_length}  Get Length  ${list}
-    ${bill_date}  Get From Dictionary  ${list}[0]
+    ${bill_date}  Get From Dictionary  ${list}[0]  OrderDate
     log to console  ${\n}bill_date: ${bill_date}
 
     FOR  ${INDEX}  IN  @{list}
