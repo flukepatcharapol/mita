@@ -21,12 +21,6 @@ Transform To Firestore Format And Sent To FireStore
             ${type}          Get From Dictionary  ${body}  Type
             ${product_list}  Get From Dictionary  ${body}  Product_list
 
-            #Convert dateime format to timestamp
-            # ${year}=  Get Substring  ${order_date}    8
-            # ${month}=    Get Substring    ${order_date}    3   5
-            # ${day}=    Get Substring    ${order_date}    0   2
-            # ${time_stamp}=  Catenate  ${day}\/${month}\/${year}
-
             #Set into Doc info to Document format
             ${result_body}=  Create Dictionary    Delivery=${type}    
             ...    OrderDate=${order_date}    Point=${point}    Price=${price}
@@ -45,7 +39,10 @@ Set New Line To The FireStore
     ${I}    Set Variable    0
     ${fail_list}    Create List
     ${success_list}  Create List
+    ${bill_list}  Create List
     ${new_data_length}  Get Length  ${list}
+    ${bill_date}  Get From Dictionary  ${list}[0]
+    log to console  ${\n}bill_date: ${bill_date}
 
     FOR  ${INDEX}  IN  @{list}
 
@@ -63,31 +60,37 @@ Set New Line To The FireStore
         ${point}       Convert To Integer   ${point}
         ${date}        Convert To String    ${date}
 
+        Append To List  ${bill_list}  ${bill}
+
         #Call uploader to send info to firestore
         IF  ${is_valid}
             ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
             ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
 
+            log to console  ${\n}${upload_result}
+
             #Validate Upload result
-            IF  ${upload_result}
+            # IF  ${upload_result}
 
-                Append To List  ${success_list}  ${bill}
+            #     Append To List  ${success_list}  ${bill}
 
-            ELSE
+            # ELSE
 
-                Append To List  ${fail_list}  ${bill}
+            #     Append To List  ${fail_list}  ${bill}
 
-            END
+            # END
         END
     
     END
 
-    ${is_success}=  Run Keyword And Return Status  Should Be Empty  ${fail_list}
+    # ${is_success}=  Run Keyword And Return Status  Should Be Empty  ${fail_list}
+
+    ${is_success}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
 
     IF  ${is_success}
 
         #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Success list: ${success_list}
+        LineCaller.Sent Alert To Line By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Bill list: ${bill_list}
         
         ${cur_row}  Convert To String  ${CURRENT_ROW}
         ${date}=  Replace String  ${DATA_DATE}  /  -
