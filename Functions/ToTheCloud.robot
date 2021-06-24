@@ -64,10 +64,8 @@ Set New Line To The FireStore
 
         #Call uploader to send info to firestore
         IF  ${is_valid}
-            ${upload_result}=    Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
+            Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
             ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
-
-            log to console  ${\n}${upload_result}
 
             #Validate Upload result
             # IF  ${upload_result}
@@ -102,7 +100,7 @@ Set New Line To The FireStore
     ELSE
 
         #Just sent fail notification and wait for retry on the next time
-        LineCaller.Sent Alert To Line By ID  message=Failed To Upload new Line To Firestore. Re-try next round.
+        LineCaller.Sent Alert To Line By ID  message=Failed To Upload new Line To Firestore. Re-try next round. Bill list: ${bill_list}
         
 
     END
