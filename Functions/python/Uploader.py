@@ -200,4 +200,4 @@ class Uploader ():
         # else:
             
         #     return False
-        return doc_list
+        return is_sucess_list

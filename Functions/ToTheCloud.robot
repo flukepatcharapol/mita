@@ -84,7 +84,7 @@ Set New Line To The FireStore
     # ${is_success}=  Run Keyword And Return Status  Should Be Empty  ${fail_list}
 
     ${is_success}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
-    log to console  ${\n}doc_list: ${is_success}
+    log to console  ${\n}is_success_list: ${is_success}
 
     IF  ${is_success}
 
