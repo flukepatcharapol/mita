@@ -49,5 +49,5 @@ Sent Alert To Line By ID
     END
 
     ${build_link}=  Replace String  ${GCP_BUILD_LINK}  {BUILD_ID}  ${BUILD_ID}
-    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE} \[${build_link}\]
+    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE}   #\[${build_link}\]
     Send Text To Line User  ${body_message}  ${receiver}
