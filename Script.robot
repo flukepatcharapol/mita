@@ -32,7 +32,6 @@ Script Setup
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
-    fail
     Open Wongnai POS WEB on Headless and Maximize Window
     Maximize Browser Window
     Login to Firebear Sothorn POS
