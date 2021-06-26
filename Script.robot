@@ -14,7 +14,7 @@ ${ATTEMPT}             10x
 ${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
-${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/{BUILD_ID}
+${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/{BUILD_ID}?project\=line-bot-firebear-sothorn-aqve
 
 ############################################################################################################################################
 ***Keywords***
