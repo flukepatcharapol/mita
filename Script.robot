@@ -14,7 +14,7 @@ ${ATTEMPT}             10x
 ${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
-${GCP_BUILD_LINK}      "https://console.cloud.google.com/cloud-build/builds/{BUILD_ID}?project\=line-bot-firebear-sothorn-aqve"
+${GCP_BUILD_LINK}      "https://console.cloud.google.com/cloud-build/builds/{BUILD_ID}"
 
 ############################################################################################################################################
 ***Keywords***
@@ -180,5 +180,13 @@ Reset Every 00:00
 
 
 Test connection with google cloud build
-    [Tags]  test-connect
-    no Operation
+    [Tags]  test-img
+    Import Library  ${CURDIR}/Image.py
+    ${img_b64}  Image.getImageConvertTo64  ${CURDIR}/test/test.png
+    Import Library  DebugLibrary
+    Debug
+    Create session  Upload Image  https://api.imgbb.com/  verify=true
+    ${body}=  Create Dictionary  image=${img_b64}
+    ${params}=  Create Dictionary  expiration=600  key=e3d1cebcde04c6b4d2ae049f5e63ab3b  
+    ${response}  Post Request  Upload Image  /1/upload?expiration\=600&key=e3d1cebcde04c6b4d2ae049f5e63ab3b  files=/test/test.png
+    
