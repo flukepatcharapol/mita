@@ -22,7 +22,7 @@ ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BU
 # Setup and Teardown Function
 ############################################################################################################################################
 Script Setup
-    
+    Fail
     ${cur_release}  Set Variable  add Build ID
     Log to console  ${\n}Build_id: ${BUILD_ID}
     log to console  ${\n}Test link: ${GCP_BUILD_LINK}
