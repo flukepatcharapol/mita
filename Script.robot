@@ -22,7 +22,9 @@ ${GOLBAL_SLEEP}        0.5 sec
 ############################################################################################################################################
 Script Setup
     
-    log to console  ${\n}Last Check point: Check as bill list
+    ${cur_release}  Set Variable  Samker fix amount
+    Set Test variable  ${RELEASE}  Current release: ${cur_release}
+    log to console  ${\n}${RELEASE}
     Set Date For FireStore
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
