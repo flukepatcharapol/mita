@@ -48,7 +48,6 @@ Sent Alert To Line By ID
 
     END
 
-
-
-    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE} \[BUILD ID: ${BUILD_ID}\]
+    ${build_link}=  Replace String  ${CLOUDBUILD}[link]  {BUILD_ID}  ${BUILD_ID}
+    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE} \[${build_link}\]
     Send Text To Line User  ${body_message}  ${receiver}

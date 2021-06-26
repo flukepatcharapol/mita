@@ -6,3 +6,7 @@ LINE:
   URL: "https://api.line.me/v2/bot"
   path:
     push_message:  "message/push"
+
+#GCP
+CLOUDBUILD:
+  LINK:  "https://console.cloud.google.com/cloud-build/builds/{BUILD_ID}?project\=line-bot-firebear-sothorn-aqve"
