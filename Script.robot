@@ -25,6 +25,8 @@ Script Setup
     
     ${cur_release}  Set Variable  add Build ID
     Log to console  ${\n}Build_id: ${BUILD_ID}
+    ${build_link}=  Replace String  ${GCP_BUILD_LINK}  {BUILD_ID}  ${BUILD_ID}
+    log to console  ${\n}Test link: ${build_link}
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
     log to console  ${\n}${RELEASE}
     Set Date For FireStore
