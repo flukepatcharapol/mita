@@ -23,7 +23,7 @@ ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BU
 ############################################################################################################################################
 Script Setup
 
-    ${cur_release}  Set Variable  add Build ID
+    ${cur_release}  Set Variable  Build Link for fail only
     Log to console  ${\n}Build_id: ${BUILD_ID}
     log to console  ${\n}Test link: ${GCP_BUILD_LINK}
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
