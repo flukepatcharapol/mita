@@ -25,7 +25,6 @@ Get My Bot Header
 Sent Alert To Line By ID
     [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
     ${is_exist}  Run Keyword And return Status  Variable Should Exist  ${DATA_DATE}
-    ${is_cloud}  Run Keyword And return Status  Variable Should Exist  ${BUILD_ID}
 
     IF  ${is_exist}
 
@@ -38,16 +37,5 @@ Sent Alert To Line By ID
 
     END
 
-    IF  ${is_cloud}
-
-        no operation
-
-    ELSE
-
-        Set Test variable  ${BUILD_ID}  From Local
-
-    END
-
-    ${build_link}=  Replace String  ${GCP_BUILD_LINK}  {BUILD_ID}  ${BUILD_ID}
-    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE} Link: ${build_link}
+    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE} Link: ${GCP_BUILD_LINK}
     Send Text To Line User  ${body_message}  ${receiver}

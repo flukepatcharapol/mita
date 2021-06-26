@@ -14,7 +14,7 @@ ${ATTEMPT}             10x
 ${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
-${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/{BUILD_ID}?project\=line-bot-firebear-sothorn-aqve
+${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
 
 ############################################################################################################################################
 ***Keywords***
@@ -25,8 +25,7 @@ Script Setup
     
     ${cur_release}  Set Variable  add Build ID
     Log to console  ${\n}Build_id: ${BUILD_ID}
-    ${build_link}=  Replace String  ${GCP_BUILD_LINK}  {BUILD_ID}  ${BUILD_ID}
-    log to console  ${\n}Test link: ${build_link}
+    log to console  ${\n}Test link: ${GCP_BUILD_LINK}
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
     log to console  ${\n}${RELEASE}
     Set Date For FireStore
