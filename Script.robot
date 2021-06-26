@@ -23,6 +23,7 @@ ${GOLBAL_SLEEP}        0.5 sec
 Script Setup
     
     ${cur_release}  Set Variable  add Build ID
+    Log to console  ${\n}Build_id  ${BUILD_ID}
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
     log to console  ${\n}${RELEASE}
     Set Date For FireStore
