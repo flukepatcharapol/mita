@@ -361,7 +361,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      ${tid_char}  ${tid_nom}  ${tid_char_tid_nom}  ${look_tid}
 
     ${is_3}  Run Keyword And Return Status  Should Contain Any
-    ...  ${name}      
+    ...  ${name}      ${samker}
 
     ${is_2}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${kuhoo_lookme}  ${kuhoo_dad}  ${kuhoo_mom}  ${kun_dad_mom}   
