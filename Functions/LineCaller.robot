@@ -37,5 +37,5 @@ Sent Alert To Line By ID
 
     END
 
-    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE} Link: ${GCP_BUILD_LINK}
+    ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE}
     Send Text To Line User  ${body_message}  ${receiver}
