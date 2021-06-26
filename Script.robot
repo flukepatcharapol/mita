@@ -22,8 +22,8 @@ ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BU
 # Setup and Teardown Function
 ############################################################################################################################################
 Script Setup
-    
-    ${cur_release}  Set Variable  add Build ID
+
+    ${cur_release}  Set Variable  Build Link for fail only
     Log to console  ${\n}Build_id: ${BUILD_ID}
     log to console  ${\n}Test link: ${GCP_BUILD_LINK}
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
@@ -43,6 +43,7 @@ End Script
 
 Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
+    ${TEST MESSAGE}  Set Variable  ${TEST MESSAGE} Link: ${GCP_BUILD_LINK}
 
     LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
 
