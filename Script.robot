@@ -29,7 +29,6 @@ Script Setup
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
     log to console  ${\n}${RELEASE}
     Set Date For FireStore
-    Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
@@ -125,7 +124,8 @@ Set Date For FireStore
 Get Report From POS Wongnai, and Send Data to Firestore Cloud
     [Tags]    Get-New-Line
     [Setup]  Script Setup
-
+    
+    Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     GetFromWongnai.Click To Expected Time Order
