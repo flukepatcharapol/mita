@@ -223,7 +223,7 @@ End Day Check
         ${bill_list}=  ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}  is_add=False
         ${result}=  ToTheCloud.Bill list should exist for today  ${bill_list}
         IF  ${result}
-            LineCaller.Sent Alert To Line By ID  message=[End-day] All updated
+            LineCaller.Sent Alert To Line By ID  message=[End-day] Every bill is updated
         END
 
     ELSE

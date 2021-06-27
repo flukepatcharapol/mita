@@ -117,6 +117,6 @@ Delete Document Where older Than '${date}'
 Bill list should exist for today
     [Arguments]  ${bill_list}
     ${date}  Replace String  ${DATA_DATE}  /  -
-    ${result}  Uploader.billShouldExist  ${bill_list}  ${date}
-    Should Be True  ${result}  msg=Not every bill for today is added: ${bill_list}
+    ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
+    Should Be True  ${result}  msg=[End-day] Not every bill for today is added ${fail_list} not exist
     [Return]  ${result}
