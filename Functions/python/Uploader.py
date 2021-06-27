@@ -187,15 +187,19 @@ class Uploader ():
         
         # Check if the list of bill exist in the doc date
         is_sucess_list = []
+        fail_list = []
         for bill in bill_list:
             if bill in doc_list:
                 is_sucess_list.append('success')
             else:
                 is_sucess_list.append('failed')
+                fail_list.append(bill)
         
         #If any bill not exist return false
         if 'failed' in is_sucess_list:
-            return False
+            
+            return False, fail_list
+        
         else:
             
             return True

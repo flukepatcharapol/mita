@@ -23,13 +23,12 @@ ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BU
 ############################################################################################################################################
 Script Setup
 
-    ${cur_release}  Set Variable  Build Link for fail only
+    ${cur_release}  Set Variable  Testing End-day
     Log to console  ${\n}Build_id: ${BUILD_ID}
     log to console  ${\n}Test link: ${GCP_BUILD_LINK}
     Set Test variable  ${RELEASE}  Current release: ${cur_release}
     log to console  ${\n}${RELEASE}
     Set Date For FireStore
-    Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
@@ -81,14 +80,24 @@ Clean Download Directory
     Empty Directory  ${DOWNLOAD_DIR}
 
 Count Row and Compare With Previous Run
+    [Arguments]  ${is_prev_from_fs}=True
     GetFromWongnai.Count Row
-    Check If Have New Record  ${CURRENT_ROW}
+    Check If Have New Record  ${CURRENT_ROW}  ${is_prev_from_fs}
     
     Log To Console  ${\n}Rows are Counted And Compared!
     
 Check If Have New Record
-    [Arguments]  ${current_row}
-    ${prev}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
+    [Arguments]  ${current_row}  ${is_prev_from_fs}
+    IF  ${is_prev_from_fs}
+
+        ${prev}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
+
+    ELSE
+
+        ${prev}=  Set Variable  0
+
+    END
+
     IF  '${prev}'=='False'
         log to console  ${\n}Prev is NOT Exist
         Set Test Variable    ${IS_NEW}       True
@@ -115,7 +124,8 @@ Set Date For FireStore
 Get Report From POS Wongnai, and Send Data to Firestore Cloud
     [Tags]    Get-New-Line
     [Setup]  Script Setup
-
+    
+    Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     GetFromWongnai.Click To Expected Time Order
@@ -192,3 +202,33 @@ Test connection with google cloud build
     ${params}=  Create Dictionary  expiration=600  key=e3d1cebcde04c6b4d2ae049f5e63ab3b  
     ${response}  Post Request  Upload Image  /1/upload?expiration\=600&key=e3d1cebcde04c6b4d2ae049f5e63ab3b  files=/test/test.png
     
+
+End Day Check
+    [Tags]  End-Day
+    [Setup]  Script Setup
+
+    GetFromWongnai.Go To Daily Billing Page
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    GetFromWongnai.Click To Expected Time Order
+    GetFromWongnai.Click Show All Row
+    Sleep  ${GOLBAL_SLEEP}
+    Count Row and Compare With Previous Run  is_prev_from_fs=False
+    SeleniumLibrary.Set Selenium Speed    0
+
+    IF  ${IS_NEW}
+
+        log to console  ${\n}There are new line
+        Sleep  ${GOLBAL_SLEEP}
+        ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+        ${bill_list}=  ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}  is_add=False
+        ${result}=  ToTheCloud.Bill list should exist for today  ${bill_list}
+        IF  ${result}
+            LineCaller.Sent Alert To Line By ID  message=[End-day] Every bill is updated
+        END
+
+    ELSE
+        log to console  ${\n}No new line
+        LineCaller.Sent Alert To Line By ID  message=No New Line To Add
+    END
+
+    [Teardown]  End Script
