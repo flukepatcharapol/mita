@@ -3,9 +3,10 @@ Library      ${CURDIR}/python/Uploader.py
 
 ***Keywords***
 Transform To Firestore Format And Sent To FireStore
-    [Arguments]    ${newline_detail}
+    [Arguments]    ${newline_detail}  ${is_add}=True
     ${key}=    Get Dictionary Keys  ${newline_detail}
     ${dict_length}=    Get Length    ${key}
+    ${bill_list}=  Create List
     ${result}=    Create List
     FOR  ${INDEX}    IN    @{key}
         ${body}=    Get From Dictionary   ${newline_detail}   ${INDEX}  #INDEX is key
@@ -28,11 +29,13 @@ Transform To Firestore Format And Sent To FireStore
 
             #Append Info to Document
             Append To List    ${result}    ${result_body}
+            Append To List    ${bill_list}  ${bill}
             log to console  ${\n}${result_body}
 
         END
     END
-    Set New Line To The FireStore  ${result}
+    Run Keyword If  ${is_add}  Set New Line To The FireStore  ${result}
+    [Return]  ${bill_list}
 
 Set New Line To The FireStore
     [Arguments]    ${list}
@@ -110,3 +113,9 @@ Delete Document Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
     ${result}  Uploader.deleteAllOlderDoc  ${date}
     [Return]  ${result}
+
+Bill list should exist for today
+    [Arguments]  ${bill_list}
+    ${result}  Uploader.billShouldExist  ${bill_list}  ${DATA_DATE}
+    log to console  ${\n}result: ${result}
+    Should Be True  ${result}  msg=The Bill is not exist: ${bill_list}
