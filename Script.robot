@@ -221,7 +221,10 @@ End Day Check
         Sleep  ${GOLBAL_SLEEP}
         ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
         ${bill_list}=  ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}  is_add=False
-        ToTheCloud.Bill list should exist for today  ${bill_list}
+        ${result}=  ToTheCloud.Bill list should exist for today  ${bill_list}
+        IF  ${result}
+            LineCaller.Sent Alert To Line By ID  message=[End-day] All updated
+        END
 
     ELSE
         log to console  ${\n}No new line

@@ -118,5 +118,5 @@ Bill list should exist for today
     [Arguments]  ${bill_list}
     ${date}  Replace String  ${DATA_DATE}  /  -
     ${result}  Uploader.billShouldExist  ${bill_list}  ${date}
-    log to console  ${\n}result: ${result}
-    Should Be True  ${result}  msg=The Bill is not exist: ${bill_list}
+    Should Be True  ${result}  msg=Not every bill for today is added: ${bill_list}
+    [Return]  ${result}
