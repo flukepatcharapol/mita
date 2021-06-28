@@ -43,7 +43,6 @@ Set New Line To The FireStore
     #Check if there are only counter order
     ${list_length}  Get Length  ${list}
     ${is_new_delivery}  Run Keyword and Return Status  Should Be True  ${list_length}<=0
-    log to console  ${\n}is_new_delivery: ${is_new_delivery}
     IF  ${is_new_delivery}
         Pass Execution  There are only new counter orders.
     END
