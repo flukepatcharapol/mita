@@ -39,7 +39,7 @@ Transform To Firestore Format And Sent To FireStore
 
 Set New Line To The FireStore
     [Arguments]    ${list}
-    ${list_length}  Get Length
+    ${list_length}  Get Length  ${list}
     Should Be True  ${list_lengthlist}>0  msg=There are no new Delivery line
     ${I}    Set Variable    0
     ${fail_list}    Create List
