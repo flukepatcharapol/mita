@@ -39,8 +39,14 @@ Transform To Firestore Format And Sent To FireStore
 
 Set New Line To The FireStore
     [Arguments]    ${list}
+
+    #Check if there are only counter order
     ${list_length}  Get Length  ${list}
-    Should Be True  ${list_lengthlist}>0  msg=There are no new Delivery line
+    ${is_new_delivery}  Run Keyword and Return Status  Should Be True  ${list_length}>0
+    IF  ${is_new_delivery}
+        Pass Execution  There are only new counter orders.
+    END
+    
     ${I}    Set Variable    0
     ${fail_list}    Create List
     ${success_list}  Create List
