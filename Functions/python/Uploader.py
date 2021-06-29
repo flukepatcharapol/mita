@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*- 
 import os 
 import datetime
 import collections
@@ -211,8 +209,7 @@ class Uploader ():
         
         #Get key list and get data date
         key_list = bill_dict.keys()
-        first_dict = bill_dict.get(key_list[0])
-        orderDate = first_dict.get('Order_date')
+        orderDate = bill_dict.get(key_list[0]).get('Order_date')
         str_orderDate=self.setExpectedTimeFormat(orderDate)
         
         doc_date=db.collection('Order').document(str_orderDate).get()
@@ -248,7 +245,7 @@ class Uploader ():
                     delivery=bill.Type
                     bill_id=bill.Bill_id
                     date=bill.Order_date
-                    product_list=bill.Product_list
+                    # product_list=bill.Product_list
                     amount=bill.Amount
                     point=bill.Point
                     price=bill.Price
@@ -264,7 +261,7 @@ class Uploader ():
                             'Delivery':delivery,
                             'BillID':bill,
                             'OrderDate':date_time_obj,
-                            'ProductList':product_list,
+                            # 'ProductList':product_list,
                             'AmountOfCups': amount_int,
                             'Point':point_int,
                             'SubTotalBillPrice':price_float
@@ -276,7 +273,7 @@ class Uploader ():
                             'Delivery':delivery,
                             'BillID':bill,
                             'OrderDate':date_time_obj,
-                            'ProductList':product_list,
+                            # 'ProductList':product_list,
                             'AmountOfCups': amount_int,
                             'Point':point_int,
                             'SubTotalBillPrice':price_float
@@ -297,7 +294,7 @@ class Uploader ():
                 delivery=bill.Type
                 bill_id=bill.Bill_id
                 date=bill.Order_date
-                product_list=bill.Product_list
+                # product_list=bill.Product_list
                 amount=bill.Amount
                 point=bill.Point
                 price=bill.Price
@@ -312,10 +309,13 @@ class Uploader ():
                     'Delivery':delivery,
                     'BillID':bill,
                     'OrderDate':date_time_obj,
-                    'ProductList':product_list,
+                    # 'ProductList':product_list,
                     'AmountOfCups': amount_int,
                     'Point':point_int,
                     'SubTotalBillPrice':price_float
                 })
             return True, key_list
-        
+# bill_list = {'6IJE0': {'Point': 2, 'Is_valid': 'True', 'Order_date': '28-06-2021', 'Bill_id': '6IJE0', 'Dup': 'True', 'Type': 'Foodpanda', 'Price': 100, 'Amount': 2, 'Product_list': ['[FOODPANDA]', '[FOODPANDA]']}}
+
+# test=bill_list.get('6IJE0').get('Product_list')
+# print(test)
