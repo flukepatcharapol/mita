@@ -128,3 +128,28 @@ Bill list should exist for today
     ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
     Should Be True  ${result}  msg=Not every bill for today is added ${fail_list} is not exist
     [Return]  ${result}
+
+Update Bill to Firestore
+    [Arguments]  ${bill_dict}
+    ${valid_list_dict}  Create Dictionary
+    ${bill_dict_key}  Get Dictionary keys  ${bill_dict}
+    Import Library  DebugLibrary
+
+    FOR  ${INDEX}  IN  @{bill_dict_key}
+        ${bill_info}  Get From Dictionary  ${bill_dict}  ${INDEX}
+        ${is_valid}  Get From Dictionary  ${bill_info}  Is_valid
+        IF  ${is_valid}
+            ${key}  Get From Dictionary  ${bill_info}  Bill_id
+            Set to Dictionary  ${valid_list_dict}  ${key}  ${bill_info}
+        END
+    END
+    debug
+
+    ${is_update}  ${update_list}  Uploader.updateDeliveryBillToCloud  ${valid_list_dict}
+
+    IF  ${is_update}
+        ${list_length}  Get Length  ${update_list}
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Update ${list_length} bills, which are ${update_list}
+    ELSE
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] There is no new bill to update.
+    END

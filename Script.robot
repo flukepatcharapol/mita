@@ -15,6 +15,7 @@ ${WAIT}                1.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
 ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
+${GOLBAL_TIMEOUT}      5 sec
 
 ############################################################################################################################################
 ***Keywords***
@@ -22,13 +23,11 @@ ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BU
 # Setup and Teardown Function
 ############################################################################################################################################
 Script Setup
+    [Arguments]  ${is_date}=False
 
-    ${cur_release}  Set Variable  Testing End-day
     Log to console  ${\n}Build_id: ${BUILD_ID}
     log to console  ${\n}Test link: ${GCP_BUILD_LINK}
-    Set Test variable  ${RELEASE}  Current release: ${cur_release}
-    log to console  ${\n}${RELEASE}
-    Set Date For FireStore
+    Set Date For FireStore  ${is_date}
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
     Open Wongnai POS WEB on Headless and Maximize Window
@@ -113,8 +112,16 @@ Check If Have New Record
     END
 
 Set Date For FireStore
-    ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
-    Set Test Variable  ${FS_DATE}  ${cur_date}
+    [Documentation]  Date format  30-12-2021
+    [Arguments]  ${expect_date}
+
+    IF  '${expect_date}'=='False'
+        ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
+        Set Test Variable  ${FS_DATE}  ${cur_date}
+    ELSE
+        Set Test Variable  ${FS_DATE}  ${expect_date}
+    END
+
     Log to console  ${\n}Set FS_DATE: ${FS_DATE}
 
 
@@ -225,10 +232,25 @@ End Day Check
         IF  ${result}
             LineCaller.Sent Alert To Line By ID  message=[End-day] Every bill is updated
         END
+    [Teardown]  End Script
 
-    ELSE
-        log to console  ${\n}No new line
-        LineCaller.Sent Alert To Line By ID  message=No New Line To Add
-    END
+Get All Bills from POS wongnai and update to Firestore cloud
+    [Tags]  Update-Delivery
+    [Setup]  Script Setup
+
+    Set Test Variable    ${TEST NAME}    Update Bill to Firestore
+    GetFromWongnai.Go To Daily Billing Page
+    # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    # GetFromWongnai.Click To Expected Time Order
+    GetFromWongnai.Click Show All Row
+    Sleep  ${GOLBAL_SLEEP}
+    Set Test Variable  ${PREV_LENGTH}  0
+    SeleniumLibrary.Set Selenium Speed    0
+
+    log to console  ${\n}There are new line
+    Sleep  ${GOLBAL_SLEEP}
+    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+    ToTheCloud.Update Bill to Firestore  ${bill_dict}
+    ToTheCloud.Bill list should exist for today  ${bill_list}
 
     [Teardown]  End Script

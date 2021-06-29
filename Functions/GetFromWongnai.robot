@@ -181,6 +181,7 @@ Get Sale total
 Get New Order Detail
     [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
+    ${bill_list}  Create List
     ${row}=  Count Row
     ${new_line_amount}=    Evaluate    ${row}-${latest_number}
     ${prev_point}    Set Variable
@@ -215,6 +216,7 @@ Get New Order Detail
             ${price}    Get Element Locator From Row    ${row_number}    price
             log to console  ${\n}Index: ${row_number}, ${bill_id}
             ${bill_id}  Convert To Upper Case  ${bill_id}
+            Append to list  ${bill_list}  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}
 
@@ -298,7 +300,7 @@ Get New Order Detail
         END
     END
     Log to console  ${\n}DATA_DATE: ${DATA_DATE}
-    [Return]  ${newline_detail}
+    [Return]  ${newline_detail}  ${bill_list}
 
 '${comment}' Should Not Have Void
     Should Contain  ${comment}  Void
