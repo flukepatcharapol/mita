@@ -133,7 +133,6 @@ Update Bill to Firestore
     [Arguments]  ${bill_dict}
     ${valid_list_dict}  Create Dictionary
     ${bill_dict_key}  Get Dictionary keys  ${bill_dict}
-    Import Library  DebugLibrary
 
     FOR  ${INDEX}  IN  @{bill_dict_key}
         ${bill_info}  Get From Dictionary  ${bill_dict}  ${INDEX}
@@ -143,7 +142,6 @@ Update Bill to Firestore
             Set to Dictionary  ${valid_list_dict}  ${key}  ${bill_info}
         END
     END
-    debug
 
     ${is_update}  ${update_list}  Uploader.updateDeliveryBillToCloud  ${valid_list_dict}
 
