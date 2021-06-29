@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 import os 
 import datetime
 import collections
@@ -210,7 +212,7 @@ class Uploader ():
         #Get key list and get data date
         key_list = bill_dict.keys()
         first_dict = bill_dict.get(key_list[0])
-        orderDate = first_dict.Order_date
+        orderDate = first_dict.get('Order_date')
         str_orderDate=self.setExpectedTimeFormat(orderDate)
         
         doc_date=db.collection('Order').document(str_orderDate).get()
@@ -316,3 +318,4 @@ class Uploader ():
                     'SubTotalBillPrice':price_float
                 })
             return True, key_list
+        
