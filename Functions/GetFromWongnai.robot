@@ -78,13 +78,10 @@ ${lineman_detecter}    Line Man
 Check Should Be On Home Page
     [Arguments]  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
     Element Should Be Visible With Retry  ${HOM_scetion}
-    BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
+    # BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
+    Reload Page
 
 Check and Clear If Promo is Exist
-    # ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
-    # IF  ${is_exist}
-    #     Click Element When Ready  ${HOM_promo_model}
-    # END
     Reload Page
 
 Click Report At Nav Bar
@@ -216,7 +213,6 @@ Get New Order Detail
             ${price}    Get Element Locator From Row    ${row_number}    price
             log to console  ${\n}Index: ${row_number}, ${bill_id}
             ${bill_id}  Convert To Upper Case  ${bill_id}
-            Append to list  ${bill_list}  ${bill_id}
             
             Set Test Variable  ${DATA_DATE}  ${date}
 
@@ -291,8 +287,12 @@ Get New Order Detail
             
             END
 
-            #Set Detail to NEW LINE DETAIL DICT
-            Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
+            #Set Detail to NEW LINE DETAIL DICT only valid bill
+            ${is_valid}  Get From Dictionary  ${detail}  Is_valid
+            IF  ${is_valid}
+                Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
+                Append to list  ${bill_list}  ${bill_id}
+            END
             ${prev_bill}=    Set Variable    ${bill_id}
             ${prev_point}=   Set Variable    ${point}
             ${prev_amount}=  Set Variable    ${amount}

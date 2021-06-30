@@ -15,4 +15,6 @@ Click Element When Ready
 
 Input Text When Ready
     [Arguments]  ${element}  ${text}  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
-    BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Input Text  ${element}  ${text}  clear=true
+    # BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Input Text  ${element}  ${text}  clear=true
+    Wait Until Element Is Visible  ${element}  ${GOLBAL_TIMEOUT}  error=The ${element} is not visible in ${GOLBAL_TIMEOUT}
+    Input Text  ${element}  ${text}  clear=True

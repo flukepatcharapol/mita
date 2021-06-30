@@ -10,12 +10,12 @@ Variables      ${CURDIR}/Config.yaml
 
 ***Variables***
 #Config Variable
-${ATTEMPT}             10x
-${WAIT}                1.5 sec
+${ATTEMPT}             20 x
+${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
 ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
-${GOLBAL_TIMEOUT}      5 sec
+${GOLBAL_TIMEOUT}      1 min
 
 ############################################################################################################################################
 ***Keywords***
@@ -124,7 +124,16 @@ Set Date For FireStore
 
     Log to console  ${\n}Set FS_DATE: ${FS_DATE}
 
+Get Only Not Exist Bill Dict
+    [Arguments]  ${non_exist_list}  ${bill_dict}
+    ${update_dict}  Create Dictionary
 
+    FOR  ${KEY}  IN  @{non_exist_list}
+        ${value}  Get From Dictionary  ${bill_dict}  ${KEY}
+        Set To Dictionary  ${update_dict}  ${KEY}  ${value}
+    END
+
+    [Return]  ${update_dict}
 ############################################################################################################################################
 ***Test Cases***
 ############################################################################################################################################
@@ -228,9 +237,11 @@ End Day Check
         Sleep  ${GOLBAL_SLEEP}
         ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
         ${bill_list}=  ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}  is_add=False
-        ${result}=  ToTheCloud.Bill list should exist for today  ${bill_list}
+        ${result}  ${fail_list}=  ToTheCloud.Bill list should exist for today  ${bill_list}
         IF  ${result}
             LineCaller.Sent Alert To Line By ID  message=[End-day] Every bill is updated
+        ELSE
+            LineCaller.Sent Alert To Line By ID  message=[End-day] Not every bill for today is added ${fail_list} is not exist
         END
     [Teardown]  End Script
 
@@ -240,8 +251,8 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     Set Test Variable    ${TEST NAME}    Update Bill to Firestore
     GetFromWongnai.Go To Daily Billing Page
-    # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
-    # GetFromWongnai.Click To Expected Time Order
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    GetFromWongnai.Click To Expected Time Order
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
@@ -250,7 +261,18 @@ Get All Bills from POS wongnai and update to Firestore cloud
     log to console  ${\n}There are new line
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-    ToTheCloud.Update Bill to Firestore  ${bill_dict}
-    ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    log to console  ${\n}bill_dict: ${is_up_to_date}
+
+    IF  ${is_up_to_date}
+
+        LineCaller.Sent Alert To Line By ID  message=[Update-Delivery] Every bill is updated
+
+    ELSE
+
+        ${update_dict}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
+        ToTheCloud.Update Bill to Firestore  ${update_dict}
+
+    END
 
     [Teardown]  End Script
