@@ -206,7 +206,7 @@ class Uploader ():
             return True
         
     def updateDeliveryBillToCloud (self,bill_dict):
-        
+        return  bill_dict
         #Get key list and get data date
         key_list = bill_dict.keys()
         orderDate = bill_dict.get(key_list[0]).get('Order_date')
