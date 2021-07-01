@@ -401,6 +401,9 @@ Validate Data date should be today
     GetFromWongnai.Set Date To Today
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     ${date}     Get Element Locator From Row    1    order_date
+    ${header_date}  Get Value  ${HOM_date}
+    ${header_date}  Split string  ${header_date}
+    Should Be Equal as Strings  ${header_date}[0]  ${expect_date}  msg=Header date is not ${expect_date}
     ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
 
     IF  ${is_data_empty}
