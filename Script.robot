@@ -25,8 +25,6 @@ ${GOLBAL_TIMEOUT}      1 min
 Script Setup
     [Arguments]  ${is_date}=False
 
-    Log to console  ${\n}Build_id: ${BUILD_ID}
-    log to console  ${\n}Test link: ${GCP_BUILD_LINK}
     Set Date For FireStore  ${is_date}
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
@@ -262,15 +260,15 @@ Get All Bills from POS wongnai and update to Firestore cloud
     log to console  ${\n}There are new line
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-    ${is_up_to_date}  ${non_exist_list}  ${existing_list}  ${doc_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${is_up_to_date}  ${non_exist_list}ToTheCloud.Bill list should exist for today  ${bill_list}
     log to console  ${\n}non_exist_list:${\n}${non_exist_list}
-    log to console  ${\n}existing_list:${\n}${existing_list}
-    log to console  ${\n}doc_list:${\n}${doc_list}
+    # log to console  ${\n}existing_list:${\n}${existing_list}
+    # log to console  ${\n}doc_list:${\n}${doc_list}
     log to console  ${\n}is_up_to_date:${\n}${is_up_to_date}
 
     IF  ${is_up_to_date}
 
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
         log to console  ${\n}in else
