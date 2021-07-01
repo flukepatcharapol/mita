@@ -170,23 +170,6 @@ Reset Every 00:00
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
     ${expire_due_date}=  Set Variable  7
     ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
-    Log to console  ${\n}[Mita] Delete every prev before ${cur_date}
-
-    #Delete the doc which older than ${cur_date}
-    ${result}  ToTheCloud.Delete Prev Number Where older Than '${cur_date}'
-    ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
-
-    #Sent noti to line is success or not
-    IF  ${is_empty}
-
-        LineCaller.Sent Alert To Line By ID  message=[Mita] Success Empty The Prev Line for ${FS_DATE}
-
-    ELSE
-
-        LineCaller.Sent Alert To Line By ID  message=[Mita] FAILED to Empty The Prev Line for ${FS_DATE} Failed list: ${result}
-        log to console  ${\n}Failed list: ${result}
-
-    END
 
     ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
     ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
@@ -210,8 +193,6 @@ Test connection with google cloud build
     [Tags]  test-img
     Import Library  ${CURDIR}/Image.py
     ${img_b64}  Image.getImageConvertTo64  ${CURDIR}/test/test.png
-    Import Library  DebugLibrary
-    Debug
     Create session  Upload Image  https://api.imgbb.com/  verify=true
     ${body}=  Create Dictionary  image=${img_b64}
     ${params}=  Create Dictionary  expiration=600  key=e3d1cebcde04c6b4d2ae049f5e63ab3b  
