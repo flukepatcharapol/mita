@@ -251,8 +251,8 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     Set Test Variable    ${TEST NAME}    Update Bill to Firestore
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
-    GetFromWongnai.Click To Expected Time Order
+    # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    # GetFromWongnai.Click To Expected Time Order
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
@@ -263,7 +263,6 @@ Get All Bills from POS wongnai and update to Firestore cloud
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
     log to console  ${\n}non_exist_list:${\n}${non_exist_list}
-    log to console  ${\n}bill_dict:${bill_dict}
 
     IF  ${is_up_to_date}
 
