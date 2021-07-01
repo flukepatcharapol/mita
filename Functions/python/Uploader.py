@@ -202,9 +202,11 @@ class Uploader ():
                 not_existing_list.append(bill)
         
         #If any bill not exist return false
+        return_dict = {'not_existing_list': not_existing_list, 'existing_list': existing_list, 'doc_list': doc_list}
+        
         if 'failed' in is_sucess_list:
             
-            return False, not_existing_list
+            return False, return_dict
         
         else:
             
