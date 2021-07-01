@@ -300,6 +300,7 @@ Get New Order Detail
         END
     END
     Log to console  ${\n}DATA_DATE: ${DATA_DATE}
+    Remove Duplicates  ${bill_list}
     [Return]  ${newline_detail}  ${bill_list}
 
 '${comment}' Should Not Have Void
