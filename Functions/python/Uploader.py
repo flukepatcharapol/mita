@@ -188,25 +188,29 @@ class Uploader ():
         
         # Check if the list of bill exist in the doc date
         is_sucess_list = []
-        fail_list = []
+        not_existing_list = []
+        existing_list = []
         for bill in bill_list:
             if bill in doc_list:
+                
                 is_sucess_list.append('success')
+                existing_list.append(bill)
+
             else:
+                
                 is_sucess_list.append('failed')
-                fail_list.append(bill)
+                not_existing_list.append(bill)
         
         #If any bill not exist return false
         if 'failed' in is_sucess_list:
             
-            return False, fail_list
+            return False, not_existing_list
         
         else:
             
-            return True
+            return True, existing_list
         
     def updateDeliveryBillToCloud (self,bill_dict):
-        return  bill_dict
         #Get key list and get data date
         key_list = bill_dict.keys()
         orderDate = bill_dict.get(key_list[0]).get('Order_date')

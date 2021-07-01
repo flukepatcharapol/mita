@@ -126,14 +126,15 @@ Set Date For FireStore
 
 Get Only Not Exist Bill Dict
     [Arguments]  ${non_exist_list}  ${bill_dict}
-    ${update_dict}  Create Dictionary
+    ${update_list}  Create List
 
     FOR  ${KEY}  IN  @{non_exist_list}
         ${value}  Get From Dictionary  ${bill_dict}  ${KEY}
-        Set To Dictionary  ${update_dict}  ${KEY}  ${value}
+        Append To List  ${update_list}  ${value}
     END
-    log to console  ${\n}in keyword: ${update_dict}
-    [Return]  ${update_dict}
+    log to console  ${\n}in keyword: ${update_list}
+    [Return]  ${update_list}
+
 ############################################################################################################################################
 ***Test Cases***
 ############################################################################################################################################
@@ -249,7 +250,7 @@ Get All Bills from POS wongnai and update to Firestore cloud
     [Tags]  Update-Delivery
     [Setup]  Script Setup
 
-    Set Test Variable    ${TEST NAME}    Update Bill to Firestore
+    Set Test Variable    ${TEST NAME}    Update Bill To Firestore
     GetFromWongnai.Go To Daily Billing Page
     # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     # GetFromWongnai.Click To Expected Time Order
@@ -267,14 +268,13 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     IF  ${is_up_to_date}
 
-        LineCaller.Sent Alert To Line By ID  message=[Update-Delivery] Every bill is updated
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated
 
     ELSE
-    # ${non_exist_list}  Create list  7NRZ1
         log to console  ${\n}in else
-        ${update_dict}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
-        log to console  ${\n}result:  ${update_dict}
-        ToTheCloud.Update Bill to Firestore  ${update_dict}
+        ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
+        log to console  ${\n}result: ${update_list}
+        ToTheCloud.Update Bill Document to FireStore  ${update_list}
 
     END
 

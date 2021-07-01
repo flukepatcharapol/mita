@@ -46,22 +46,24 @@ Set New Line To The FireStore
     IF  ${is_new_delivery}
         Pass Execution  There are only new counter orders.
     END
-    
-    ${I}    Set Variable    0
+    Update Bill Document to FireStore  ${list}
+
+Update Bill Document to FireStore
+    [Arguments]  ${list}
     ${fail_list}    Create List
     ${success_list}  Create List
     ${bill_list}  Create List
     ${new_data_length}  Get Length  ${list}
-    ${bill_date}  Get From Dictionary  ${list}[0]  OrderDate
+    ${bill_date}  Get From Dictionary  ${list}[0]  Order_date
 
     FOR  ${INDEX}  IN  @{list}
 
         #Get information from ordered dict
-        ${delivery}    Get From Dictionary  ${INDEX}  Delivery
-        ${date}        Get From Dictionary  ${INDEX}  OrderDate
-        ${bill}        Get From Dictionary  ${INDEX}  BillId
-        ${prod_list}   Get From Dictionary  ${INDEX}  ProductList
-        ${is_valid}    Get From Dictionary  ${INDEX}  isValid
+        ${delivery}    Get From Dictionary  ${INDEX}  Type
+        ${date}        Get From Dictionary  ${INDEX}  Order_date
+        ${bill}        Get From Dictionary  ${INDEX}  Bill_id
+        ${prod_list}   Get From Dictionary  ${INDEX}  Product_list
+        ${is_valid}    Get From Dictionary  ${INDEX}  Is_valid
         ${price}       Get From Dictionary  ${INDEX}  Price
         ${amount}      Get From Dictionary  ${INDEX}  Amount
 
@@ -80,22 +82,17 @@ Set New Line To The FireStore
     
     END
 
-    ${is_success}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
+    #The result_list retrun the list of fail or sucess depends on is_success.
+    ${is_success}  ${result_list}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
 
     IF  ${is_success}
 
         #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Bill list: ${bill_list}
-        
-        ${cur_row}  Convert To String  ${CURRENT_ROW}
-        ${date}=  Replace String  ${DATA_DATE}  /  -
-        Update New Prev Number  ${date}  ${cur_row}
-        log to console  ${\n}Update prev number for ${date} to ${cur_row}
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] New ${new_data_length} records. Success list: ${result_list}
 
     ELSE
-
         #Just sent fail notification and wait for retry on the next time
-        Set Test Variable  ${TEST MESSAGE}  Failed To Upload new Line To Firestore. Re-try next round. Bill list: ${bill_list}
+        Set Test Variable  ${TEST MESSAGE}  Fail to up date  ${fail_length} records. Fail list: ${result_list}
         Fail
         
 
