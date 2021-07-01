@@ -132,7 +132,7 @@ Get Only Not Exist Bill Dict
         ${value}  Get From Dictionary  ${bill_dict}  ${KEY}
         Append To List  ${update_list}  ${value}
     END
-    log to console  ${\n}in keyword: ${update_list}
+
     [Return]  ${update_list}
 
 ############################################################################################################################################
@@ -262,8 +262,10 @@ Get All Bills from POS wongnai and update to Firestore cloud
     log to console  ${\n}There are new line
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${is_up_to_date}  ${non_exist_list}  ${existing_list}  ${doc_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
     log to console  ${\n}non_exist_list:${\n}${non_exist_list}
+    log to console  ${\n}existing_list:${\n}${existing_list}
+    log to console  ${\n}doc_list:${\n}${doc_list}
     log to console  ${\n}is_up_to_date:${\n}${is_up_to_date}
 
     IF  ${is_up_to_date}

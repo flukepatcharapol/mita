@@ -204,7 +204,7 @@ class Uploader ():
         #If any bill not exist return false
         if 'failed' in is_sucess_list:
             
-            return False, not_existing_list
+            return False, not_existing_list, existing_list, doc_list
         
         else:
             

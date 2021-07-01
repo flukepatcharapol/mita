@@ -92,7 +92,8 @@ Update Bill Document to FireStore
 
     ELSE
         #Just sent fail notification and wait for retry on the next time
-        Set Test Variable  ${TEST MESSAGE}  Fail to up date  ${fail_length} records. Fail list: ${result_list}
+        ${fail_length}  Get Length  ${result_list}
+        Set Test Variable  ${TEST MESSAGE}  Fail to up date ${fail_length} records. Fail list: ${result_list}
         Fail
         
 
