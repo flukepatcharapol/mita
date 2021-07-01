@@ -39,21 +39,31 @@ Transform To Firestore Format And Sent To FireStore
 
 Set New Line To The FireStore
     [Arguments]    ${list}
-    ${I}    Set Variable    0
+
+    #Check if there are only counter order
+    ${list_length}  Get Length  ${list}
+    ${is_new_delivery}  Run Keyword and Return Status  Should Be True  ${list_length}<=0
+    IF  ${is_new_delivery}
+        Pass Execution  There are only new counter orders.
+    END
+    Update Bill Document to FireStore  ${list}
+
+Update Bill Document to FireStore
+    [Arguments]  ${list}
     ${fail_list}    Create List
     ${success_list}  Create List
     ${bill_list}  Create List
     ${new_data_length}  Get Length  ${list}
-    ${bill_date}  Get From Dictionary  ${list}[0]  OrderDate
+    ${bill_date}  Get From Dictionary  ${list}[0]  Order_date
 
     FOR  ${INDEX}  IN  @{list}
 
         #Get information from ordered dict
-        ${delivery}    Get From Dictionary  ${INDEX}  Delivery
-        ${date}        Get From Dictionary  ${INDEX}  OrderDate
-        ${bill}        Get From Dictionary  ${INDEX}  BillId
-        ${prod_list}   Get From Dictionary  ${INDEX}  ProductList
-        ${is_valid}    Get From Dictionary  ${INDEX}  isValid
+        ${delivery}    Get From Dictionary  ${INDEX}  Type
+        ${date}        Get From Dictionary  ${INDEX}  Order_date
+        ${bill}        Get From Dictionary  ${INDEX}  Bill_id
+        ${prod_list}   Get From Dictionary  ${INDEX}  Product_list
+        ${is_valid}    Get From Dictionary  ${INDEX}  Is_valid
         ${price}       Get From Dictionary  ${INDEX}  Price
         ${amount}      Get From Dictionary  ${INDEX}  Amount
 
@@ -72,22 +82,18 @@ Set New Line To The FireStore
     
     END
 
-    ${is_success}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
+    #The result_list retrun the list of fail or sucess depends on is_success.
+    ${is_success}  ${result_list}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
 
     IF  ${is_success}
 
         #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line By ID  message=SuccessFully Upload new Line To Firestore. New ${new_data_length} records. Bill list: ${bill_list}
-        
-        ${cur_row}  Convert To String  ${CURRENT_ROW}
-        ${date}=  Replace String  ${DATA_DATE}  /  -
-        Update New Prev Number  ${date}  ${cur_row}
-        log to console  ${\n}Update prev number for ${date} to ${cur_row}
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] New ${new_data_length} records. Success list: ${result_list}
 
     ELSE
-
         #Just sent fail notification and wait for retry on the next time
-        Set Test Variable  ${TEST MESSAGE}  Failed To Upload new Line To Firestore. Re-try next round. Bill list: ${bill_list}
+        ${fail_length}  Get Length  ${result_list}
+        Set Test Variable  ${TEST MESSAGE}  Fail to up date ${fail_length} records. Fail list: ${result_list}
         Fail
         
 
@@ -118,5 +124,15 @@ Bill list should exist for today
     [Arguments]  ${bill_list}
     ${date}  Replace String  ${DATA_DATE}  /  -
     ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
-    Should Be True  ${result}  msg=Not every bill for today is added ${fail_list} is not exist
-    [Return]  ${result}
+    [Return]  ${result}  ${fail_list}
+
+Update Bill to Firestore
+    [Arguments]  ${bill_dict}
+    ${is_update}  ${update_list}  Uploader.updateDeliveryBillToCloud  ${bill_dict}
+
+    IF  ${is_update}
+        ${list_length}  Get Length  ${update_list}
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Update ${list_length} bills, which are ${update_list}
+    ELSE
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] There is no new bill to update.
+    END

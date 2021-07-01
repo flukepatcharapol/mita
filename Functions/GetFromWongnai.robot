@@ -78,13 +78,10 @@ ${lineman_detecter}    Line Man
 Check Should Be On Home Page
     [Arguments]  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
     Element Should Be Visible With Retry  ${HOM_scetion}
-    BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
+    # BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
+    Reload Page
 
 Check and Clear If Promo is Exist
-    # ${is_exist}  Run Keyword And Return Status  Element Should Be Visible  ${HOM_promo_model}
-    # IF  ${is_exist}
-    #     Click Element When Ready  ${HOM_promo_model}
-    # END
     Reload Page
 
 Click Report At Nav Bar
@@ -181,6 +178,7 @@ Get Sale total
 Get New Order Detail
     [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
+    ${bill_list}  Create List
     ${row}=  Count Row
     ${new_line_amount}=    Evaluate    ${row}-${latest_number}
     ${prev_point}    Set Variable
@@ -289,8 +287,12 @@ Get New Order Detail
             
             END
 
-            #Set Detail to NEW LINE DETAIL DICT
-            Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
+            #Set Detail to NEW LINE DETAIL DICT only valid bill
+            ${is_valid}  Get From Dictionary  ${detail}  Is_valid
+            IF  ${is_valid}
+                Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
+                Append to list  ${bill_list}  ${bill_id}
+            END
             ${prev_bill}=    Set Variable    ${bill_id}
             ${prev_point}=   Set Variable    ${point}
             ${prev_amount}=  Set Variable    ${amount}
@@ -298,7 +300,8 @@ Get New Order Detail
         END
     END
     Log to console  ${\n}DATA_DATE: ${DATA_DATE}
-    [Return]  ${newline_detail}
+    ${bill_list}  Remove Duplicates  ${bill_list}
+    [Return]  ${newline_detail}  ${bill_list}
 
 '${comment}' Should Not Have Void
     Should Contain  ${comment}  Void
@@ -398,6 +401,9 @@ Validate Data date should be today
     GetFromWongnai.Set Date To Today
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     ${date}     Get Element Locator From Row    1    order_date
+    ${header_date}  Get Value  ${HOM_date}
+    ${header_date}  Split string  ${header_date}
+    Should Be Equal as Strings  ${header_date}[0]  ${expect_date}  msg=Header date is not ${expect_date}
     ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
 
     IF  ${is_data_empty}

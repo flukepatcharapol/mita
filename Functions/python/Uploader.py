@@ -1,5 +1,6 @@
 import os 
 import datetime
+import collections
 import firebase_admin
 import firestore
 from firebase_admin import credentials
@@ -187,19 +188,138 @@ class Uploader ():
         
         # Check if the list of bill exist in the doc date
         is_sucess_list = []
-        fail_list = []
+        not_existing_list = []
+        existing_list = []
         for bill in bill_list:
             if bill in doc_list:
+                
                 is_sucess_list.append('success')
+                existing_list.append(bill)
+
             else:
+                
                 is_sucess_list.append('failed')
-                fail_list.append(bill)
+                not_existing_list.append(bill)
         
         #If any bill not exist return false
         if 'failed' in is_sucess_list:
             
-            return False, fail_list
+            return False, not_existing_list
         
         else:
             
-            return True
+            return True, existing_list
+        
+    def updateDeliveryBillToCloud (self,bill_dict):
+        #Get key list and get data date
+        key_list = bill_dict.keys()
+        orderDate = bill_dict.get(key_list[0]).get('Order_date')
+        str_orderDate=self.setExpectedTimeFormat(orderDate)
+        
+        doc_date=db.collection('Order').document(str_orderDate).get()
+        #Check if the date document is already exist
+        if doc_date.exists:
+            date_db=db.collection('Order').document(str_orderDate).collection('OrderDetail').get()
+            #Get list of bill in the date document
+            fs_bill_list = []
+            if date_db.exists:
+                for doc in date_db:
+                    fs_bill_list.append(doc.id)
+            
+            #Check if the bill_dict already up to date
+            is_new = collections.Counter(fs_bill_list) != collections.Counter(key_list)
+            if is_new:
+                #Check to get exist and non-exist bill from date document
+                not_exist_list = []
+                exist_list = []
+                for bill in key_list:
+                    if bill not in fs_bill_list:
+                        not_exist_list.append(bill)
+                    else:
+                        exist_list.append(bill)
+                
+                #Append all non-exist bill value to not_exist_dict_list prepare to add to Firestore
+                not_exist_dict_list = []
+                for key in not_exist_list:
+                    dict = bill_dict.get(key)
+                    not_exist_dict_list.append(dict)
+                
+                #Update/add every non-exist bill to Firestore
+                for bill in not_exist_dict_list:
+                    delivery=bill.Type
+                    bill_id=bill.Bill_id
+                    date=bill.Order_date
+                    # product_list=bill.Product_list
+                    amount=bill.Amount
+                    point=bill.Point
+                    price=bill.Price
+                    
+                    date_time_obj = datetime.strptime(date, '%d-%m-%Y')
+                    amount_int = int(amount)
+                    point_int = int(point)
+                    price_float = float(price)
+                    bill_db=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill_id).get()
+                    if bill_db.exists:  #If the bill is already exist, do the update
+                    
+                        db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
+                            'Delivery':delivery,
+                            'BillID':bill,
+                            'OrderDate':date_time_obj,
+                            # 'ProductList':product_list,
+                            'AmountOfCups': amount_int,
+                            'Point':point_int,
+                            'SubTotalBillPrice':price_float
+                        })
+                    
+                    else:  #If the bill is not exist, do the set new doc
+                    
+                        db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
+                            'Delivery':delivery,
+                            'BillID':bill,
+                            'OrderDate':date_time_obj,
+                            # 'ProductList':product_list,
+                            'AmountOfCups': amount_int,
+                            'Point':point_int,
+                            'SubTotalBillPrice':price_float
+                        })
+                #Return is_update = true and the new dawdupdate list
+                return True, not_exist_list
+            else:
+                #Return is_update=False
+                return False
+            
+        #If document date is not exist
+        else: 
+                
+            #Create Document for this date=str_orderDate and init Saletotal 
+            db.collection('Order').document(str_orderDate).set({})
+                
+            for bill in bill_dict:
+                delivery=bill.Type
+                bill_id=bill.Bill_id
+                date=bill.Order_date
+                # product_list=bill.Product_list
+                amount=bill.Amount
+                point=bill.Point
+                price=bill.Price
+                
+                date_time_obj = datetime.strptime(date, '%d-%m-%Y')
+                amount_int = int(amount)
+                point_int = int(point)
+                price_float = float(price)
+                
+                #Add the bill data to the date document
+                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
+                    'Delivery':delivery,
+                    'BillID':bill,
+                    'OrderDate':date_time_obj,
+                    # 'ProductList':product_list,
+                    'AmountOfCups': amount_int,
+                    'Point':point_int,
+                    'SubTotalBillPrice':price_float
+                })
+            return True, key_list
+# bill_list = {'6IJE0': {'Point': 2, 'Is_valid': 'True', 'Order_date': '28-06-2021', 'Bill_id': '6IJE0', 'Dup': 'True', 'Type': 'Foodpanda', 'Price': 100, 'Amount': 2, 'Product_list': ['[FOODPANDA]', '[FOODPANDA]']}}
+
+# test=bill_list.get('6IJE0').get('Product_list')
+# print(test)
