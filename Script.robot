@@ -173,16 +173,16 @@ Reset Every 00:00
 
     ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
     ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
-    Log to console  ${\n}[Order] Delete every document before ${cur_date}
+    Log to console  ${\n}\[Order\] Delete every document before ${cur_date}
 
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line By ID  message=[Order] Finish Empty The Document for ${FS_DATE}
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] Finish Empty The Document for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line By ID  message=[Order] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
         log to console  ${\n}Failed list: ${result}
 
     END
