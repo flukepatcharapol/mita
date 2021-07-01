@@ -111,7 +111,7 @@ Check If Have New Record
 
 Set Date For FireStore
     [Documentation]  Date format  30-12-2021
-    [Arguments]  ${expect_date}
+    [Arguments]  ${expect_date}=False
 
     IF  '${expect_date}'=='False'
         ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
@@ -173,16 +173,16 @@ Reset Every 00:00
 
     ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
     ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
-    Log to console  ${\n}[Order] Delete every document before ${cur_date}
+    Log to console  ${\n}\[Order\] Delete every document before ${cur_date}
 
     #Sent noti to line is success or not
     IF  ${is_empty}
 
-        LineCaller.Sent Alert To Line By ID  message=[Order] Finish Empty The Document for ${FS_DATE}
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] Finish Empty The Document for ${FS_DATE}
 
     ELSE
 
-        LineCaller.Sent Alert To Line By ID  message=[Order] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
         log to console  ${\n}Failed list: ${result}
 
     END
