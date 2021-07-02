@@ -142,14 +142,9 @@ class Uploader ():
             
             #Get all bill id from date subcollection and add to list
             doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
-            bill_list = []
             for bill in doc_bill:
-                bill_list.append(bill.id)
+                db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
                 
-            #Delete all bill document
-            for doc_id in bill_list:
-                db.collection('Order').document(doc_date).collection('OrderDetail').document(doc_id).get()
-            
             #Delete date document
             db.collection('Order').document(doc_date).delete()
         
