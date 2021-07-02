@@ -139,7 +139,7 @@ class Uploader ():
 
         #Delete every doc from the list
         for doc_id in result:
-            db.collection('Order').document(doc_id).delete()
+            db.collection('Order').document(doc_id).collection('OrderDetail').delete()
         
         #Check and if not failed add to list
         list_of_failed = []
