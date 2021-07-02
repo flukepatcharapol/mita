@@ -163,8 +163,8 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
 
     [Teardown]  End Script
 
-Reset Every 00:00
-    [Tags]    Morning-Reset
+Delete every document that older than 7 days
+    [Tags]    Clear-Old-Document
     #Get the date older than today for 4 days
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
