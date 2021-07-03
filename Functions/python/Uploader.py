@@ -134,7 +134,7 @@ class Uploader ():
         str_orderDate=self.setExpectedTimeFormat(date)
         
         #Get all doc from collection Mita
-        col=db.collection('Order').get()
+        col=self.db.collection('Order').get()
         oldeer_doc= []
         
         #Search and get every doc that older than $date
@@ -148,15 +148,15 @@ class Uploader ():
             #Get all bill id from date subcollection and add to list
             doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
             for bill in doc_bill:
-                db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
+                self.db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
                 
             #Delete date document
-            db.collection('Order').document(doc_date).delete()
+            self.db.collection('Order').document(doc_date).delete()
         
         #Check and if not failed add to list
         list_of_failed = []
         for check_doc in oldeer_doc:
-            check_result=db.collection('Order').document(check_doc).get()
+            check_result=self.db.collection('Order').document(check_doc).get()
             if check_result.exists:
                 list_of_failed.append(check_doc)
 
