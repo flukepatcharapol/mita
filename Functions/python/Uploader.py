@@ -22,11 +22,16 @@ cred = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-he355%40line-bot-firebear-sothorn-aqve.iam.gserviceaccount.com"
 }
-creds = firebase_admin.credentials.Certificate(cred)
-firebase_admin.initialize_app(creds)
-db=firestore.client()
+# creds = firebase_admin.credentials.Certificate(cred)
+# firebase_admin.initialize_app(creds)
+# db=firestore.client()
 
 class Uploader ():
+    def __int__(self):
+        creds = firebase_admin.credentials.Certificate(cred)
+        firebase_admin.initialize_app(creds)
+        self.db=firestore.client()
+        
     def setExpectedTimeFormat (self, str_date):
         date_time_obj = datetime.strptime(str_date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
