@@ -118,6 +118,12 @@ Delete Prev Number Where older Than '${date}'
 Delete Document Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
     ${result}  Uploader.deleteAllOlderDoc  ${date}
+    
+    IF  '${result}'=='False'
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] No document older than ${date}
+        Pass Execution  There are no document older than ${date}
+    END
+
     [Return]  ${result}
 
 Bill list should exist for today

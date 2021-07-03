@@ -22,16 +22,12 @@ cred = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-he355%40line-bot-firebear-sothorn-aqve.iam.gserviceaccount.com"
 }
-# creds = firebase_admin.credentials.Certificate(cred)
-# firebase_admin.initialize_app(creds)
-# db=firestore.client()
+creds = firebase_admin.credentials.Certificate(cred)
+firebase_admin.initialize_app(creds)
+db=firestore.client()
 
 class Uploader ():
-    def __int__(self):
-        creds = firebase_admin.credentials.Certificate(cred)
-        firebase_admin.initialize_app(creds)
-        self.db=firestore.client()
-        
+    
     def setExpectedTimeFormat (self, str_date):
         date_time_obj = datetime.strptime(str_date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
@@ -134,29 +130,32 @@ class Uploader ():
         str_orderDate=self.setExpectedTimeFormat(date)
         
         #Get all doc from collection Mita
-        col=self.db.collection('Order').get()
-        oldeer_doc= []
+        col=db.collection('Order').get()
+        older_doc= []
         
         #Search and get every doc that older than $date
         for doc in col:
             if doc.id < str_orderDate:
-                oldeer_doc.append(doc.id)
-
+                older_doc.append(doc.id)
+        #Check if there are no doc older than 7 days then return False
+        if not older_doc:
+            return False
+        
         #Delete every Document from the list
-        for doc_date in oldeer_doc:
+        for doc_date in older_doc:
             
             #Get all bill id from date subcollection and add to list
-            doc_bill=self.db.collection('Order').document(doc_date).collection('OrderDetail').get()
+            doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
             for bill in doc_bill:
-                self.db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
+                db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
                 
             #Delete date document
-            self.db.collection('Order').document(doc_date).delete()
+            db.collection('Order').document(doc_date).delete()
         
         #Check and if not failed add to list
         list_of_failed = []
-        for check_doc in oldeer_doc:
-            check_result=self.db.collection('Order').document(check_doc).get()
+        for check_doc in older_doc:
+            check_result=db.collection('Order').document(check_doc).get()
             if check_result.exists:
                 list_of_failed.append(check_doc)
 
