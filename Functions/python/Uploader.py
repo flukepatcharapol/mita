@@ -130,20 +130,27 @@ class Uploader ():
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
-        result= []
+        oldeer_doc= []
         
         #Search and get every doc that older than $date
         for doc in col:
             if doc.id < str_orderDate:
-                result.append(doc.id)
+                oldeer_doc.append(doc.id)
 
-        #Delete every doc from the list
-        for doc_id in result:
-            db.collection('Order').document(doc_id).delete()
+        #Delete every Document from the list
+        for doc_date in oldeer_doc:
+            
+            #Get all bill id from date subcollection and add to list
+            doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
+            for bill in doc_bill:
+                db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
+                
+            #Delete date document
+            db.collection('Order').document(doc_date).delete()
         
         #Check and if not failed add to list
         list_of_failed = []
-        for check_doc in result:
+        for check_doc in oldeer_doc:
             check_result=db.collection('Order').document(check_doc).get()
             if check_result.exists:
                 list_of_failed.append(check_doc)
@@ -151,31 +158,31 @@ class Uploader ():
         #Return the list of failed doc
         return  list_of_failed
         
-    def deleteAllOlderPrev (self, date):
-        str_orderDate=self.setExpectedTimeFormat(date)
+    # def deleteAllOlderPrev (self, date):
+    #     str_orderDate=self.setExpectedTimeFormat(date)
         
-        #Get all doc from collection Mita
-        col=db.collection('Mita').get()
-        result= []
+    #     #Get all doc from collection Mita
+    #     col=db.collection('Mita').get()
+    #     result= []
         
-        #Search and get every doc that older than $date
-        for doc in col:
-            if doc.id < str_orderDate:
-                result.append(doc.id)
+    #     #Search and get every doc that older than $date
+    #     for doc in col:
+    #         if doc.id < str_orderDate:
+    #             result.append(doc.id)
 
-        #Delete every doc from the list
-        for doc_id in result:
-            db.collection('Mita').document(doc_id).delete()
+    #     #Delete every doc from the list
+    #     for doc_id in result:
+    #         db.collection('Mita').document(doc_id).delete()
         
-        #Check and if not failed add to list
-        list_of_failed = []
-        for check_doc in result:
-            check_result=db.collection('Mita').document(check_doc).get()
-            if check_result.exists:
-                list_of_failed.append(check_doc)
+    #     #Check and if not failed add to list
+    #     list_of_failed = []
+    #     for check_doc in result:
+    #         check_result=db.collection('Mita').document(check_doc).get()
+    #         if check_result.exists:
+    #             list_of_failed.append(check_doc)
 
-        #Return the list of failed doc
-        return  list_of_failed
+    #     #Return the list of failed doc
+    #     return  list_of_failed
 
     def billShouldExist (self, bill_list, date):
         str_orderDate=self.setExpectedTimeFormat(date)
