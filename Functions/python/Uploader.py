@@ -27,6 +27,7 @@ firebase_admin.initialize_app(creds)
 db=firestore.client()
 
 class Uploader ():
+    
     def setExpectedTimeFormat (self, str_date):
         date_time_obj = datetime.strptime(str_date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
@@ -130,15 +131,18 @@ class Uploader ():
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
-        oldeer_doc= []
+        older_doc= []
         
         #Search and get every doc that older than $date
         for doc in col:
             if doc.id < str_orderDate:
-                oldeer_doc.append(doc.id)
-
+                older_doc.append(doc.id)
+        #Check if there are no doc older than 7 days then return False
+        if not older_doc:
+            return False
+        
         #Delete every Document from the list
-        for doc_date in oldeer_doc:
+        for doc_date in older_doc:
             
             #Get all bill id from date subcollection and add to list
             doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
@@ -150,7 +154,7 @@ class Uploader ():
         
         #Check and if not failed add to list
         list_of_failed = []
-        for check_doc in oldeer_doc:
+        for check_doc in older_doc:
             check_result=db.collection('Order').document(check_doc).get()
             if check_result.exists:
                 list_of_failed.append(check_doc)
