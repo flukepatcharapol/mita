@@ -146,7 +146,7 @@ class Uploader ():
         for doc_date in oldeer_doc:
             
             #Get all bill id from date subcollection and add to list
-            doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
+            doc_bill=self.db.collection('Order').document(doc_date).collection('OrderDetail').get()
             for bill in doc_bill:
                 self.db.collection('Order').document(doc_date).collection('OrderDetail').document(bill.id).delete()
                 
