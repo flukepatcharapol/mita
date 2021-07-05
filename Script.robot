@@ -142,7 +142,7 @@ Get Report From POS Wongnai, and Send Data to Firestore Cloud
     
     Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
     GetFromWongnai.Go To Daily Billing Page
-    # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     GetFromWongnai.Click To Expected Time Order
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
@@ -231,7 +231,7 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     Set Test Variable    ${TEST NAME}    Update Bill To Firestore
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
