@@ -231,7 +231,7 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     Set Test Variable    ${TEST NAME}    Update Bill To Firestore
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    # GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
