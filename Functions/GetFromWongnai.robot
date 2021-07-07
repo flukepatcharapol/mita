@@ -398,8 +398,10 @@ Recalculate Amount For The Set Product
     END
 
 Validate Data date should be today
+    GetFromWongnai.Set Date To Today
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     Check header date should be Today
+    Sleep  ${GOLBAL_SLEEP}
     ${date}     Get Element Locator From Row    1    order_date
     ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
 
@@ -419,7 +421,35 @@ Validate Data date should be today
 
 Set Date To Today and Validate Data Date Should be Today
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Check header date should be Today
-    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today
+
+    ${expect_date}=  Replace String  ${FS_DATE}  -  /
+    ${times}  Split String  ${ATTEMPT}
+    ${times}  Convert To Integer  ${times}[0]
+    FOR  ${INDEX}  IN RANGE  ${times}
+        ${round}  Convert To Integer  ${INDEX}
+        log to console  ${\n}${round}
+        ${date}     Get Element Locator From Row    1    order_date
+        ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
+        IF  ${is_data_empty}
+            
+            IF  ${round}>=${times}
+                log to console  ${\n}No data found in table ${round}
+                LineCaller.Sent Alert To Line By ID  message=No Order in the table
+                Pass Execution  No Order in the table
+        
+            ELSE
+                log to console  ${\n}no data in table but not yet ${times}, round:${round}
+                BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  GetFromWongnai.Set Date To Today
+
+            END
+
+        ELSE
+        
+            log to console  ${\n}Data date: ${date}
+            Should be Equal as Strings  ${expect_date}  ${date}
+            Exit For Loop
+        END
+    END
 
 Check header date should be Today
     GetFromWongnai.Set Date To Today
