@@ -420,4 +420,5 @@ Validate Data date should be today
     END
 
 Set Date To Today and Validate Data Date Should be Today
+    log to console  ${\n}Set Date To Today and Validate Data Date Should be today
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today
