@@ -137,6 +137,7 @@ Should Finish Load
     Should Not Contain  ${is_loading}  block
 
 Click Show All Row
+    log to console  ${\n}Click Show All Row Entry
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Click Show All Row With Retry
     Click Element When Ready  ${REP_show_all_row}
     Log To Console  ${\n}Show All Row
@@ -145,6 +146,7 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_btn}
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
+    log to console  ${\n}Click Show All Row pure
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
     Should Contain  ${show_all_is_active}  active
 
@@ -438,7 +440,7 @@ Set Date To Today and Validate Data Date Should be Today
                 Pass Execution  No Order in the table
         
             ELSE
-                log to console  ${\n}no data in table but not yet ${times}, round:${round}
+                log to console  ${\n}Data date: ${date} round:${round}
                 BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  GetFromWongnai.Set Date To Today
 
             END
