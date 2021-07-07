@@ -10,8 +10,8 @@ Variables      ${CURDIR}/Config.yaml
 
 ***Variables***
 #Config Variable
-${ATTEMPT}             20 x
-${WAIT}                0.5 sec
+${ATTEMPT}             2 x
+${WAIT}                1 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
 ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
