@@ -124,7 +124,7 @@ Set Date To Expect date
 
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
 
-    Log To Console  ${\n}Set Date To expect date${expect_date}
+    Log To Console  ${\n}Set Date To expect date ${expect_date}
 
 
 The Date Should Be expect date
@@ -163,9 +163,10 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_btn}
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
-    log to console  ${\n}Click Show All Row pure
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
     Should Contain  ${show_all_is_active}  active
+
+    log to console  ${\n}Attempt click show all row
 
 Click To Expected Time Order Need Retry
     ${class}  Get Element Attribute  ${REP_time}  class
@@ -418,6 +419,7 @@ Recalculate Amount For The Set Product
 
 Validate Data date should be today
     [Arguments]  ${inp_date}=False
+    log to console  ${\n}Validate Data date should be today
     IF  '${Inp_date}'=='False'
         Set Date To Today
     ELSE
