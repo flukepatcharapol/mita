@@ -142,9 +142,7 @@ Get all bills from expected date
 
     Set Test Variable    ${TEST NAME}    Force update bill for date
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today  is_manual=True  
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
-    GetFromWongnai.Set Date to Expected Date and Validate Data Date
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today  is_manual=True
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
@@ -233,7 +231,6 @@ Get All Bills from POS wongnai and update to Firestore cloud
     Set Test Variable  ${PREV_LENGTH}  0
     SeleniumLibrary.Set Selenium Speed    0
 
-    log to console  ${\n}There are new line
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
