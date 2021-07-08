@@ -164,7 +164,9 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
+    log to console  ${\n}get attribute ${show_all_is_active}
     Should Contain  ${show_all_is_active}  active
+    log to console  ${\n}show does active
 
     log to console  ${\n}Attempt click show all row
 
