@@ -136,29 +136,35 @@ Get Only Not Exist Bill Dict
 ############################################################################################################################################
 ***Test Cases***
 ############################################################################################################################################
-Get Report From POS Wongnai, and Send Data to Firestore Cloud
-    [Tags]    Get-New-Line
-    [Setup]  Script Setup
-    
-    Set Test Variable    ${TEST NAME}    Get Report From POS Wongnai
+Get all bills from expected date
+    [Tags]  force-update-date
+    [Setup]  Script Setup  ${INPUT_DATE}
+
+    Set Test Variable    ${TEST NAME}    Force update bill for date
     GetFromWongnai.Go To Daily Billing Page
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today  is_manual=True  
     GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
-    GetFromWongnai.Click To Expected Time Order
+    GetFromWongnai.Set Date to Expected Date and Validate Data Date
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
-    Count Row and Compare With Previous Run
+    Set Test Variable  ${PREV_LENGTH}  0
     SeleniumLibrary.Set Selenium Speed    0
 
-    IF  ${IS_NEW}
+    log to console  ${\n}There are new line
+    Sleep  ${GOLBAL_SLEEP}
+    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    log to console  ${\n}non_exist_list:${\n}${non_exist_list}
 
-        log to console  ${\n}There are new line
-        Sleep  ${GOLBAL_SLEEP}
-        ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-        ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}
+    IF  ${is_up_to_date}
+
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
-        log to console  ${\n}No new line
-        LineCaller.Sent Alert To Line By ID  message=No New Line To Add
+        ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
+        log to console  ${\n}result: ${update_list}
+        ToTheCloud.Update Bill Document to FireStore  ${update_list}
+
     END
 
     [Teardown]  End Script
@@ -186,18 +192,7 @@ Delete every document that older than 7 days
         log to console  ${\n}Failed list: ${result}
 
     END
-
-
-
-Test connection with google cloud build
-    [Tags]  test-img
-    Import Library  ${CURDIR}/Image.py
-    ${img_b64}  Image.getImageConvertTo64  ${CURDIR}/test/test.png
-    Create session  Upload Image  https://api.imgbb.com/  verify=true
-    ${body}=  Create Dictionary  image=${img_b64}
-    ${params}=  Create Dictionary  expiration=600  key=e3d1cebcde04c6b4d2ae049f5e63ab3b  
-    ${response}  Post Request  Upload Image  /1/upload?expiration\=600&key=e3d1cebcde04c6b4d2ae049f5e63ab3b  files=/test/test.png
-    
+  
 
 End Day Check
     [Tags]  End-Day
