@@ -78,6 +78,7 @@ Update Bill Document to FireStore
         IF  ${is_valid}
             Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
             ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
+            log to console  ${\n}Sent update for ${bill}
         END
     
     END

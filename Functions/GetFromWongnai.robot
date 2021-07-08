@@ -10,6 +10,9 @@ ${HOM_report_btn}           xpath=//div[@id='menu_report']/ul/li[3]//a[@href='/t
 ${HOM_header}               xpath=//section[@class='header']//div[contains(@class,'col-md-6 col-sm-8')]
 ${HOM_bill_report_lbl}      รายงานยอดขายแยกตามรายละเอียดบิล
 ${HOM_date}                 id=dateranges
+${DATE_left_date}           xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar left']//input[contains(@class,'input-mini form-control')]
+${DATE_right_date}          xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar right']//input[contains(@class,'input-mini form-control')]
+${DATE_apply_btn}           xpath=//body//div[3]//div[@class='ranges']//button[contains(@class,'applyBtn')]
 ${HOM_sale_total}           id=sale_total_amount
 ${DATE_today_btn}           xpath=//body//div[3]//div[@class='ranges']//li[@data-range-key='วันนี้']
 ${REP_ok_btn}               id=apply-branch 
@@ -104,13 +107,27 @@ Set Date To Today
     Click Element When Ready  ${HOM_date}
     Click Element When Ready  ${DATE_today_btn}
     Click Element When Ready  ${REP_ok_btn}
-    The Date Should Be Today
+    The Date Should Be expect date
 
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
 
     Log To Console  ${\n}Set Date To Today
 
-The Date Should Be Today
+Set Date To Expect date
+    Click Element When Ready  ${HOM_date}
+    ${expect_date}  Replace String  ${FS_DATE}  -  /
+    Input Text When Ready  ${DATE_left_date}  ${expect_date}
+    Input Text When Ready  ${DATE_right_date}  ${expect_date}
+    Click Element When Ready  ${DATE_apply_btn}
+    Click Element When Ready  ${REP_ok_btn}
+    The Date Should Be expect date
+
+    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
+
+    Log To Console  ${\n}Set Date To expect date ${expect_date}
+
+
+The Date Should Be expect date
     ${expect_date}=  Replace String    ${FS_DATE}  -  /
     ${web_date}=  Get Value  ${HOM_date}
     ${web_date}=  Get SubString  ${web_date}  0  10
@@ -146,9 +163,12 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_btn}
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
-    log to console  ${\n}Click Show All Row pure
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
+    log to console  ${\n}get attribute ${show_all_is_active}
     Should Contain  ${show_all_is_active}  active
+    log to console  ${\n}show does active
+
+    log to console  ${\n}Attempt click show all row
 
 Click To Expected Time Order Need Retry
     ${class}  Get Element Attribute  ${REP_time}  class
@@ -400,10 +420,14 @@ Recalculate Amount For The Set Product
     END
 
 Validate Data date should be today
-    GetFromWongnai.Set Date To Today
+    [Arguments]  ${inp_date}=False
+    log to console  ${\n}Validate Data date should be today
+    IF  '${Inp_date}'=='False'
+        Set Date To Today
+    ELSE
+        Set Date To Expect date
+    END
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
-    # Check header date should be Today
-    # Sleep  ${GOLBAL_SLEEP}
     ${date}     Get Element Locator From Row    1    order_date
     ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
 
@@ -422,5 +446,6 @@ Validate Data date should be today
     END
 
 Set Date To Today and Validate Data Date Should be Today
+    [Arguments]  ${is_manual}=False
     log to console  ${\n}Set Date To Today and Validate Data Date Should be today
-    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today
+    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today  ${is_manual}
