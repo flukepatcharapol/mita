@@ -402,8 +402,8 @@ Recalculate Amount For The Set Product
 Validate Data date should be today
     GetFromWongnai.Set Date To Today
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
-    Check header date should be Today
-    Sleep  ${GOLBAL_SLEEP}
+    # Check header date should be Today
+    # Sleep  ${GOLBAL_SLEEP}
     ${date}     Get Element Locator From Row    1    order_date
     ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
 
