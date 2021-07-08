@@ -152,13 +152,14 @@ Get all bills from expected date
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
-    log to console  ${\n}non_exist_list:${\n}${non_exist_list}
 
     IF  ${is_up_to_date}
 
         LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
+
+        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
         ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
         log to console  ${\n}Not exist bill detail list: ${update_list}
         ToTheCloud.Update Bill Document to FireStore  ${update_list}
@@ -233,7 +234,6 @@ Get All Bills from POS wongnai and update to Firestore cloud
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
-    log to console  ${\n}non_exist_list:${\n}${non_exist_list}
 
     IF  ${is_up_to_date}
 
@@ -241,6 +241,8 @@ Get All Bills from POS wongnai and update to Firestore cloud
         LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
+
+        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
         ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
         log to console  ${\n}result: ${update_list}
         ToTheCloud.Update Bill Document to FireStore  ${update_list}
