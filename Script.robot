@@ -11,7 +11,7 @@ Variables      ${CURDIR}/Config.yaml
 ***Variables***
 #Config Variable
 ${ATTEMPT}             20 x
-${WAIT}                1 sec
+${WAIT}                0.5 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
 ${GOLBAL_SLEEP}        0.5 sec
 ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
@@ -222,7 +222,6 @@ Get All Bills from POS wongnai and update to Firestore cloud
     [Tags]  Update-Delivery
     [Setup]  Script Setup
 
-    log to console  ${\n}Dev Ver
     Set Test Variable    ${TEST NAME}    Update Bill To Firestore
     GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Today and Validate Data Date Should be Today

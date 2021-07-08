@@ -104,14 +104,13 @@ Go To Daily Billing Page
     Log To Console  ${\n}Visiting Daily Billing Page
 
 Set Date To Today
+    Log To Console  ${\n}Set Date To Today
     Click Element When Ready  ${HOM_date}
     Click Element When Ready  ${DATE_today_btn}
     Click Element When Ready  ${REP_ok_btn}
     The Date Should Be expect date
 
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
-
-    Log To Console  ${\n}Set Date To Today
 
 Set Date To Expect date
     Click Element When Ready  ${HOM_date}
@@ -429,10 +428,24 @@ Validate Data date should be today
     END
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     ${date}     Get Element Locator From Row    1    order_date
-    ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
+    Should Not Be Equal as Strings  ${date}  No data available in table
+
+    log to console  ${\n}Data date: ${date}
+    Should be Equal as Strings  ${expect_date}  ${date}
 
 
-    IF  ${is_data_empty}
+Set Date To Today and Validate Data Date Should be Today
+    [Arguments]  ${is_manual}=False
+    log to console  ${\n}Set Date To Today and Validate Data Date Should be today
+    ${is_set_date_success}  Run Keyword And Return Status  BuiltIn.Wait Until Keyword Succeeds  5 x  1 sec  Validate Data date should be today  ${is_manual}
+    ${date}     Get Element Locator From Row    1    order_date
+    ${is_no_order}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
+
+    IF  ${is_set_date_success}
+
+        log to console  ${\n}Success set date
+
+    ELSE IF  ${is_no_order}
 
         log to console  ${\n}No data found in table
         LineCaller.Sent Alert To Line By ID  message=No Order in the table
@@ -440,12 +453,6 @@ Validate Data date should be today
 
     ELSE
 
-        log to console  ${\n}Data date: ${date}
-        Should be Equal as Strings  ${expect_date}  ${date}
+        Fail  not sucess set date to expect date
 
     END
-
-Set Date To Today and Validate Data Date Should be Today
-    [Arguments]  ${is_manual}=False
-    log to console  ${\n}Set Date To Today and Validate Data Date Should be today
-    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Validate Data date should be today  ${is_manual}
