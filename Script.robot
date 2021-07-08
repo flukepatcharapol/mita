@@ -160,7 +160,7 @@ Get all bills from expected date
 
     ELSE
         ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
-        log to console  ${\n}result: ${update_list}
+        log to console  ${\n}Not exist bill detail list: ${update_list}
         ToTheCloud.Update Bill Document to FireStore  ${update_list}
 
     END
