@@ -137,6 +137,7 @@ Should Finish Load
     Should Not Contain  ${is_loading}  block
 
 Click Show All Row
+    log to console  ${\n}Click Show All Row Entry
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Click Show All Row With Retry
     Click Element When Ready  ${REP_show_all_row}
     Log To Console  ${\n}Show All Row
@@ -145,6 +146,7 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_btn}
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
+    log to console  ${\n}Click Show All Row pure
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
     Should Contain  ${show_all_is_active}  active
 
@@ -400,11 +402,11 @@ Recalculate Amount For The Set Product
 Validate Data date should be today
     GetFromWongnai.Set Date To Today
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
+    Check header date should be Today
+    Sleep  ${GOLBAL_SLEEP}
     ${date}     Get Element Locator From Row    1    order_date
-    ${header_date}  Get Value  ${HOM_date}
-    ${header_date}  Split string  ${header_date}
-    Should Be Equal as Strings  ${header_date}[0]  ${expect_date}  msg=Header date is not ${expect_date}
     ${is_data_empty}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
+
 
     IF  ${is_data_empty}
 
