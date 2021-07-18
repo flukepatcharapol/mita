@@ -70,6 +70,7 @@ ${thai_fep}     ชาไทยปั่น
 #Exclue_list
 ${wip}         วิปครีมมูส
 ${counter}     หน้าร้าน
+${free}        หมีแลกแต้ม
 
 #Dinamic Variable
 ${lineman_detecter}    Line Man
@@ -245,7 +246,7 @@ Get New Order Detail
             Set Test Variable  ${DATA_DATE}  ${date}
 
             #Validate Information
-            ${product_point}    Recalculate Price For The Set Product    ${name}
+            ${product_point}    Recalculate Point For The Set Product    ${name}
             ${point}  Evaluate  ${product_point}*${amount}
 
             #Check amount information
@@ -334,7 +335,7 @@ Get New Order Detail
 '${comment}' Should Not Have Void
     Should Contain  ${comment}  Void
 
-Recalculate Price For The Set Product
+Recalculate Point For The Set Product
     [Arguments]  ${name}
 
     ${is_4}  Run Keyword And Return Status  Should Contain Any
@@ -382,7 +383,6 @@ Check If From Counter
 Check Payment For Lineman Type  
     [Arguments]    ${payment}
     ${is_lineman}    Run Keyword And Return Status  Should Contain Any  ${payment}  ${lineman_detecter}
-    # log to console   ${\n}Checker: ${is_lineman}
     [Return]  ${is_lineman}
 
 Recalculate Amount For The Set Product  
@@ -401,7 +401,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${wip}
+    ...               ${wip}  ${free}
     
     IF  ${is_4}
 
