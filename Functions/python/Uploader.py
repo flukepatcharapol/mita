@@ -47,31 +47,15 @@ class Uploader ():
         doc_date=db.collection('Order').document(str_orderDate).get()
         if doc_date.exists:
             
-            #Check the existance if the target bill in the doc_date=str_orderDate
-            bill_db=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
-            
-            if bill_db.exists:  #If the bill is already exist, do the update
-                
-                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
-                    'Delivery':delivery,
-                    'BillID':bill,
-                    'OrderDate':date_time_obj,
-                    'ProductList':product_list,
-                    'AmountOfCups': int_amount,
-                    'Point':int_point,
-                    'SubTotalBillPrice':float_price
-                })
-            else:  #If the bill is not exist, do the set new doc
-                
-                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
-                    'Delivery':delivery,
-                    'BillID':bill,
-                    'OrderDate':date_time_obj,
-                    'ProductList':product_list,
-                    'AmountOfCups': int_amount,
-                    'Point':int_point,
-                    'SubTotalBillPrice':float_price
-                })
+            db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
+                'Delivery':delivery,
+                'BillID':bill,
+                'OrderDate':date_time_obj,
+                'ProductList':product_list,
+                'AmountOfCups': int_amount,
+                'Point':int_point,
+                'SubTotalBillPrice':float_price
+            }, merge=True)
             
             
         #Create the document if the document is not yet exist
@@ -89,19 +73,7 @@ class Uploader ():
             'AmountOfCups': int_amount,
             'Point':int_point,
             'SubTotalBillPrice':float_price
-        })
-            
-        
-        #Check that Order-date-OrderDeatil-BillId should exist and return result
-        # check=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
-        
-        # if check.exists:
-            
-        #     return True
-        
-        # else:
-            
-        #     return False
+        }, merge=True)
 
     def getPrevNumber (self, date):
         str_orderDate=self.setExpectedTimeFormat(date)
