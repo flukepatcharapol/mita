@@ -302,7 +302,29 @@ class Uploader ():
                     'SubTotalBillPrice':price_float
                 })
             return True, key_list
-# bill_list = {'6IJE0': {'Point': 2, 'Is_valid': 'True', 'Order_date': '28-06-2021', 'Bill_id': '6IJE0', 'Dup': 'True', 'Type': 'Foodpanda', 'Price': 100, 'Amount': 2, 'Product_list': ['[FOODPANDA]', '[FOODPANDA]']}}
+    
+    def removeRedeemHistory (self, used_due_date, expire_date):
+        used_time_obj = datetime.strptime(used_due_date, '%d-%m-%Y')
+        expired_time_obj = datetime.strptime(expire_date, '%d-%m-%Y')
+        expired = db.collection('RedeemHistory').where('ExpiredDate', '<=', expired_time_obj).get()
+        test_list = []
+        for doc in expired:
+            test_list.append('{doc.id} => {doc.to_dict()}')
+        return test_list
+        # expired_list = []
+        # for doc in expired:
+        #     if (doc.UsedDate == None):
+        #         expired_list.append(doc.id)
+            
+        # used = db.collection('RedeemHistory').where('UsedDate', '<=', used_time_obj).get()
+        # used_list = []
+        # for doc in used:
+        #     used_list.append(doc.id)
 
-# test=bill_list.get('6IJE0').get('Product_list')
-# print(test)
+        # for expired_id in expired_list:
+        #     db.collection('RedeemHistory').doc(expired_id).delete()
+            
+        # for used_id in used_list:
+        #     db.collection('RedeemHistory').doc(used_id).delete()
+            
+        # return used_list, expired_list

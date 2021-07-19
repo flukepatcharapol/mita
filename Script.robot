@@ -136,6 +136,38 @@ Get Only Not Exist Bill Dict
 ############################################################################################################################################
 ***Test Cases***
 ############################################################################################################################################
+Get All Bills from POS wongnai and update to Firestore cloud
+    [Tags]  Update-Delivery
+    [Setup]  Script Setup
+
+    Set Test Variable    ${TEST NAME}    Update Bill To Firestore
+    GetFromWongnai.Go To Daily Billing Page
+    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    GetFromWongnai.Click Show All Row
+    Sleep  ${GOLBAL_SLEEP}
+    Set Test Variable  ${PREV_LENGTH}  0
+    SeleniumLibrary.Set Selenium Speed    0
+
+    Sleep  ${GOLBAL_SLEEP}
+    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+
+    IF  ${is_up_to_date}
+
+        log to console  ${\n}Every bill is updated.
+        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
+
+    ELSE
+
+        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
+        ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
+        log to console  ${\n}result: ${update_list}
+        ToTheCloud.Update Bill Document to FireStore  ${update_list}
+
+    END
+
+    [Teardown]  End Script
+
 Get all bills from expected date
     [Tags]  force-update-date
     [Setup]  Script Setup  ${INPUT_DATE}
@@ -170,7 +202,7 @@ Get all bills from expected date
 
 Delete every document that older than 7 days
     [Tags]    Clear-Old-Document
-    #Get the date older than today for 4 days
+    #Get the date older than today for 7 days
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
     ${expire_due_date}=  Set Variable  7
@@ -192,6 +224,16 @@ Delete every document that older than 7 days
 
     END
   
+Clear Redeem History
+    [Tags]    Clear-Redeem-History
+    
+    Set Date For FireStore
+    Set Test Variable  ${DATA_DATE}  ${FS_DATE}
+    ${used_limit}  Set Variable  7
+    ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
+    ${used_due_date}  Get Current Date  UTC  + 7 hours - ${used_limit} days  result_format=%d-%m-%Y
+    Delete used and expired RedeemhHistory  ${used_due_date}  ${cur_date}
+
 
 End Day Check
     [Tags]  End-Day
@@ -217,36 +259,4 @@ End Day Check
         ELSE
             LineCaller.Sent Alert To Line By ID  message=[End-day] Not every bill for today is added ${fail_list} is not exist
         END
-    [Teardown]  End Script
-
-Get All Bills from POS wongnai and update to Firestore cloud
-    [Tags]  Update-Delivery
-    [Setup]  Script Setup
-
-    Set Test Variable    ${TEST NAME}    Update Bill To Firestore
-    GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
-    GetFromWongnai.Click Show All Row
-    Sleep  ${GOLBAL_SLEEP}
-    Set Test Variable  ${PREV_LENGTH}  0
-    SeleniumLibrary.Set Selenium Speed    0
-
-    Sleep  ${GOLBAL_SLEEP}
-    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
-
-    IF  ${is_up_to_date}
-
-        log to console  ${\n}Every bill is updated.
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
-
-    ELSE
-
-        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
-        ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
-        log to console  ${\n}result: ${update_list}
-        ToTheCloud.Update Bill Document to FireStore  ${update_list}
-
-    END
-
     [Teardown]  End Script
