@@ -311,8 +311,8 @@ class Uploader ():
         delete_list = []
         for doc in expired:
             used_date = doc.get('UsedDate')
-            # if used_date is None:
-            #     delete_list.append(doc.id)
+            if used_date is None:
+                delete_list.append(doc.id)
         # for doc in used:
         #     delete_list.append(doc.id)
         
