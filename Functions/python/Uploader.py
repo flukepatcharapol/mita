@@ -312,10 +312,10 @@ class Uploader ():
         for doc in redeem_history:
             used_date = doc.get('UsedDate')
             expired_date = doc.get('ExpiredDate')
-            if used_date == None:
-                if expired_date <= expired_time_obj:
-                    expired_list.append(doc.id)
-            elif used_date < used_time_obj:
+            # if used_date == None:
+            #     if expired_date <= expired_time_obj:
+            #         expired_list.append(doc.id)
+            if used_date < used_time_obj:
                 used_list.append(doc.id)
         return used_list
             
