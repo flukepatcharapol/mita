@@ -148,4 +148,4 @@ Delete used and expired RedeemhHistory
     [Arguments]  ${used_due_date}  ${expire_due_date}
     @{used_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}
     log to console  finish delete used:${used_list}    #and expire: ${expired_list}
-    LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] finish delete used:${used_list}   # and expire: ${expired_list}
+    # LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] finish delete used:${used_list}   # and expire: ${expired_list}
