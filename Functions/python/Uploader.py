@@ -313,7 +313,7 @@ class Uploader ():
             used_date = doc.get('UsedDate')
             if used_date is None:
                 delete_list.append(doc.id)
-        # for doc in used:
-        #     delete_list.append(doc.id)
+        for doc in used:
+            delete_list.append(doc.id)
         
         return delete_list
