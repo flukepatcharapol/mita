@@ -306,15 +306,13 @@ class Uploader ():
     def removeRedeemHistory (self, used_due_date, expire_date):
         used_time_obj = datetime.strptime(used_due_date, '%d-%m-%Y')
         expired_time_obj = datetime.strptime(expire_date, '%d-%m-%Y')
-        # expired = db.collection('RedeemHistory').where('ExpiredDate', '<=', expired_time_obj).get()
-        expired = db.collection('RedeemHistory').where('UsedDate', '==', None, '&&', 'ExpiredDate', '>=', expire_date).get()
-        
-        # used = db.collection('RedeemHistory').where('UsedDate', '<=', used_due_date).get()
+        expired = db.collection('RedeemHistory').where('ExpiredDate', '>=', expired_time_obj).get()
         expired_list = []
         for doc in expired:
-            # if (doc.UsedDate == None):
-            expired_list.append(doc.to_dict())
+            if (doc.UsedDate == None):
+                expired_list.append(doc.to_dict())
         return expired_list
+        # used = db.collection('RedeemHistory').where('UsedDate', '<=', used_due_date).get()
             
         # used = db.collection('RedeemHistory').where('UsedDate', '<=', used_time_obj).get()
         # used_list = []
