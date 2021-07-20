@@ -309,7 +309,8 @@ class Uploader ():
         expired = db.collection('RedeemHistory').where('ExpiredDate', '>=', expired_time_obj).get()
         expired_list = []
         for doc in expired:
-            if (doc.UsedDate == None):
+            used_date = doc.get('UsedDate')
+            if (used_date == None):
                 expired_list.append(doc.to_dict())
         return expired_list
         # used = db.collection('RedeemHistory').where('UsedDate', '<=', used_due_date).get()
