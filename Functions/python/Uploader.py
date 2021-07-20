@@ -306,29 +306,10 @@ class Uploader ():
     def removeRedeemHistory (self, used_due_date, expire_date):
         used_time_obj = datetime.strptime(used_due_date, '%d-%m-%Y')
         expired_time_obj = datetime.strptime(expire_date, '%d-%m-%Y')
-        redeem_history = db.collection('RedeemHistory').get()
-        expired_list = []
-        used_list = []
-        for doc in redeem_history:
+        expired = db.collection('RedeemHistory').where('ExpiredDate', '<=', expired_time_obj).get()
+        db.collection('RedeemHistory').where('UsedDate', '==', expired_time_obj).delete()
+        delete_list = []
+        for doc in expired:
             used_date = doc.get('UsedDate')
-            expired_date = doc.get('ExpiredDate')
             if used_date == None:
-                # if expired_date <= expired_time_obj:
-                #     expired_list.append(doc.id)
-                print();
-            elif used_date < used_time_obj:
-                used_list.append(doc.id)
-        return used_list
-            
-        # used = db.collection('RedeemHistory').where('UsedDate', '<=', used_time_obj).get()
-        # used_list = []
-        # for doc in used:
-        #     used_list.append(doc.id)
-
-        # for expired_id in expired_list:
-        #     db.collection('RedeemHistory').doc(expired_id).delete()
-            
-        # for used_id in used_list:
-        #     db.collection('RedeemHistory').doc(used_id).delete()
-            
-        # return used_list, expired_list
+                delete_list.append(doc.id)
