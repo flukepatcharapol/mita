@@ -232,6 +232,7 @@ Clear Redeem History
     ${used_limit}  Set Variable  7
     ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     ${used_due_date}  Get Current Date  UTC  + 7 hours - ${used_limit} days  result_format=%d-%m-%Y
+    log to console  ${\n}expire_date:${cur_date} used_due_date:${used_due_date}
     Delete used and expired RedeemhHistory  ${used_due_date}  ${cur_date}
 
 
