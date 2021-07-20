@@ -308,13 +308,13 @@ class Uploader ():
         expired_time_obj = datetime.strptime(expire_date, '%d-%m-%Y')
         expired = db.collection('RedeemHistory').where('ExpiredDate', '<=', expired_time_obj).get()
         used = db.collection('RedeemHistory').where('UsedDate', '==', expired_time_obj).get()
-        delete_list = []
-        for doc in expired:
-            used_date = doc.get('UsedDate')
-            delete_list.append(used_date)
+        # delete_list = []
+        # for doc in expired:
+        #     used_date = doc.get('UsedDate')
+        #     delete_list.append(used_date)
             # if used_date == None:
             #     delete_list.append(doc.id)
         # for doc in used:
         #     delete_list.append(doc.id)
         
-        return delete_list
+        # return delete_list
