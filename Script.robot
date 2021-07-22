@@ -200,12 +200,12 @@ Get all bills from expected date
 
     [Teardown]  End Script
 
-Delete every document that older than 7 days
+Delete every document that older
     [Tags]    Clear-Old-Document
     #Get the date older than today for 7 days
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
-    ${expire_due_date}=  Set Variable  7
+    ${expire_due_date}=  Set Variable  14
     ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
 
     ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
