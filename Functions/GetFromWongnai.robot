@@ -455,7 +455,7 @@ Set Date To Today and Validate Data Date Should be Today
     ELSE IF  ${is_no_order}
 
         log to console  ${\n}No data found in table
-        LineCaller.Sent Alert To Line By ID  message=No Order in the table
+        # LineCaller.Sent Alert To Line By ID  message=No Order in the table
         Pass Execution  No Order in the table
 
     ELSE

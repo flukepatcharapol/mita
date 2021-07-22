@@ -155,7 +155,7 @@ Get All Bills from POS wongnai and update to Firestore cloud
     IF  ${is_up_to_date}
 
         log to console  ${\n}Every bill is updated.
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
+        # LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
 
