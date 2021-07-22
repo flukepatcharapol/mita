@@ -188,7 +188,8 @@ Get all bills from expected date
 
     IF  ${is_up_to_date}
 
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
+        log to console  ${\n}Every bill is updated.
+        # LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
 
