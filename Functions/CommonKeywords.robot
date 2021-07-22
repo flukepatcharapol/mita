@@ -9,6 +9,7 @@ Element Should Be Visible With Retry
 
 Click Element When Ready
     [Arguments]  ${element}  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
+    Element Should Be Visible With Retry  ${element}
     BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Click Element  ${element}
     # Wait Until Element Is Visible  ${element}  ${GOLBAL_TIMEOUT}  error=The ${element} is not visible in ${GOLBAL_TIMEOUT}
     # Click Element  ${element}

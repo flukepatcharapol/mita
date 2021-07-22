@@ -69,6 +69,7 @@ Open Browser Headless
         BuiltIn.Call Method    ${chrome options}    add_argument    --disable-gpu
         BuiltIn.Call Method    ${chrome options}    add_argument    --no-sandbox
         BuiltIn.Call Method    ${chrome options}    add_argument    start-maximized
+        BuiltIn.Call Method    ${chrome options}    add_argument    --disable-dev-shm-usage
     END
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${url}
