@@ -18,29 +18,22 @@ FROM python:3.7-slim AS python
 COPY --from=alpine /linux_signing_key.pub .
 COPY --from=alpine /chromedriver /usr/local/bin/chromedriver
 
-RUN from datetime import datetime
-RUN datetime.now()
 #Install thai and install google chrome stable version
 RUN apt-get update && \
     apt-get install --no-install-recommends gnupg fonts-tlwg-loma fonts-tlwg-loma-otf wget -y -q
-
-RUN datetime.now()
 RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
     apt-key add linux_signing_key.pub && \
     apt-get update && \
     apt-get install --no-install-recommends google-chrome-stable -y -q && \
     rm linux_signing_key.pub && \
     chmod +x /usr/local/bin/chromedriver
-RUN datetime.now()
 
 #Copy source code dir from local to docker at /mita
 COPY . /mita
 WORKDIR /mita
-RUN datetime.now()
 
 #Install lib according to requirements list
 RUN pip install -r requirements.txt
-RUN datetime.now()
 
 #Get variable and set env variable
 ARG _POS_USER
