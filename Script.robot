@@ -5,7 +5,7 @@ Resource       ${CURDIR}/Functions/EventLogger.robot
 Resource       ${CURDIR}/Functions/GetFromWongnai.robot
 Resource       ${CURDIR}/Functions/LineCaller.robot
 Resource       ${CURDIR}/Functions/ToTheCloud.robot
-Resource      ${CURDIR}/Config.robot
+Resource       ${CURDIR}/Config.robot
 
 ***Variables***
 #Config Variable

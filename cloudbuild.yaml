@@ -12,10 +12,3 @@ steps:
         '--build-arg', '_DATE=$_DATE', 
         '--cache-from', 'gcr.io/$PROJECT_ID/mita:latest',
         '.' ]
-
-# images:
-# - 'gcr.io/$PROJECT_ID/mita'
-
-# steps:
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: [ 'run', '--rm', 'gcr.io/$PROJECT_ID/mita', 'bash', 'python -m robot -i $_SCRIPT_TAG Scripts.robot']
