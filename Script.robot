@@ -76,39 +76,6 @@ Open Browser Headless
 Clean Download Directory
     Empty Directory  ${DOWNLOAD_DIR}
 
-Count Row and Compare With Previous Run
-    [Arguments]  ${is_prev_from_fs}=True
-    GetFromWongnai.Count Row
-    Check If Have New Record  ${CURRENT_ROW}  ${is_prev_from_fs}
-    
-    Log To Console  ${\n}Rows are Counted And Compared!
-    
-Check If Have New Record
-    [Arguments]  ${current_row}  ${is_prev_from_fs}
-    IF  ${is_prev_from_fs}
-
-        ${prev}=  ToTheCloud.Get Prev Line Saved  ${FS_DATE}
-
-    ELSE
-
-        ${prev}=  Set Variable  0
-
-    END
-
-    IF  '${prev}'=='False'
-        log to console  ${\n}Prev is NOT Exist
-        Set Test Variable    ${IS_NEW}       True
-        Set Test Variable    ${PREV_LENGTH}  0
-
-    ELSE
-        log to console  ${\n}Prev is Exist
-        log to console  ${\n}Current row: ${current_row}
-        ${is_new_line}  Run Keyword And Return Status  Should Be True  ${current_row}>${prev}  msg= There are no new order yet. Latest\[ ${current_row} \] Prev\[ ${prev} \]
-        Set Test Variable    ${IS_NEW}       ${is_new_line}
-        Set Test Variable    ${PREV_LENGTH}  ${prev}
-
-    END
-
 Set Date For FireStore
     [Documentation]  Date format  30-12-2021
     [Arguments]  ${expect_date}=False
@@ -137,7 +104,7 @@ Get Only Not Exist Bill Dict
 ***Test Cases***
 ############################################################################################################################################
 Get All Bills from POS wongnai and update to Firestore cloud
-    [Tags]  Update-Delivery
+    [Tags]    Update-Delivery
     [Setup]  Script Setup
 
     Set Test Variable    ${TEST NAME}    Update Bill To Firestore
@@ -168,20 +135,19 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     [Teardown]  End Script
 
-Get all bills from expected date
+Update bill to firestore
+    [Documentation]    This script goto poswognai and check not exist bill then update them to Firestore
     [Tags]  force-update-date
     [Setup]  Script Setup  ${INPUT_DATE}
 
-    Set Test Variable    ${TEST NAME}    Force update bill for date
+    Set Test Variable    ${TEST NAME}    Update bill for ${FS_DATE}
     GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Today and Validate Data Date Should be Today  is_manual=True
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
-    Set Test Variable  ${PREV_LENGTH}  0
+    # Set Test Variable  ${PREV_LENGTH}  0
     SeleniumLibrary.Set Selenium Speed    0
 
-    log to console  ${\n}There are new line
-    Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
 
@@ -236,30 +202,3 @@ Clear Redeem History
     log to console  ${\n}expire_date:${cur_date} used_due_date:${used_due_date}
     
     Delete used and expired RedeemhHistory  ${used_due_date}  ${cur_date}
-
-
-End Day Check
-    [Tags]  End-Day
-    [Setup]  Script Setup
-
-    GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
-    GetFromWongnai.Click To Expected Time Order
-    GetFromWongnai.Click Show All Row
-    Sleep  ${GOLBAL_SLEEP}
-    Count Row and Compare With Previous Run  is_prev_from_fs=False
-    SeleniumLibrary.Set Selenium Speed    0
-
-    IF  ${IS_NEW}
-
-        log to console  ${\n}There are new line
-        Sleep  ${GOLBAL_SLEEP}
-        ${newline_detail}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-        ${bill_list}=  ToTheCloud.Transform To Firestore Format And Sent To FireStore    ${newline_detail}  is_add=False
-        ${result}  ${fail_list}=  ToTheCloud.Bill list should exist for today  ${bill_list}
-        IF  ${result}
-            LineCaller.Sent Alert To Line By ID  message=[End-day] Every bill is updated
-        ELSE
-            LineCaller.Sent Alert To Line By ID  message=[End-day] Not every bill for today is added ${fail_list} is not exist
-        END
-    [Teardown]  End Script

@@ -208,17 +208,17 @@ Get Sale total
     LineCaller.Sent Alert To Line By ID  message=Current Sale total for ${FS_DATE} is ${sale_total}
 
 Get New Order Detail
-    [Arguments]    ${latest_number}
+    # [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
     ${bill_list}  Create List
     ${row}=  Count Row
-    ${new_line_amount}=    Evaluate    ${row}-${latest_number}
+    # ${new_line_amount}=    Evaluate    ${row}-${latest_number}
     ${prev_point}    Set Variable
     ${prev_bill}     Set Variable
     ${prev_price}    Set Variable
     ${prev_amount}   Set Variable
     ${product_list}  Create List
-    FOR    ${INDEX}    IN RANGE    ${new_line_amount}
+    FOR    ${INDEX}    IN RANGE    ${row}
 
         #Get the correct row number
         ${row_number}=    Evaluate  ${INDEX}+1
