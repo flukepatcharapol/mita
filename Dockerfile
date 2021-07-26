@@ -1,9 +1,11 @@
 FROM alpine:latest AS alpine
 
 #Download curl
+RUN date +"%T"
 RUN apk add curl unzip --update
 
 # Get latest version, download, and unzip chromedriver
+RUN date +"%T"
 RUN curl -sO https://dl-ssl.google.com/linux/linux_signing_key.pub
 RUN export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
     curl -sO http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \

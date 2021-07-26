@@ -6,7 +6,7 @@ Send Text To Line User
 
     ${body}  Set Variable  {"to": "${receiver}","messages": [{"type": "text","text": "${text}"}]} 
     Create Session  Send Text  ${LINE}[URL]  headers=${header}  verify=True
-    ${response}=  POST Request  Send Text  ${LINE}[path][push_message]  data=${body}     # [interim]${response}=  POST On Session  alias=Send Text  url=${LINE}[path][push_message]  data=${body}
+    ${response}=  POST Request  Send Text  ${LINE}[push_message]  data=${body}     # [interim]${response}=  POST On Session  alias=Send Text  url=${LINE}[push_message]  data=${body}
     Delete All Sessions
 
     ${is_success}=  Run Keyword And Return Status  Should Be Equal As Strings  ${response.status_code}  200  

@@ -10,8 +10,8 @@ ${HOM_report_btn}           xpath=//div[@id='menu_report']/ul/li[3]//a[@href='/t
 ${HOM_header}               xpath=//section[@class='header']//div[contains(@class,'col-md-6 col-sm-8')]
 ${HOM_bill_report_lbl}      รายงานยอดขายแยกตามรายละเอียดบิล
 ${HOM_date}                 id=dateranges
-${DATE_left_date}           xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar left']//input[contains(@class,'input-mini form-control')]
-${DATE_right_date}          xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar right']//input[contains(@class,'input-mini form-control')]
+${DATE_start_date}           xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar left']//input[contains(@class,'input-mini form-control')]
+${DATE_end_date}          xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar right']//input[contains(@class,'input-mini form-control')]
 ${DATE_apply_btn}           xpath=//body//div[3]//div[@class='ranges']//button[contains(@class,'applyBtn')]
 ${HOM_sale_total}           id=sale_total_amount
 ${DATE_today_btn}           xpath=//body//div[3]//div[@class='ranges']//li[@data-range-key='วันนี้']
@@ -116,8 +116,8 @@ Set Date To Today
 Set Date To Expect date
     Click Element When Ready  ${HOM_date}
     ${expect_date}  Replace String  ${FS_DATE}  -  /
-    Input Text When Ready  ${DATE_left_date}  ${expect_date}
-    Input Text When Ready  ${DATE_right_date}  ${expect_date}
+    Input Text When Ready  ${DATE_start_date}  ${expect_date}
+    Input Text When Ready  ${DATE_end_date}  ${expect_date}
     Click Element When Ready  ${DATE_apply_btn}
     Click Element When Ready  ${REP_ok_btn}
     The Date Should Be expect date
