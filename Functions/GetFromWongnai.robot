@@ -83,12 +83,7 @@ ${lineman_detecter}    Line Man
 # Normal Function
 ############################################################################################################################################
 Check Should Be On Home Page
-    [Arguments]  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
     Element Should Be Visible With Retry  ${HOM_scetion}
-    # BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
-    Reload Page
-
-Check and Clear If Promo is Exist
     Reload Page
 
 Click Report At Nav Bar
@@ -106,29 +101,6 @@ Go To Daily Billing Page
     Click Billing Report Button
     Check Daily Billing Should Show
     Log To Console  ${\n}Visiting Daily Billing Page
-
-Set Date To Today
-    Log To Console  ${\n}Set Date To Today
-    Click Element When Ready  ${HOM_date}
-    Click Element When Ready  ${DATE_today_btn}
-    Click Element When Ready  ${REP_ok_btn}
-    The Date Should Be expect date
-
-    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
-
-Set Date To Expect date
-    Click Element When Ready  ${HOM_date}
-    ${expect_date}  Replace String  ${FS_DATE}  -  /
-    Input Text When Ready  ${DATE_start_date}  ${expect_date}
-    Input Text When Ready  ${DATE_end_date}  ${expect_date}
-    Click Element When Ready  ${DATE_apply_btn}
-    Click Element When Ready  ${REP_ok_btn}
-    The Date Should Be expect date
-
-    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
-
-    Log To Console  ${\n}Set Date To expect date ${expect_date}
-
 
 The Date Should Be expect date
     ${expect_date}=  Replace String    ${FS_DATE}  -  /
@@ -208,17 +180,15 @@ Get Sale total
     LineCaller.Sent Alert To Line By ID  message=Current Sale total for ${FS_DATE} is ${sale_total}
 
 Get New Order Detail
-    [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
     ${bill_list}  Create List
     ${row}=  Count Row
-    ${new_line_amount}=    Evaluate    ${row}-${latest_number}
     ${prev_point}    Set Variable
     ${prev_bill}     Set Variable
     ${prev_price}    Set Variable
     ${prev_amount}   Set Variable
     ${product_list}  Create List
-    FOR    ${INDEX}    IN RANGE    ${new_line_amount}
+    FOR    ${INDEX}    IN RANGE    ${row}
 
         #Get the correct row number
         ${row_number}=    Evaluate  ${INDEX}+1
@@ -442,14 +412,32 @@ Recalculate Amount For The Set Product
 
     END
 
-Validate Data date should be today
-    [Arguments]  ${inp_date}=False
-    log to console  ${\n}Validate Data date should be today
-    IF  '${Inp_date}'=='False'
-        Set Date To Today
-    ELSE
-        Set Date To Expect date
-    END
+Set Date To Today
+    Log To Console  ${\n}Set Date To Today
+    Click Element When Ready  ${HOM_date}
+    Click Element When Ready  ${DATE_today_btn}
+    Click Element When Ready  ${REP_ok_btn}
+    The Date Should Be expect date
+
+    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
+
+Set Date To Expect date
+    Click Element When Ready  ${HOM_date}
+    ${expect_date}  Replace String  ${FS_DATE}  -  /
+    Input Text When Ready  ${DATE_start_date}  ${expect_date}
+    Input Text When Ready  ${DATE_end_date}  ${expect_date}
+    Click Element When Ready  ${DATE_apply_btn}
+    Click Element When Ready  ${REP_ok_btn}
+    The Date Should Be expect date
+
+    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
+
+    Log To Console  ${\n}Set Date To expect date ${expect_date}
+
+Validate Data date should be Expect Date
+    log to console  ${\n}Validate Data date should be ${FS_DATE}
+
+    Set Date To Expect date
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     ${date}     Get Element Locator From Row    1    order_date
     Should Not Be Equal as Strings  ${date}  No data available in table
@@ -457,17 +445,15 @@ Validate Data date should be today
     log to console  ${\n}Data date: ${date}
     Should be Equal as Strings  ${expect_date}  ${date}
 
-
-Set Date To Today and Validate Data Date Should be Today
-    [Arguments]  ${is_manual}=False
-    log to console  ${\n}Set Date To Today and Validate Data Date Should be today
-    ${is_set_date_success}  Run Keyword And Return Status  BuiltIn.Wait Until Keyword Succeeds  5 x  1 sec  Validate Data date should be today  ${is_manual}
+Set Date To Expect Date and Validate Data Date Should be Expecte Date
+    log to console  ${\n}Set Date To Expect Date and Validate Data Date Should be Expecte Date
+    ${is_set_date_success}  Run Keyword And Return Status  BuiltIn.Wait Until Keyword Succeeds  5 x  1 sec  Validate Data date should be Expect Date
     ${date}     Get Element Locator From Row    1    order_date
     ${is_no_order}  Run Keyword And Return Status  Should Be Equal as Strings  ${date}  No data available in table
 
     IF  ${is_set_date_success}
 
-        log to console  ${\n}Success set date
+        log to console  ${\n}Success set date to ${FS_DATE}
 
     ELSE IF  ${is_no_order}
 
