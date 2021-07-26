@@ -23,7 +23,7 @@ ${GOLBAL_TIMEOUT}      1 min
 ############################################################################################################################################
 Script Setup
     [Arguments]  ${is_date}=False
-
+    log to console    ${\n}is_date: ${is_date}
     Set Date For FireStore  ${is_date}
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
