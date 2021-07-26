@@ -48,7 +48,7 @@ Login to Firebear Sothorn POS
     Input Text  ${LOG_user}  ${_POS_USER}  clear=true  
     Input Text  ${LOG_pass}  ${_POS_PASS}  clear=true
     Click Element  ${LOG_submit_btn}
-    Check Should Be On Home Page
+    BuiltIn.Wait Until Keyword Succeeds  5 x  1 sec    Check Should Be On Home Page
     Log To Console  ${\n}Login to Wongnai
 
 Open Wongnai POS WEB on Headless and Maximize Window

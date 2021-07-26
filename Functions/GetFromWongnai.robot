@@ -83,12 +83,7 @@ ${lineman_detecter}    Line Man
 # Normal Function
 ############################################################################################################################################
 Check Should Be On Home Page
-    [Arguments]  ${attempt}=${ATTEMPT}  ${wait_time}=${WAIT}
     Element Should Be Visible With Retry  ${HOM_scetion}
-    # BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Check and Clear If Promo is Exist
-    Reload Page
-
-Check and Clear If Promo is Exist
     Reload Page
 
 Click Report At Nav Bar
@@ -106,8 +101,6 @@ Go To Daily Billing Page
     Click Billing Report Button
     Check Daily Billing Should Show
     Log To Console  ${\n}Visiting Daily Billing Page
-
-
 
 The Date Should Be expect date
     ${expect_date}=  Replace String    ${FS_DATE}  -  /
@@ -187,11 +180,9 @@ Get Sale total
     LineCaller.Sent Alert To Line By ID  message=Current Sale total for ${FS_DATE} is ${sale_total}
 
 Get New Order Detail
-    # [Arguments]    ${latest_number}
     ${newline_detail}  Create Dictionary
     ${bill_list}  Create List
     ${row}=  Count Row
-    # ${new_line_amount}=    Evaluate    ${row}-${latest_number}
     ${prev_point}    Set Variable
     ${prev_bill}     Set Variable
     ${prev_price}    Set Variable
@@ -444,13 +435,9 @@ Set Date To Expect date
     Log To Console  ${\n}Set Date To expect date ${expect_date}
 
 Validate Data date should be Expect Date
-    # [Arguments]  ${inp_date}=False
     log to console  ${\n}Validate Data date should be ${FS_DATE}
-    # IF  '${inp_date}'=='False'
-    #     Set Date To Today
-    # ELSE
-        Set Date To Expect date
-    # END
+
+    Set Date To Expect date
     ${expect_date}=  Replace String  ${FS_DATE}  -  /
     ${date}     Get Element Locator From Row    1    order_date
     Should Not Be Equal as Strings  ${date}  No data available in table
@@ -458,9 +445,7 @@ Validate Data date should be Expect Date
     log to console  ${\n}Data date: ${date}
     Should be Equal as Strings  ${expect_date}  ${date}
 
-
 Set Date To Expect Date and Validate Data Date Should be Expecte Date
-    # [Arguments]  ${is_manual}=False
     log to console  ${\n}Set Date To Expect Date and Validate Data Date Should be Expecte Date
     ${is_set_date_success}  Run Keyword And Return Status  BuiltIn.Wait Until Keyword Succeeds  5 x  1 sec  Validate Data date should be Expect Date
     ${date}     Get Element Locator From Row    1    order_date
