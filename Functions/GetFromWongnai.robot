@@ -35,6 +35,9 @@ ${TAB_payment}              xpath=//table[@id='show_table_billDetail']//tbody/tr
 ${TAB_comment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[19]
 ${TAB_order_type}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[21]
 
+#10 Points List
+${gang_mhee}             แก๊งค์หมี
+
 #4 Points List
 ${tid_char}             ติดชา
 ${tid_nom}              ติดนม
@@ -338,6 +341,9 @@ Get New Order Detail
 Recalculate Point For The Set Product
     [Arguments]  ${name}
 
+    ${is_10}    Run Keyword And Return Status  Should Contain Any
+    ...  ${name}      ${gang_mhee}
+
     ${is_4}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${tid_char}  ${tid_nom}  ${tid_char_tid_nom}  ${look_tid}
 
@@ -352,7 +358,11 @@ Recalculate Point For The Set Product
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
     
-    IF  ${is_4}
+    IF  ${is_10}
+
+        BuiltIn.Return From Keyword   10
+
+    ELSE IF  ${is_4}
 
         BuiltIn.Return From Keyword   4
 
@@ -388,6 +398,9 @@ Check Payment For Lineman Type
 Recalculate Amount For The Set Product  
     [Arguments]  ${name}
 
+    ${is_10}    Run Keyword And Return Status  Should Contain Any
+    ...  ${name}      ${gang_mhee}
+
     ${is_4}  Run Keyword And Return Status  Should Contain Any
     ...  ${name}      ${tid_char}  ${tid_nom}  ${tid_char_tid_nom}  ${look_tid}
 
@@ -403,7 +416,11 @@ Recalculate Amount For The Set Product
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
     ...               ${wip}  ${free}
     
-    IF  ${is_4}
+    IF  ${is_10}
+
+        BuiltIn.Return From Keyword   10
+    
+    ELSE IF  ${is_4}
 
         BuiltIn.Return From Keyword   4
 
