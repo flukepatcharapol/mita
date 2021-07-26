@@ -146,7 +146,7 @@ Update bill to firestore
 
     Set Test Variable    ${TEST NAME}    Update bill for ${FS_DATE}
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date  is_manual=True
+    GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     # Set Test Variable  ${PREV_LENGTH}  0
