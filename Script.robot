@@ -78,16 +78,20 @@ Clean Download Directory
 
 Set Date For FireStore
     [Documentation]  Date format  30-12-2021
-    [Arguments]  ${expect_date}=False
+    [Arguments]  ${expect_date}
 
     IF  '${expect_date}'=='False'
+
         ${cur_date}=   Get Current Date  UTC  + 7 hour  result_format=%d-%m-%Y
         Set Test Variable  ${FS_DATE}  ${cur_date}
+
     ELSE
+
         Set Test Variable  ${FS_DATE}  ${expect_date}
+
     END
 
-    Log to console  ${\n}Set FS_DATE: ${FS_DATE}
+    Log to console  ${\n}Set FS_DATE to: ${FS_DATE}
 
 Get Only Not Exist Bill Dict
     [Arguments]  ${non_exist_list}  ${bill_dict}
@@ -109,7 +113,7 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     Set Test Variable    ${TEST NAME}    Update Bill To Firestore
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today
+    GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
@@ -137,18 +141,18 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
 Update bill to firestore
     [Documentation]    This script goto poswognai and check not exist bill then update them to Firestore
-    [Tags]  force-update-date
+    [Tags]    Daily-update-bill
     [Setup]  Script Setup  ${INPUT_DATE}
 
     Set Test Variable    ${TEST NAME}    Update bill for ${FS_DATE}
     GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Today and Validate Data Date Should be Today  is_manual=True
+    GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date  is_manual=True
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     # Set Test Variable  ${PREV_LENGTH}  0
     SeleniumLibrary.Set Selenium Speed    0
 
-    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
+    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
 
     IF  ${is_up_to_date}
