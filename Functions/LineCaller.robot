@@ -5,7 +5,7 @@ Send Text To Line User
     ${header}=  Get MY Bot Header
 
     ${body}  Set Variable  {"to": "${receiver}","messages": [{"type": "text","text": "${text}"}]} 
-    Create Session  Send Text  ${LINE}[URL]  headers=${header}  verify=True
+    Create Session  Send Text  ${LINE}[url]  headers=${header}  verify=True
     ${response}=  POST Request  Send Text  ${LINE}[push_message]  data=${body}     # [interim]${response}=  POST On Session  alias=Send Text  url=${LINE}[push_message]  data=${body}
     Delete All Sessions
 
