@@ -145,6 +145,7 @@ Update bill to firestore
     [Setup]  Script Setup  ${INPUT_DATE}
 
     Set Test Variable    ${TEST NAME}    Update bill for ${FS_DATE}
+    log to console    ${\n}${TEST NAME}
     GetFromWongnai.Go To Daily Billing Page
     GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date
     GetFromWongnai.Click Show All Row
@@ -200,7 +201,7 @@ Clear Redeem History
     
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
-    ${used_limit}  Set Variable  7
+    ${used_limit}  Set Variable  14
     ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
     ${used_due_date}  Get Current Date  UTC  + 7 hours - ${used_limit} days  result_format=%d-%m-%Y
     log to console  ${\n}expire_date:${cur_date} used_due_date:${used_due_date}
