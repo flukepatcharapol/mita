@@ -30,7 +30,7 @@ db=firestore.client()
 class Uploader ():
     
     def getCurrentThaiTime (self):
-        return datetime.now() + timedelta(hours=7)
+        return datetime.now() + timedelta()
     
     def setExpectedTimeFormat (self, str_date):
         date_time_obj = datetime.strptime(str_date, '%d-%m-%Y')
