@@ -78,7 +78,7 @@ Clean Download Directory
 
 Set Date For FireStore
     [Documentation]  Date format  30-12-2021
-    [Arguments]  ${expect_date}
+    [Arguments]  ${expect_date}=False
 
     IF  '${expect_date}'=='False'
 

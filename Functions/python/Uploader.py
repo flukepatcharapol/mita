@@ -6,6 +6,7 @@ import firestore
 from firebase_admin import credentials
 from firebase_admin import firestore
 from datetime import datetime
+from datetime import timedelta
 
 # Set Firestore DB Credential For Local
 private_key_id = os.getenv('FS_KEY_ID')
@@ -28,6 +29,9 @@ db=firestore.client()
 
 class Uploader ():
     
+    def getCurrentThaiTime (self):
+        return datetime.now() + timedelta()
+    
     def setExpectedTimeFormat (self, str_date):
         date_time_obj = datetime.strptime(str_date, '%d-%m-%Y')
         new_format = datetime.strftime(date_time_obj,'%Y%m%d')
@@ -39,6 +43,7 @@ class Uploader ():
         #Convert to expected format and data type
         date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
         str_orderDate=self.setExpectedTimeFormat(orderDate)
+        current_time=self.getCurrentThaiTime()
         int_point = int(point)
         float_price = float(price)
         int_amount = int(amount)
@@ -47,15 +52,32 @@ class Uploader ():
         doc_date=db.collection('Order').document(str_orderDate).get()
         if doc_date.exists:
             
-            db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
-                'Delivery':delivery,
-                'BillID':bill,
-                'OrderDate':date_time_obj,
-                'ProductList':product_list,
-                'AmountOfCups': int_amount,
-                'Point':int_point,
-                'SubTotalBillPrice':float_price
-            }, merge=True)
+            doc_bill=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).get()
+            
+            if doc_bill.exists:
+                
+                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
+                    'Delivery':delivery,
+                    'BillID':bill,
+                    'ProductList':product_list,
+                    'AmountOfCups': int_amount,
+                    'Point':int_point,
+                    'SubTotalBillPrice':float_price,
+                    'LastUpdatedTime': current_time,
+                })
+                
+            else:
+                
+                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
+                    'Delivery':delivery,
+                    'BillID':bill,
+                    'OrderDate':date_time_obj,
+                    'ProductList':product_list,
+                    'AmountOfCups': int_amount,
+                    'Point':int_point,
+                    'SubTotalBillPrice':float_price,
+                    'LastUpdatedTime': current_time,
+                }, merge=True)
             
             
         #Create the document if the document is not yet exist
@@ -72,7 +94,8 @@ class Uploader ():
             'ProductList':product_list,
             'AmountOfCups': int_amount,
             'Point':int_point,
-            'SubTotalBillPrice':float_price
+            'SubTotalBillPrice':float_price,
+            'LastUpdatedTime': current_time,
         }, merge=True)
 
     def getPrevNumber (self, date):
@@ -133,32 +156,6 @@ class Uploader ():
 
         #Return the list of failed doc
         return  list_of_failed
-        
-    # def deleteAllOlderPrev (self, date):
-    #     str_orderDate=self.setExpectedTimeFormat(date)
-        
-    #     #Get all doc from collection Mita
-    #     col=db.collection('Mita').get()
-    #     result= []
-        
-    #     #Search and get every doc that older than $date
-    #     for doc in col:
-    #         if doc.id < str_orderDate:
-    #             result.append(doc.id)
-
-    #     #Delete every doc from the list
-    #     for doc_id in result:
-    #         db.collection('Mita').document(doc_id).delete()
-        
-    #     #Check and if not failed add to list
-    #     list_of_failed = []
-    #     for check_doc in result:
-    #         check_result=db.collection('Mita').document(check_doc).get()
-    #         if check_result.exists:
-    #             list_of_failed.append(check_doc)
-
-    #     #Return the list of failed doc
-    #     return  list_of_failed
 
     def billShouldExist (self, bill_list, date):
         str_orderDate=self.setExpectedTimeFormat(date)
