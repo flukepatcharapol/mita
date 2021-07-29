@@ -16,10 +16,10 @@ steps:
 
 images: [gcr.io/$PROJECT_ID/mita:latest]
 
-steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 
-        'run', 'gcr.io/$PROJECT_ID/mita:latest', 
-        # 'robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -v IS_LOCAL:$_IS_LOCAL -v BUILD_ID:$_BUILD_ID -v PROJECT_ID:$_PROJECT_ID -v INPUT_DATE:$_DATE -i $_SCRIPT_TAG Script.robot'
-        'robot -i test Script.robot'
-        ]
+# steps:
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 
+#         'run', 'gcr.io/$PROJECT_ID/mita:latest', 
+#         # 'robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -v IS_LOCAL:$_IS_LOCAL -v BUILD_ID:$_BUILD_ID -v PROJECT_ID:$_PROJECT_ID -v INPUT_DATE:$_DATE -i $_SCRIPT_TAG Script.robot'
+#         'robot -i test Script.robot'
+#         ]
