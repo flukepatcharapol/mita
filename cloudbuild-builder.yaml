@@ -1,6 +1,25 @@
 steps:
-- name: 'gcr.io/kaniko-project/image:latest'
-  args:
-  - --destination=gcr.io/$PROJECT_ID/image
-  - --cache=true
-  - --cache-ttl=11h
+  # Install dependencies
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 
+        'build', 
+        '-t', 'gcr.io/$PROJECT_ID/mita:latest',
+        '--build-arg', '_POS_USER=$_POS_USER','--build-arg', '_POS_PASS=$_POS_PASS',
+        '--build-arg', '_FLUKE_UID=$_FLUKE_UID','--build-arg', '_ACCESS_TOKEN=$_ACCESS_TOKEN', 
+        '--build-arg', '_SCRIPT_TAG=$_SCRIPT_TAG', '--build-arg', '_FS_CLI_ID=$_FS_CLI_ID', 
+        '--build-arg', '_FS_KEY_ID=$_FS_KEY_ID', '--build-arg', '_IS_LOCAL=$_IS_LOCAL', 
+        '--build-arg', '_BUILD_ID=$BUILD_ID', '--build-arg', '_PROJECT_ID=$PROJECT_ID', 
+        '--build-arg', '_DATE=$_DATE', 
+        '--cache-from', 'gcr.io/$PROJECT_ID/mita:latest',
+        '-f', 'Dockerfile.test'
+        '.' ]
+
+images: [gcr.io/$PROJECT_ID/mita:latest]
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 
+        'run', 'gcr.io/$PROJECT_ID/mita:latest', 
+        # 'robot -v POS_USER:$_POS_USER -v POS_PASS:$_POS_PASS -v LINE_FLUKE_UID:$_FLUKE_UID -v LINE_ACCESS_TOKEN:$_ACCESS_TOKEN -v IS_LOCAL:$_IS_LOCAL -v BUILD_ID:$_BUILD_ID -v PROJECT_ID:$_PROJECT_ID -v INPUT_DATE:$_DATE -i $_SCRIPT_TAG Script.robot'
+        'robot -i test Script.robot'
+        ]

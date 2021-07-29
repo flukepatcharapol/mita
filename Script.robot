@@ -24,6 +24,8 @@ ${GOLBAL_TIMEOUT}      1 min
 Script Setup
     [Arguments]  ${is_date}=False
 
+    ${start_time}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
+    log to console    ${\n}Start time: ${start_time}
     Set Date For FireStore  ${is_date}
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
     SeleniumLibrary.Set Selenium Speed    0.001
@@ -207,3 +209,9 @@ Clear Redeem History
     log to console  ${\n}expire_date:${cur_date} used_due_date:${used_due_date}
     
     Delete used and expired RedeemhHistory  ${used_due_date}  ${cur_date}
+
+Test docker
+    [Tags]    Test
+    [Setup]
+    log to console    ${\n}Success
+    [Teardown]
