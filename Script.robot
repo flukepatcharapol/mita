@@ -24,7 +24,7 @@ ${GOLBAL_TIMEOUT}      1 min
 Script Setup
     [Arguments]  ${is_date}=False
 
-    ${start_time}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
+    ${start_time}  Get Time
     log to console    ${\n}Start time: ${start_time}
     Set Date For FireStore  ${is_date}
     Run Keyword If  ${IS_LOCAL}  Import Variables  ${CURDIR}/Config-local.yaml
