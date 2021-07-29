@@ -1,4 +1,3 @@
-images: [gcr.io/$PROJECT_ID/mita:$SHORT_SHA]
 
 steps:
   # Install dependencies
@@ -22,3 +21,5 @@ steps:
         'LINE_ACCESS_TOKEN:$_ACCESS_TOKEN', '-v', 'IS_LOCAL:$_IS_LOCAL', '-v', 'BUILD_ID:$_BUILD_ID', '-v', 
         'PROJECT_ID:$_PROJECT_ID', '-v', 'INPUT_DATE:$_DATE', '-i', '$_SCRIPT_TAG', 'Script.robot'
         ]
+
+images: [gcr.io/$PROJECT_ID/mita:$SHORT_SHA]
