@@ -19,3 +19,6 @@ Input Text When Ready
     BuiltIn.Wait Until Keyword Succeeds  ${attempt}  ${wait_time}  Input Text  ${element}  ${text}  clear=true
     # Wait Until Element Is Visible  ${element}  ${GOLBAL_TIMEOUT}  error=The ${element} is not visible in ${GOLBAL_TIMEOUT}
     # Input Text  ${element}  ${text}  clear=True
+
+# Common Wait Until Element Is Visible
+#     [Arguments]    ${element}
