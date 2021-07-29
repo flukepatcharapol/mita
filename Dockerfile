@@ -10,7 +10,7 @@ RUN curl -sO https://dl-ssl.google.com/linux/linux_signing_key.pub
 # RUN export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
 #     curl -sO http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
 #     unzip chromedriver_linux64.zip
-RUN export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/92.0.4515.107/` && \
+RUN export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_92.0.4515` && \
     curl -sO http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip chromedriver_linux64.zip
 
