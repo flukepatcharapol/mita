@@ -28,7 +28,7 @@ RUN apt-get update && \
 RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
     apt-key add linux_signing_key.pub && \
     apt-get update && \
-    apt-get install --no-install-recommends google-chrome-stable -y -q && \
+    apt-get install --no-install-recommends 92.0.4515.107 -y -q && \
     rm linux_signing_key.pub && \
     chmod +x /usr/local/bin/chromedriver
 
