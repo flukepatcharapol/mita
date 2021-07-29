@@ -11,7 +11,7 @@ steps:
         '--build-arg', '_BUILD_ID=$BUILD_ID', '--build-arg', '_PROJECT_ID=$PROJECT_ID', 
         '--build-arg', '_DATE=$_DATE', 
         '--cache-from', 'gcr.io/$PROJECT_ID/mita:latest',
-        '-f', 'Dockerfile.test'
+        '-f', 'Dockerfile.test',
         '.' ]
 
 images: [gcr.io/$PROJECT_ID/mita:latest]
