@@ -97,9 +97,9 @@ Bill list should exist for today
 
 Delete used and expired RedeemhHistory
     [Arguments]  ${used_due_date}  ${expire_due_date}  ${delete_date}
-    ${mark_expired_list}  ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}  ${delete_date}
-    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
-    Pass Execution  finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
+    ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}  ${delete_date}
+    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Delete list:${delete_list}
+    Pass Execution  finish delete Redeem-code Delete list:${delete_list}
 
 Delete Document Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
