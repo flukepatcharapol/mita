@@ -96,8 +96,8 @@ Bill list should exist for today
     [Return]  ${result}  ${fail_list}
 
 Delete used and expired RedeemhHistory
-    [Arguments]  ${used_due_date}  ${expire_due_date}  ${delete_date}
-    ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}  ${delete_date}
+    [Arguments]  ${used_due_date}  ${expire_due_date}
+    ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}
     LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Delete list:${delete_list}
     Pass Execution  finish delete Redeem-code Delete list:${delete_list}
 

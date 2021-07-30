@@ -12,10 +12,13 @@ Resource       ${CURDIR}/Config.robot
 ${ATTEMPT}             30 x
 ${WAIT}                1 sec
 ${SCREENSHOT_DIR}      ${CURDIR}\\AutoScreenshot
-${GOLBAL_SLEEP}        0.5 sec
+${GOLBAL_SLEEP}        1 sec
 ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
 ${GOLBAL_TIMEOUT}      1 min
 
+${EXPIRED_ORDER}       14 days
+${REDEEM_USED_EXPIRED}  14 days
+${REDEEM_DELETE_DATE}  7 days
 ############################################################################################################################################
 ***Keywords***
 ############################################################################################################################################
@@ -179,39 +182,25 @@ Delete every document that older
     #Get the date older than today for 7 days
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
-    ${expire_due_date}=  Set Variable  14
-    ${cur_date}  Get Current Date  UTC  + 7 hours - ${expire_due_date} days  result_format=%d-%m-%Y
+    ${cur_date}  Get Current Date  UTC  + 7 hours - ${EXPIRED_ORDER}  result_format=%d-%m-%Y
 
-    ${result}  ToTheCloud.Delete Document Where older Than '${cur_date}'
-    ${is_empty}  Run Keyword And Return Status  Should Be Empty  ${result}
-    Log to console  ${\n}\[Order\] Delete every document before ${cur_date}
-
-    #Sent noti to line is success or not
-    IF  ${is_empty}
-
-        LineCaller.Sent Alert To Line By ID  message=\[Order\] Finish Empty The Document for ${FS_DATE}
-
-    ELSE
-
-        LineCaller.Sent Alert To Line By ID  message=\[Order\] FAILED to Empty The Document for ${FS_DATE} Failed list: ${result}
-        log to console  ${\n}Failed list: ${result}
-
-    END
+    log to console    ${\n}Delete Document Where older Than ${cur_date}
+    ToTheCloud.Delete Document Where older Than '${cur_date}'
   
 Clear Redeem History
     [Tags]    Clear-Redeem-History
     
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
-    ${used_limit}  Set Variable  14
-    ${cur_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
-    ${used_due_date}  Get Current Date  UTC  + 7 hours - ${used_limit} days  result_format=%d-%m-%Y
-    log to console  ${\n}expire_date:${cur_date} used_due_date:${used_due_date}
+    ${expire_due_date}  Get Current Date  UTC  + 7 hours  result_format=%d-%m-%Y
+    ${used_due_date}  Get Current Date  UTC  + 7 hours - ${REDEEM_USED_EXPIRED}  result_format=%d-%m-%Y
+    ${delete_date}  Get Current Date  UTC  + 7 hours + ${REDEEM_DELETE_DATE}  result_format=%d-%m-%Y
+    log to console  ${\n}expire_date:${expire_due_date} used_due_date:${used_due_date}
     
-    Delete used and expired RedeemhHistory  ${used_due_date}  ${cur_date}
+    Delete used and expired RedeemhHistory  ${used_due_date}  ${expire_due_date}
 
 Test docker
-    [Tags]    Test
+    [Tags]    docker
     [Setup]
     log to console    ${\n}Success
     [Teardown]
