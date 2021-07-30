@@ -110,7 +110,7 @@ class Uploader ():
                 expired_order_doc.append(doc.id)
         #Check if there are no doc older than 14 days then return False
         if not expired_order_doc:
-            return 'False'
+            return 'False', expired_order_doc
         
         #Delete every Document from the list
         for doc_date in expired_order_doc:

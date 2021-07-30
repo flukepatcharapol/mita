@@ -37,17 +37,6 @@ Transform To Firestore Format And Sent To FireStore
     Run Keyword If  ${is_add}  Set New Line To The FireStore  ${result}
     [Return]  ${bill_list}
 
-Set New Line To The FireStore
-    [Arguments]    ${list}
-
-    #Check if there are only counter order
-    ${list_length}  Get Length  ${list}
-    ${is_new_delivery}  Run Keyword and Return Status  Should Be True  ${list_length}<=0
-    IF  ${is_new_delivery}
-        Pass Execution  There are only new counter orders.
-    END
-    Update Bill Document to FireStore  ${list}
-
 Update Bill Document to FireStore
     [Arguments]  ${list}
     ${fail_list}    Create List
@@ -100,25 +89,22 @@ Update Bill Document to FireStore
 
     END
 
-Get Prev Line Saved
-    [Arguments]  ${date}
-    ${result}=    Uploader.getPrevNumber  ${date}
-    ${line}=  Get From Dictionary  ${result}  line
-    [Return]  ${line}
+Bill list should exist for today
+    [Arguments]  ${bill_list}
+    ${date}  Replace String  ${DATA_DATE}  /  -
+    ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
+    [Return]  ${result}  ${fail_list}
 
-Update New Prev Number
-    [Documentation]  Date format  11-05-2021
-    [Arguments]  ${date}  ${number}
-    Uploader.setPrevNumber    ${date}  ${number}
-
-Delete Prev Number Where older Than '${date}'
-    [Documentation]  Date format  11-05-2021
-    ${result}  Uploader.deleteAllOlderPrev  ${date}
-    [Return]  ${result}
+Delete used and expired RedeemhHistory
+    [Arguments]  ${used_due_date}  ${expire_due_date}  ${delete_date}
+    ${mark_expired_list}  ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}  ${delete_date}
+    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
+    Pass Execution  finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
 
 Delete Document Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
     ${result}  ${list}  Uploader.deleteAllOlderDoc  ${date}
+    log to console    ${\n}result:${result}${\n}list:${list}
     
     # Check the result and sent Line notification
     IF  '${result}'=='False'
@@ -140,15 +126,3 @@ Delete Document Where older Than '${date}'
         Fail  Failed to empty doc older than ${date} with no reason
 
     END
-
-Bill list should exist for today
-    [Arguments]  ${bill_list}
-    ${date}  Replace String  ${DATA_DATE}  /  -
-    ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
-    [Return]  ${result}  ${fail_list}
-
-Delete used and expired RedeemhHistory
-    [Arguments]  ${used_due_date}  ${expire_due_date}  ${delete_date}
-    ${mark_expired_list}  ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}  ${delete_date}
-    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
-    Pass Execution  finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
