@@ -118,14 +118,28 @@ Delete Prev Number Where older Than '${date}'
 
 Delete Document Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
-    ${result}  Uploader.deleteAllOlderDoc  ${date}
+    ${result}  ${list}  Uploader.deleteAllOlderDoc  ${date}
     
+    # Check the result and sent Line notification
     IF  '${result}'=='False'
+
         LineCaller.Sent Alert To Line By ID  message=\[Order\] No document older than ${date}
         Pass Execution  There are no document older than ${date}
-    END
 
-    [Return]  ${result}
+    ELSE IF  '${result}'=='Success'
+
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] Finish Empty ${list} older than ${date}
+        Pass Execution   Finish Empty ${list} for ${date}
+
+    ELSE IF  '${result}'=='Failed'
+
+        Fail  Failed to empty ${list} older than ${date}
+
+    ELSE
+
+        Fail  Failed to empty doc older than ${date} with no reason
+
+    END
 
 Bill list should exist for today
     [Arguments]  ${bill_list}
@@ -133,19 +147,8 @@ Bill list should exist for today
     ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
     [Return]  ${result}  ${fail_list}
 
-Update Bill to Firestore
-    [Arguments]  ${bill_dict}
-    ${is_update}  ${update_list}  Uploader.updateDeliveryBillToCloud  ${bill_dict}
-
-    IF  ${is_update}
-        ${list_length}  Get Length  ${update_list}
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Update ${list_length} bills, which are ${update_list}
-    ELSE
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] There is no new bill to update.
-    END
-
 Delete used and expired RedeemhHistory
-    [Arguments]  ${used_due_date}  ${expire_due_date}
-    @{used_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}
-    log to console  finish delete used:${used_list}    #and expire: ${expired_list}
-    # LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] finish delete used:${used_list}   # and expire: ${expired_list}
+    [Arguments]  ${used_due_date}  ${expire_due_date}  ${delete_date}
+    ${mark_expired_list}  ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}  ${delete_date}
+    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
+    Pass Execution  finish delete Redeem-code Mark expired list:${mark_expired_list} Delete list:${delete_list}
