@@ -1,6 +1,5 @@
 import os 
 import datetime
-import collections
 import firebase_admin
 import firestore
 from firebase_admin import credentials
@@ -98,46 +97,23 @@ class Uploader ():
             'LastUpdatedTime': current_time,
         }, merge=True)
 
-    def getPrevNumber (self, date):
-        str_orderDate=self.setExpectedTimeFormat(date)
-        
-        #Set destination
-        line=db.collection('Mita').document(str_orderDate).get()
-        if line.exists:
-            
-            return line.to_dict()
-        
-        else:
-            
-            result = {'line': 'False'}
-            return result
-        
-
-    def setPrevNumber (self, date, prev_number):
-        str_orderDate=self.setExpectedTimeFormat(date)
-        prev_number = int(prev_number)
-        db.collection('Mita').document(str_orderDate).set({
-                'line': prev_number,
-            })
-            
-
     def deleteAllOlderDoc (self, date):
         str_orderDate=self.setExpectedTimeFormat(date)
         
         #Get all doc from collection Mita
         col=db.collection('Order').get()
-        older_doc= []
+        expired_order_doc= []
         
         #Search and get every doc that older than $date
         for doc in col:
             if doc.id < str_orderDate:
-                older_doc.append(doc.id)
-        #Check if there are no doc older than 7 days then return False
-        if not older_doc:
-            return False
+                expired_order_doc.append(doc.id)
+        #Check if there are no doc older than 14 days then return False
+        if not expired_order_doc:
+            return 'False', expired_order_doc
         
         #Delete every Document from the list
-        for doc_date in older_doc:
+        for doc_date in expired_order_doc:
             
             #Get all bill id from date subcollection and add to list
             doc_bill=db.collection('Order').document(doc_date).collection('OrderDetail').get()
@@ -146,16 +122,19 @@ class Uploader ():
                 
             #Delete date document
             db.collection('Order').document(doc_date).delete()
-        
+            
         #Check and if not failed add to list
         list_of_failed = []
-        for check_doc in older_doc:
-            check_result=db.collection('Order').document(check_doc).get()
-            if check_result.exists:
-                list_of_failed.append(check_doc)
+        doc_date=db.collection('Order').get()
+        for doc in doc_date:
+            if doc.id in expired_order_doc:
+                list_of_failed.append(doc.id)
 
         #Return the list of failed doc
-        return  list_of_failed
+        if len(list_of_failed) == 0:
+            return 'Success', expired_order_doc
+        else :
+            return 'Failed', list_of_failed
 
     def billShouldExist (self, bill_list, date):
         str_orderDate=self.setExpectedTimeFormat(date)
@@ -189,122 +168,12 @@ class Uploader ():
         else:
             
             return True, existing_list
-        
-    def updateDeliveryBillToCloud (self,bill_dict):
-        #Get key list and get data date
-        key_list = bill_dict.keys()
-        orderDate = bill_dict.get(key_list[0]).get('Order_date')
-        str_orderDate=self.setExpectedTimeFormat(orderDate)
-        
-        doc_date=db.collection('Order').document(str_orderDate).get()
-        #Check if the date document is already exist
-        if doc_date.exists:
-            date_db=db.collection('Order').document(str_orderDate).collection('OrderDetail').get()
-            #Get list of bill in the date document
-            fs_bill_list = []
-            if date_db.exists:
-                for doc in date_db:
-                    fs_bill_list.append(doc.id)
-            
-            #Check if the bill_dict already up to date
-            is_new = collections.Counter(fs_bill_list) != collections.Counter(key_list)
-            if is_new:
-                #Check to get exist and non-exist bill from date document
-                not_exist_list = []
-                exist_list = []
-                for bill in key_list:
-                    if bill not in fs_bill_list:
-                        not_exist_list.append(bill)
-                    else:
-                        exist_list.append(bill)
-                
-                #Append all non-exist bill value to not_exist_dict_list prepare to add to Firestore
-                not_exist_dict_list = []
-                for key in not_exist_list:
-                    dict = bill_dict.get(key)
-                    not_exist_dict_list.append(dict)
-                
-                #Update/add every non-exist bill to Firestore
-                for bill in not_exist_dict_list:
-                    delivery=bill.Type
-                    bill_id=bill.Bill_id
-                    date=bill.Order_date
-                    # product_list=bill.Product_list
-                    amount=bill.Amount
-                    point=bill.Point
-                    price=bill.Price
-                    
-                    date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-                    amount_int = int(amount)
-                    point_int = int(point)
-                    price_float = float(price)
-                    bill_db=db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill_id).get()
-                    if bill_db.exists:  #If the bill is already exist, do the update
-                    
-                        db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).update({
-                            'Delivery':delivery,
-                            'BillID':bill,
-                            'OrderDate':date_time_obj,
-                            # 'ProductList':product_list,
-                            'AmountOfCups': amount_int,
-                            'Point':point_int,
-                            'SubTotalBillPrice':price_float
-                        })
-                    
-                    else:  #If the bill is not exist, do the set new doc
-                    
-                        db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
-                            'Delivery':delivery,
-                            'BillID':bill,
-                            'OrderDate':date_time_obj,
-                            # 'ProductList':product_list,
-                            'AmountOfCups': amount_int,
-                            'Point':point_int,
-                            'SubTotalBillPrice':price_float
-                        })
-                #Return is_update = true and the new dawdupdate list
-                return True, not_exist_list
-            else:
-                #Return is_update=False
-                return False
-            
-        #If document date is not exist
-        else: 
-                
-            #Create Document for this date=str_orderDate and init Saletotal 
-            db.collection('Order').document(str_orderDate).set({})
-                
-            for bill in bill_dict:
-                delivery=bill.Type
-                bill_id=bill.Bill_id
-                date=bill.Order_date
-                # product_list=bill.Product_list
-                amount=bill.Amount
-                point=bill.Point
-                price=bill.Price
-                
-                date_time_obj = datetime.strptime(date, '%d-%m-%Y')
-                amount_int = int(amount)
-                point_int = int(point)
-                price_float = float(price)
-                
-                #Add the bill data to the date document
-                db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill).set({
-                    'Delivery':delivery,
-                    'BillID':bill,
-                    'OrderDate':date_time_obj,
-                    # 'ProductList':product_list,
-                    'AmountOfCups': amount_int,
-                    'Point':point_int,
-                    'SubTotalBillPrice':price_float
-                })
-            return True, key_list
-    
+
     def removeRedeemHistory (self, used_due_date, expire_date):
         used_time_obj = datetime.strptime(used_due_date, '%d-%m-%Y')
-        expired_time_obj = datetime.strptime(expire_date, '%d-%m-%Y')
-        
-        expired = db.collection('RedeemHistory').where('ExpiredDate', '<=', expired_time_obj).get()
+        expired_time_obj = datetime.strptime(expire_date, '%d-%m-%Y') #Today date
+
+        expired = db.collection('RedeemHistory').where('ExpiredDate', '<', expired_time_obj).get()
         used = db.collection('RedeemHistory').where('UsedDate', '<', used_time_obj).get()
         delete_list = []
         for doc in expired:
@@ -313,8 +182,8 @@ class Uploader ():
                 delete_list.append(doc.id)
         for doc in used:
             delete_list.append(doc.id)
-        
+
         for doc_id in delete_list:
             db.collection('RedeemHistory').document(doc_id).delete()
-        
+
         return delete_list

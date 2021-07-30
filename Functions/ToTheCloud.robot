@@ -37,17 +37,6 @@ Transform To Firestore Format And Sent To FireStore
     Run Keyword If  ${is_add}  Set New Line To The FireStore  ${result}
     [Return]  ${bill_list}
 
-Set New Line To The FireStore
-    [Arguments]    ${list}
-
-    #Check if there are only counter order
-    ${list_length}  Get Length  ${list}
-    ${is_new_delivery}  Run Keyword and Return Status  Should Be True  ${list_length}<=0
-    IF  ${is_new_delivery}
-        Pass Execution  There are only new counter orders.
-    END
-    Update Bill Document to FireStore  ${list}
-
 Update Bill Document to FireStore
     [Arguments]  ${list}
     ${fail_list}    Create List
@@ -100,52 +89,40 @@ Update Bill Document to FireStore
 
     END
 
-Get Prev Line Saved
-    [Arguments]  ${date}
-    ${result}=    Uploader.getPrevNumber  ${date}
-    ${line}=  Get From Dictionary  ${result}  line
-    [Return]  ${line}
-
-Update New Prev Number
-    [Documentation]  Date format  11-05-2021
-    [Arguments]  ${date}  ${number}
-    Uploader.setPrevNumber    ${date}  ${number}
-
-Delete Prev Number Where older Than '${date}'
-    [Documentation]  Date format  11-05-2021
-    ${result}  Uploader.deleteAllOlderPrev  ${date}
-    [Return]  ${result}
-
-Delete Document Where older Than '${date}'
-    [Documentation]  Date format  11-05-2021
-    ${result}  Uploader.deleteAllOlderDoc  ${date}
-    
-    IF  '${result}'=='False'
-        LineCaller.Sent Alert To Line By ID  message=\[Order\] No document older than ${date}
-        Pass Execution  There are no document older than ${date}
-    END
-
-    [Return]  ${result}
-
 Bill list should exist for today
     [Arguments]  ${bill_list}
     ${date}  Replace String  ${DATA_DATE}  /  -
     ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
     [Return]  ${result}  ${fail_list}
 
-Update Bill to Firestore
-    [Arguments]  ${bill_dict}
-    ${is_update}  ${update_list}  Uploader.updateDeliveryBillToCloud  ${bill_dict}
-
-    IF  ${is_update}
-        ${list_length}  Get Length  ${update_list}
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Update ${list_length} bills, which are ${update_list}
-    ELSE
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] There is no new bill to update.
-    END
-
 Delete used and expired RedeemhHistory
     [Arguments]  ${used_due_date}  ${expire_due_date}
-    @{used_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}
-    log to console  finish delete used:${used_list}    #and expire: ${expired_list}
-    # LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] finish delete used:${used_list}   # and expire: ${expired_list}
+    ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}
+    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Delete list:${delete_list}
+    Pass Execution  finish delete Redeem-code Delete list:${delete_list}
+
+Delete Document Where older Than '${date}'
+    [Documentation]  Date format  11-05-2021
+    ${result}  ${list}  Uploader.deleteAllOlderDoc  ${date}
+    log to console    ${\n}result:${result}${\n}list:${list}
+    
+    # Check the result and sent Line notification
+    IF  '${result}'=='False'
+
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] No document older than ${date}
+        Pass Execution  There are no document older than ${date}
+
+    ELSE IF  '${result}'=='Success'
+
+        LineCaller.Sent Alert To Line By ID  message=\[Order\] Finish Empty ${list} older than ${date}
+        Pass Execution   Finish Empty ${list} for ${date}
+
+    ELSE IF  '${result}'=='Failed'
+
+        Fail  Failed to empty ${list} older than ${date}
+
+    ELSE
+
+        Fail  Failed to empty doc older than ${date} with no reason
+
+    END
