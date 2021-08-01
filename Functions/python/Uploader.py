@@ -37,10 +37,11 @@ class Uploader ():
         str_orderDate = str(new_format)
         return str_orderDate
         
-    def sendToFireStoreCollection (self,delivery,orderDate,point,bill,price,amount,product_list):
+    def sendToFireStoreCollection (self, delivery, orderDate, point, bill, price, amount, time, product_list):
              
         #Convert to expected format and data type
-        date_time_obj = datetime.strptime(orderDate, '%d-%m-%Y')
+        orderTime = orderDate + ' ' + time
+        date_time_obj = datetime.strptime(orderTime, '%d-%m-%Y %H:%M')
         str_orderDate=self.setExpectedTimeFormat(orderDate)
         current_time=self.getCurrentThaiTime()
         int_point = int(point)
