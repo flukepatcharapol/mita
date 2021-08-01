@@ -232,6 +232,9 @@ Get New Order Detail
             ${name}  Remove String  ${name}  \n
             ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
             ${date}  Replace String  ${date}  /  -
+            ${time}  Catenate  ${date}  ${SPACE}  ${time}
+            ${time}  Convert Date  ${time}
+            ${time}  Add Time To Date  ${time}  - 7 hours
 
             #Check if หน้าร้าน Type
             ${is_counter}    Check If From Counter    ${type}
