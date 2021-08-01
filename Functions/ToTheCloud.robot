@@ -2,40 +2,41 @@
 Library      ${CURDIR}/python/Uploader.py
 
 ***Keywords***
-Transform To Firestore Format And Sent To FireStore
-    [Arguments]    ${newline_detail}  ${is_add}=True
-    ${key}=    Get Dictionary Keys  ${newline_detail}
-    ${dict_length}=    Get Length    ${key}
-    ${bill_list}=  Create List
-    ${result}=    Create List
-    FOR  ${INDEX}    IN    @{key}
-        ${body}=    Get From Dictionary   ${newline_detail}   ${INDEX}  #INDEX is key
-        ${is_valid}=    Get From Dictionary    ${body}    Is_valid
-        IF  ${is_valid}
+# Transform To Firestore Format And Sent To FireStore
+#     [Arguments]    ${newline_detail}  ${is_add}=True
+#     ${key}=    Get Dictionary Keys  ${newline_detail}
+#     ${dict_length}=    Get Length    ${key}
+#     ${bill_list}=  Create List
+#     ${result}=    Create List
+#     FOR  ${INDEX}    IN    @{key}
+#         ${body}=    Get From Dictionary   ${newline_detail}   ${INDEX}  #INDEX is key
+#         ${is_valid}=    Get From Dictionary    ${body}    Is_valid
+#         IF  ${is_valid}
 
-            #Get info
-            ${order_date}    Get From Dictionary  ${body}  Order_date
-            ${point}         Get From Dictionary  ${body}  Point
-            ${price}         Get From Dictionary  ${body}  Price
-            ${amount}        Get From Dictionary  ${body}  Amount
-            ${bill}          Get From Dictionary  ${body}  Bill_id
-            ${type}          Get From Dictionary  ${body}  Type
-            ${product_list}  Get From Dictionary  ${body}  Product_list
+#             #Get info
+#             ${order_date}    Get From Dictionary  ${body}  Order_date
+#             ${order_time}    Get From Dictionary  ${body}  Order_time
+#             ${point}         Get From Dictionary  ${body}  Point
+#             ${price}         Get From Dictionary  ${body}  Price
+#             ${amount}        Get From Dictionary  ${body}  Amount
+#             ${bill}          Get From Dictionary  ${body}  Bill_id
+#             ${type}          Get From Dictionary  ${body}  Type
+#             ${product_list}  Get From Dictionary  ${body}  Product_list
 
-            #Set into Doc info to Document format
-            ${result_body}=  Create Dictionary    Delivery=${type}    
-            ...    OrderDate=${order_date}    Point=${point}    Price=${price}
-            ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
+#             #Set into Doc info to Document format
+#             ${result_body}=  Create Dictionary    Delivery=${type}    
+#             ...    OrderDate=${order_date}    Point=${point}    Price=${price}    Time=${order_time}
+#             ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
 
-            #Append Info to Document
-            Append To List    ${result}    ${result_body}
-            Append To List    ${bill_list}  ${bill}
-            log to console  ${\n}${result_body}
+#             #Append Info to Document
+#             Append To List    ${result}    ${result_body}
+#             Append To List    ${bill_list}  ${bill}
+#             log to console  ${\n}${result_body}
 
-        END
-    END
-    Run Keyword If  ${is_add}  Set New Line To The FireStore  ${result}
-    [Return]  ${bill_list}
+#         END
+#     END
+#     Run Keyword If  ${is_add}  Set New Line To The FireStore  ${result}
+#     [Return]  ${bill_list}
 
 Update Bill Document to FireStore
     [Arguments]  ${list}
@@ -49,6 +50,7 @@ Update Bill Document to FireStore
 
         #Get information from ordered dict
         ${delivery}    Get From Dictionary  ${INDEX}  Type
+        ${time}        Get From Dictionary  ${INDEX}  Order_time
         ${date}        Get From Dictionary  ${INDEX}  Order_date
         ${bill}        Get From Dictionary  ${INDEX}  Bill_id
         ${prod_list}   Get From Dictionary  ${INDEX}  Product_list
@@ -66,7 +68,7 @@ Update Bill Document to FireStore
         #Call uploader to send info to firestore
         IF  ${is_valid}
             Uploader.sendToFireStoreCollection    ${delivery}  ${date}  
-            ...   ${point}  ${bill}  ${price}  ${amount}  ${prod_list}
+            ...   ${point}  ${bill}  ${price}  ${amount}  ${time}  ${prod_list}
             log to console  ${\n}Sent update for ${bill}
         END
     

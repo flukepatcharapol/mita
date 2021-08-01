@@ -155,7 +155,6 @@ Update bill to firestore
     GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date
     GetFromWongnai.Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
-    # Set Test Variable  ${PREV_LENGTH}  0
     SeleniumLibrary.Set Selenium Speed    0
 
     ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail

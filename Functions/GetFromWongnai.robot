@@ -27,6 +27,7 @@ ${REP_time}                 xpath=//div[@class='dataTables_scrollHead']//th[cont
 ${TAB_table}                xpath=//table[@id='show_table_billDetail']//tbody
 ${TAB_row}                  xpath=//table[@id='show_table_billDetail']//tbody/tr  #Use to count the row
 ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[1]  #Get date value from this ele 
+${TAB_order_time}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[2]  #Get time value from this ele 
 ${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[3]
 ${TAB_product_name}         xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[6]
 ${TAB_amount}               xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[8]
@@ -207,6 +208,7 @@ Get New Order Detail
         ELSE
             #Get the text Value from the element
             ${date}     Get Element Locator From Row    ${row_number}    order_date
+            ${time}     Get Element Locator From Row    ${row_number}    order_time
             ${bill_id}  Get Element Locator From Row    ${row_number}    bill_id
             ${name}     Get Element Locator From Row    ${row_number}    product_name
             ${payment}  Get Element Locator From Row    ${row_number}    payment
@@ -230,6 +232,11 @@ Get New Order Detail
             ${name}  Remove String  ${name}  \n
             ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
             ${date}  Replace String  ${date}  /  -
+            ${time}  Catenate  ${date}  ${SPACE}  ${time}:00
+            ${time}  Convert Date  ${time}  date_format=%d-%m-%Y %H:%M:%S  exclude_millis=True
+            log to console  ${\n}${time}
+            ${time}  Add Time To Date  ${time}  - 7 hours  exclude_millis=True
+            log to console  ${\n}${time}
 
             #Check if หน้าร้าน Type
             ${is_counter}    Check If From Counter    ${type}
@@ -242,6 +249,7 @@ Get New Order Detail
 
             #Set the value to dictionary
             Set To Dictionary  ${detail}  Order_date  ${date}  
+            Set To Dictionary  ${detail}  Order_time  ${time}
             Set To Dictionary  ${detail}  Bill_id  ${bill_id}
             Set To Dictionary  ${detail}  Dup  False
             
