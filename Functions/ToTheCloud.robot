@@ -55,9 +55,9 @@ Update Bill Document to FireStore
 
     END
 
-Bill list should exist for today
-    [Arguments]  ${bill_list}
-    ${date}  Replace String  ${DATA_DATE}  /  -
+Bill list should exist for expected day
+    [Arguments]  ${bill_list}  ${expect_date}=${DATA_DATE}
+    ${date}  Replace String  ${expect_date}  /  -
     ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
     [Return]  ${result}  ${fail_list}
 

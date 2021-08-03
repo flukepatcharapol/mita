@@ -126,7 +126,7 @@ Get All Bills from POS wongnai and update to Firestore cloud
 
     Sleep  ${GOLBAL_SLEEP}
     ${bill_dict}  ${bill_list}=  Get New Order Detail  ${PREV_LENGTH}
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${bill_list}
 
     IF  ${is_up_to_date}
 
@@ -158,7 +158,7 @@ Update bill to firestore
     SeleniumLibrary.Set Selenium Speed    0
 
     ${bill_dict}  ${bill_list}=  Get New Order Detail
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${bill_list}  ${DATA_DATE}
 
     IF  ${is_up_to_date}
 
@@ -209,7 +209,7 @@ New Logic
     [Tags]    new-logic
     [Setup]  Script Setup  ${INPUT_DATE}
 
-    Set Test Variable    ${TEST NAME}    [new-logic]Update bill for ${FS_DATE}
+    Set Test Variable    ${TEST NAME}    [new-logic] Update bill for ${FS_DATE}
     log to console    ${\n}${TEST NAME}
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
@@ -219,7 +219,7 @@ New Logic
 
     ${cur_bill_list}  Get All Current Bill Exclude Counter
     log to console  ${\n}cur_bill_list:${\n}${cur_bill_list}
-    ${is_up_to_date}  ${non_exist_list}  Bill list should exist for today  ${cur_bill_list}
+    ${is_up_to_date}  ${non_exist_list}  Bill list should exist for expected day  ${cur_bill_list}  ${FS_DATE}
     log to console  ${\n}non_exist_list:${\n}${non_exist_list}
     
 
