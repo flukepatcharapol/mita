@@ -529,7 +529,6 @@ Get New Order Detail From Bill List
                 ${type}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_type
                 ${amount}   Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    amount
                 ${price}    Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    price
-                log to console  ${\n}Index: ${row_number}, ${bill_id}
                 ${bill_id}  Convert To Upper Case  ${bill_id}
                 
                 Set Test Variable  ${DATA_DATE}  ${date}

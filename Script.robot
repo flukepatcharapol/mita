@@ -230,7 +230,7 @@ New Logic
 
     ELSE
 
-        ${bill_info}  Get New Order Detail From Bill List  ${cur_bill_list}
+        ${bill_info}  Get New Order Detail From Bill List  ${non_exist_list}
         log to console  ${\n}bill_info:${\n}${bill_info}
         Update Bill Document to FireStore  ${bill_info}
 
