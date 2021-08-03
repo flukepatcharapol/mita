@@ -146,18 +146,14 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
-    log to console  ${\n}get attribute ${show_all_is_active}
     ${is_not_active}  Run Keyword and Return Status  Should Not Contain  ${show_all_is_active}  active
 
     IF  ${is_not_active}
-        log to console  ${\n}show all not active
         Reload Page
         Should Be True  ${False}
     ELSE
         log to console  ${\n}show all does active
     END
-
-    log to console  ${\n}Attempt click show all row
 
 Click To Expected Time Order Need Retry
     ${class}  Get Element Attribute  ${REP_time}  class
@@ -629,7 +625,6 @@ Get New Order Detail From Bill List
 
 Get All Current Bill Exclude Counter
     ${row_amount}  Get Element Count  ${TAB_table_delivery}
-    log to console  ${\n}row_amount:${row_amount}
     ${current_bill_list}  Create List
     
     FOR  ${ROW}  IN RANGE  ${row_amount}

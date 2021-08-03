@@ -220,7 +220,6 @@ New Logic
     ${cur_bill_list}  Get All Current Bill Exclude Counter
     log to console  ${\n}cur_bill_list:${\n}${cur_bill_list}
     ${is_up_to_date}  ${non_exist_list}  Bill list should exist for expected day  ${cur_bill_list}  ${FS_DATE}
-    log to console  ${\n}non_exist_list:${\n}${non_exist_list}
     
 
     IF  ${is_up_to_date}
@@ -230,6 +229,7 @@ New Logic
 
     ELSE
 
+        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
         ${bill_info}  Get New Order Detail From Bill List  ${non_exist_list}
         log to console  ${\n}bill_info:${\n}${bill_info}
         Update Bill Document to FireStore  ${bill_info}
