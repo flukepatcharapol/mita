@@ -11,7 +11,7 @@ ${HOM_header}               xpath=//section[@class='header']//div[contains(@clas
 ${HOM_bill_report_lbl}      รายงานยอดขายแยกตามรายละเอียดบิล
 ${HOM_date}                 id=dateranges
 ${DATE_start_date}           xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar left']//input[contains(@class,'input-mini form-control')]
-${DATE_end_date}          xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar right']//input[contains(@class,'input-mini form-control')]
+${DATE_end_date}            xpath=//div[contains(@class,'daterangepicker')][1]//div[@class='calendar right']//input[contains(@class,'input-mini form-control')]
 ${DATE_apply_btn}           xpath=//body//div[3]//div[@class='ranges']//button[contains(@class,'applyBtn')]
 ${HOM_sale_total}           id=sale_total_amount
 ${DATE_today_btn}           xpath=//body//div[3]//div[@class='ranges']//li[@data-range-key='วันนี้']
@@ -26,15 +26,21 @@ ${REP_time}                 xpath=//div[@class='dataTables_scrollHead']//th[cont
 #Table
 ${TAB_table}                xpath=//table[@id='show_table_billDetail']//tbody
 ${TAB_row}                  xpath=//table[@id='show_table_billDetail']//tbody/tr  #Use to count the row
+${TAB_order_date_bill}      xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[1]  #Get date value from this ele 
+${TAB_order_time}           xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[2]  #Get time value from this ele 
+${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[3]
+${TAB_product_name}         xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[6]
+${TAB_amount}               xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[8]
+${TAB_price}                xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[10]
+${TAB_payment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[18]
+${TAB_comment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[19]
+${TAB_order_type}           xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[21]
 ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[1]  #Get date value from this ele 
-${TAB_order_time}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[2]  #Get time value from this ele 
-${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[3]
-${TAB_product_name}         xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[6]
-${TAB_amount}               xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[8]
-${TAB_price}                xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[10]
-${TAB_payment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[18]
-${TAB_comment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[19]
-${TAB_order_type}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[21]
+
+
+${TAB_table_delivery}       xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'หน้าร้าน'))]  #Use to count all not counter row
+${TAB_bill_list}            xpath=//table[@id='show_table_billDetail']//tbody//tr[contains(.,'<bill>')]  #Use to count bill row
+${TAB_delivery_just_bill}   xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'หน้าร้าน'))][<index>]/td[3]
 
 #10 Points List
 ${gang_mhee}             แก๊งค์หมี
@@ -140,18 +146,14 @@ Click Show All Row With Retry
     Click Element When Ready  ${REP_show_all_row}
     Click Element When Ready  ${REP_show_btn}
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
-    log to console  ${\n}get attribute ${show_all_is_active}
     ${is_not_active}  Run Keyword and Return Status  Should Not Contain  ${show_all_is_active}  active
 
     IF  ${is_not_active}
-        log to console  ${\n}show all not active
         Reload Page
         Should Be True  ${False}
     ELSE
         log to console  ${\n}show all does active
     END
-
-    log to console  ${\n}Attempt click show all row
 
 Click To Expected Time Order Need Retry
     ${class}  Get Element Attribute  ${REP_time}  class
@@ -474,3 +476,164 @@ Set Date To Expect Date and Validate Data Date Should be Expecte Date
         Fail  not sucess set date to expect date
 
     END
+
+Get Element Locator From Row and Bill
+    [Arguments]    ${bill_id}    ${index}    ${row_name}
+    ${ele}=    Replace String  ${TAB_${row_name}}     <index>    ${index}
+    ${ele}=    Replace String  ${ele}     <bill>    ${bill_id}
+    ${text}=   Get Text    ${ele}
+    [Return]  ${text}
+
+Get New Order Detail From Bill List
+    [Arguments]    ${bill_list}
+    ${newline_detail}  Create Dictionary
+    # ${bill_list}  Create List
+    # ${row}=  Count Row
+    ${prev_point}    Set Variable
+    ${prev_bill}     Set Variable
+    ${prev_price}    Set Variable
+    ${prev_amount}   Set Variable
+    ${product_list}  Create List
+    FOR  ${INDEX}  IN  @{bill_list}
+        ${bill_row}  Replace String  ${TAB_bill_list}  <bill>  ${INDEX}
+        ${bill_row_count}  Get Element Count  ${bill_row}
+        log to console  ${\n}INDEX: ${INDEX} for ${bill_row_count}
+
+        FOR  ${BILL_ROW}  IN RANGE  ${bill_row_count}
+
+            #Get the correct row number
+            ${row_number}=    Evaluate  ${BILL_ROW}+1
+            ${row_number}=    Convert To String    ${row_number}
+            ${detail}    Create Dictionary    Point=0
+
+            #Check this row should not be voided
+            ${comment}  Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    comment
+            ${is_void}=    Run Keyword And Return Status    '${comment}' Should Not Have Void
+
+            IF  ${is_void}
+
+                #If the row is void. We ignore the row
+                Set To Dictionary  ${detail}  Is_valid  False
+
+            ELSE
+                #Get the text Value from the element
+                ${date}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_date_bill
+                ${time}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_time
+                ${bill_id}  Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    bill_id
+                ${name}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    product_name
+                ${payment}  Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    payment
+                ${type}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_type
+                ${amount}   Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    amount
+                ${price}    Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    price
+                ${bill_id}  Convert To Upper Case  ${bill_id}
+                
+                Set Test Variable  ${DATA_DATE}  ${date}
+
+                #Validate Information
+                ${product_point}    Recalculate Point For The Set Product    ${name}
+                ${point}  Evaluate  ${product_point}*${amount}
+
+                #Check amount information
+                ${product_amount}  Recalculate Amount For The Set Product  ${name}
+                ${amount}  Evaluate  ${product_amount}*${amount}
+
+                # Update produce name
+                ${name}  Remove String  ${name}  \n
+                ${name}  Catenate    ${name} จำนวน ${amount} แก้ว
+                ${date}  Replace String  ${date}  /  -
+                ${time}  Catenate  ${date}  ${SPACE}  ${time}:00
+                ${time}  Convert Date  ${time}  date_format=%d-%m-%Y %H:%M:%S  exclude_millis=True
+                ${time}  Add Time To Date  ${time}  - 7 hours  exclude_millis=True
+
+                #Check if หน้าร้าน Type
+                ${is_counter}    Check If From Counter    ${type}
+                IF  ${is_counter}
+                    Set To Dictionary  ${detail}  Is_valid  False
+                    Set To Dictionary  ${detail}  Is_counter  True
+                ELSE
+                    Set To Dictionary  ${detail}  Is_valid  True
+                    Set To Dictionary  ${detail}  Is_counter  False
+                END
+
+
+                #Set the value to dictionary
+                Set To Dictionary  ${detail}  Order_date  ${date}  
+                Set To Dictionary  ${detail}  Order_time  ${time}
+                Set To Dictionary  ${detail}  Bill_id  ${bill_id}
+                Set To Dictionary  ${detail}  Dup  False
+                
+
+                #Check If the row is lineman
+                ${is_lineman}    Check Payment For Lineman Type  ${payment}
+                IF  ${is_lineman}
+                    # Log to console    ${\n}Set to LINEMAN
+                    Set To Dictionary  ${detail}  Type  LINEMAN
+                ELSE
+                    # Log to console    ${\n}Set to ${type}
+                    Set To Dictionary  ${detail}  Type  ${type}
+                END
+
+                #Check If the bill are many items and calculate the point
+                IF  '${bill_id}'=='${prev_bill}'
+
+                    
+                    Set To Dictionary  ${detail}  Dup  True
+                    #Re-calculate point
+                    ${point}=  Evaluate  ${prev_point}+${point}
+                    Set To Dictionary  ${detail}  Point  ${point}
+                    #Re-calculate pprice
+                    ${price}=   Evaluate  ${prev_price}+${price}
+                    Set To Dictionary  ${detail}  Price  ${price}
+                    #Re-calculate amount
+                    ${amount}=  Evaluate  ${prev_amount}+${amount}
+                    Set To Dictionary  ${detail}  Amount  ${amount}
+                    
+                    # Append current product to the list ID by bill
+                    Append To List  ${PROD_LIST_${bill_id}}  ${name}
+                    # Set Test Variable    ${PROD_LIST_${bill_id}}    ${product_list}
+                    Set To Dictionary  ${detail}  Product_list  ${PROD_LIST_${bill_id}}
+
+                ELSE
+                    
+                    Set To Dictionary  ${detail}  Point  ${point}
+                    Set To Dictionary  ${detail}  Price  ${price}
+                    Set To Dictionary  ${detail}  Amount  ${amount}
+                    
+                    # Create new list and append current product to list
+                    ${product_list}=  Create List  ${name}
+                    Set Test Variable  ${PROD_LIST_${bill_id}}  ${product_list}
+                    Set To Dictionary  ${detail}  Product_list  ${PROD_LIST_${bill_id}}
+                
+                END
+
+                #Set Detail to NEW LINE DETAIL DICT only valid bill
+                ${is_valid}  Get From Dictionary  ${detail}  Is_valid
+                IF  ${is_valid}
+                    Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
+                    # Append to list  ${bill_list}  ${bill_id}
+                END
+                ${prev_bill}=    Set Variable    ${bill_id}
+                ${prev_point}=   Set Variable    ${point}
+                ${prev_amount}=  Set Variable    ${amount}
+                ${prev_price}=   Set Variable    ${price}
+            END
+        END
+    END
+    Log to console  ${\n}DATA_DATE: ${DATA_DATE}
+    # ${bill_list}  Remove Duplicates  ${bill_list}
+    [Return]  ${newline_detail}
+
+Get All Current Bill Exclude Counter
+    ${row_amount}  Get Element Count  ${TAB_table_delivery}
+    ${current_bill_list}  Create List
+    
+    FOR  ${ROW}  IN RANGE  ${row_amount}
+        ${index}  Evaluate  ${ROW}+1
+        ${index}  Convert to String  ${index}
+        ${ele}  Replace String  ${TAB_delivery_just_bill}  <index>  ${index}
+        ${bill_id}  Get Text  ${ele}
+        Append To List  ${current_bill_list}  ${bill_id}
+    END
+
+    ${current_bill_list}  Remove Duplicates  ${current_bill_list}
+    [Return]  ${current_bill_list}

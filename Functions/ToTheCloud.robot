@@ -2,64 +2,28 @@
 Library      ${CURDIR}/python/Uploader.py
 
 ***Keywords***
-# Transform To Firestore Format And Sent To FireStore
-#     [Arguments]    ${newline_detail}  ${is_add}=True
-#     ${key}=    Get Dictionary Keys  ${newline_detail}
-#     ${dict_length}=    Get Length    ${key}
-#     ${bill_list}=  Create List
-#     ${result}=    Create List
-#     FOR  ${INDEX}    IN    @{key}
-#         ${body}=    Get From Dictionary   ${newline_detail}   ${INDEX}  #INDEX is key
-#         ${is_valid}=    Get From Dictionary    ${body}    Is_valid
-#         IF  ${is_valid}
-
-#             #Get info
-#             ${order_date}    Get From Dictionary  ${body}  Order_date
-#             ${order_time}    Get From Dictionary  ${body}  Order_time
-#             ${point}         Get From Dictionary  ${body}  Point
-#             ${price}         Get From Dictionary  ${body}  Price
-#             ${amount}        Get From Dictionary  ${body}  Amount
-#             ${bill}          Get From Dictionary  ${body}  Bill_id
-#             ${type}          Get From Dictionary  ${body}  Type
-#             ${product_list}  Get From Dictionary  ${body}  Product_list
-
-#             #Set into Doc info to Document format
-#             ${result_body}=  Create Dictionary    Delivery=${type}    
-#             ...    OrderDate=${order_date}    Point=${point}    Price=${price}    Time=${order_time}
-#             ...    Amount=${amount}  BillId=${bill}  ProductList=${product_list}  isValid=${is_valid}
-
-#             #Append Info to Document
-#             Append To List    ${result}    ${result_body}
-#             Append To List    ${bill_list}  ${bill}
-#             log to console  ${\n}${result_body}
-
-#         END
-#     END
-#     Run Keyword If  ${is_add}  Set New Line To The FireStore  ${result}
-#     [Return]  ${bill_list}
-
 Update Bill Document to FireStore
-    [Arguments]  ${list}
-    ${fail_list}    Create List
-    ${success_list}  Create List
+    [Arguments]  ${bill_info}
     ${bill_list}  Create List
-    ${new_data_length}  Get Length  ${list}
-    ${bill_date}  Get From Dictionary  ${list}[0]  Order_date
+    ${key}  Get Dictionary Keys  ${bill_info}
+    ${new_data_length}  Get Length  ${key}
+    ${bill_date}  Get From Dictionary  ${bill_info}[${key}[0]]  Order_date
 
-    FOR  ${INDEX}  IN  @{list}
+    FOR  ${INDEX}  IN  @{key}
+        ${key_info}   Get From Dictionary  ${bill_info}  ${INDEX}
 
         #Get information from ordered dict
-        ${delivery}    Get From Dictionary  ${INDEX}  Type
-        ${time}        Get From Dictionary  ${INDEX}  Order_time
-        ${date}        Get From Dictionary  ${INDEX}  Order_date
-        ${bill}        Get From Dictionary  ${INDEX}  Bill_id
-        ${prod_list}   Get From Dictionary  ${INDEX}  Product_list
-        ${is_valid}    Get From Dictionary  ${INDEX}  Is_valid
-        ${price}       Get From Dictionary  ${INDEX}  Price
-        ${amount}      Get From Dictionary  ${INDEX}  Amount
+        ${delivery}    Get From Dictionary  ${key_info}  Type
+        ${time}        Get From Dictionary  ${key_info}  Order_time
+        ${date}        Get From Dictionary  ${key_info}  Order_date
+        ${bill}        Get From Dictionary  ${key_info}  Bill_id
+        ${prod_list}   Get From Dictionary  ${key_info}  Product_list
+        ${is_valid}    Get From Dictionary  ${key_info}  Is_valid
+        ${price}       Get From Dictionary  ${key_info}  Price
+        ${amount}      Get From Dictionary  ${key_info}  Amount
 
         # Get Point and convert to Int
-        ${point}       Get From Dictionary  ${INDEX}  Point
+        ${point}       Get From Dictionary  ${key_info}  Point
         ${point}       Convert To Integer   ${point}
         ${date}        Convert To String    ${date}
 
@@ -85,15 +49,15 @@ Update Bill Document to FireStore
     ELSE
         #Just sent fail notification and wait for retry on the next time
         ${fail_length}  Get Length  ${result_list}
-        Set Test Variable  ${TEST MESSAGE}  Fail to up date ${fail_length} records. Fail list: ${result_list}
+        Set Test Variable  ${TEST MESSAGE}  \[${TEST NAME}\] Fail to up date ${fail_length} records. Fail list: ${result_list}
         Fail
         
 
     END
 
-Bill list should exist for today
-    [Arguments]  ${bill_list}
-    ${date}  Replace String  ${DATA_DATE}  /  -
+Bill list should exist for expected day
+    [Arguments]  ${bill_list}  ${expect_date}=${DATA_DATE}
+    ${date}  Replace String  ${expect_date}  /  -
     ${result}  ${fail_list}  Uploader.billShouldExist  ${bill_list}  ${date}
     [Return]  ${result}  ${fail_list}
 

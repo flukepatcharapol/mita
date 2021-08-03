@@ -45,7 +45,7 @@ Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
     ${TEST MESSAGE}  Set Variable  ${TEST MESSAGE} Link: ${GCP_BUILD_LINK}
 
-    LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
+    # LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
 
 ############################################################################################################################################
 
@@ -117,16 +117,16 @@ Get All Bills from POS wongnai and update to Firestore cloud
     [Setup]  Script Setup
 
     Set Test Variable    ${TEST NAME}    Update Bill To Firestore
-    GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date
-    GetFromWongnai.Click Show All Row
+    Go To Daily Billing Page
+    Set Date To Expect Date and Validate Data Date Should be Expecte Date
+    Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     Set Test Variable  ${PREV_LENGTH}  0
     SeleniumLibrary.Set Selenium Speed    0
 
     Sleep  ${GOLBAL_SLEEP}
-    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail  ${PREV_LENGTH}
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${bill_dict}  ${bill_list}=  Get New Order Detail  ${PREV_LENGTH}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${bill_list}
 
     IF  ${is_up_to_date}
 
@@ -151,14 +151,14 @@ Update bill to firestore
 
     Set Test Variable    ${TEST NAME}    Update bill for ${FS_DATE}
     log to console    ${\n}${TEST NAME}
-    GetFromWongnai.Go To Daily Billing Page
-    GetFromWongnai.Set Date To Expect Date and Validate Data Date Should be Expecte Date
-    GetFromWongnai.Click Show All Row
+    Go To Daily Billing Page
+    Set Date To Expect Date and Validate Data Date Should be Expecte Date
+    Click Show All Row
     Sleep  ${GOLBAL_SLEEP}
     SeleniumLibrary.Set Selenium Speed    0
 
-    ${bill_dict}  ${bill_list}=  GetFromWongnai.Get New Order Detail
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for today  ${bill_list}
+    ${bill_dict}  ${bill_list}=  Get New Order Detail
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${bill_list}  ${DATA_DATE}
 
     IF  ${is_up_to_date}
 
@@ -203,3 +203,37 @@ Test docker
     [Setup]
     log to console    ${\n}Success
     [Teardown]
+
+Update bill to firestore
+    [Documentation]    This script goto poswognai and check not exist bill then update them to Firestore
+    [Tags]    new-logic-update-bill
+    [Setup]  Script Setup  ${INPUT_DATE}
+
+    Set Test Variable    ${TEST NAME}    [new-logic] Update bill for ${FS_DATE}
+    log to console    ${\n}${TEST NAME}
+    Go To Daily Billing Page
+    Set Date To Expect Date and Validate Data Date Should be Expecte Date
+    Click Show All Row
+    Sleep  ${GOLBAL_SLEEP}
+    SeleniumLibrary.Set Selenium Speed    0
+
+    ${cur_bill_list}  Get All Current Bill Exclude Counter
+    log to console  ${\n}cur_bill_list:${\n}${cur_bill_list}
+    ${is_up_to_date}  ${non_exist_list}  Bill list should exist for expected day  ${cur_bill_list}  ${FS_DATE}
+    
+
+    IF  ${is_up_to_date}
+
+        log to console  ${\n}Every bill is updated.
+        # Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
+
+    ELSE
+
+        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
+        ${bill_info}  Get New Order Detail From Bill List  ${non_exist_list}
+        log to console  ${\n}bill_info:${\n}${bill_info}
+        Update Bill Document to FireStore  ${bill_info}
+
+    END
+
+    [Teardown]  End Script
