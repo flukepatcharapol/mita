@@ -204,9 +204,9 @@ Test docker
     log to console    ${\n}Success
     [Teardown]
 
-New Logic
+Update bill to firestore
     [Documentation]    This script goto poswognai and check not exist bill then update them to Firestore
-    [Tags]    new-logic
+    [Tags]    new-logic-update-bill
     [Setup]  Script Setup  ${INPUT_DATE}
 
     Set Test Variable    ${TEST NAME}    [new-logic] Update bill for ${FS_DATE}
