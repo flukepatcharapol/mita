@@ -16,8 +16,8 @@ ${GOLBAL_SLEEP}        1 sec
 ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
 ${GOLBAL_TIMEOUT}      1 min
 
-${EXPIRED_ORDER}       14 days
-${REDEEM_USED_EXPIRED}  14 days
+${EXPIRED_ORDER}       7 days
+${REDEEM_USED_EXPIRED}  7 days
 ${REDEEM_DELETE_DATE}  7 days
 ############################################################################################################################################
 ***Keywords***
@@ -209,7 +209,7 @@ Update bill to firestore
     [Tags]    new-logic-update-bill
     [Setup]  Script Setup  ${INPUT_DATE}
 
-    Set Test Variable    ${TEST NAME}    [new-logic] Update bill for ${FS_DATE}
+    Set Test Variable    ${TEST NAME}    [New-logic] Update bill for ${FS_DATE}
     log to console    ${\n}${TEST NAME}
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
