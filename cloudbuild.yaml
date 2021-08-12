@@ -1,4 +1,4 @@
-images: [gcr.io/$PROJECT_ID/mita:$SHORT_SHA]
+# images: [gcr.io/$PROJECT_ID/mita:$SHORT_SHA]
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [ 

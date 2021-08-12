@@ -1,3 +1,4 @@
+images: [gcr.io/$PROJECT_ID/mita:$SHORT_SHA]
 steps:
   # Install dependencies
 - name: 'gcr.io/cloud-builders/docker'
@@ -13,4 +14,3 @@ steps:
         '--cache-from', 'gcr.io/$PROJECT_ID/mita:$SHORT_SHA',
         '.' ]
 
-images: [gcr.io/$PROJECT_ID/mita:$SHORT_SHA]
