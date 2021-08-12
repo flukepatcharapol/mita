@@ -70,7 +70,7 @@ ${matcha}       ชาเขียวมัทฉะ
 ${mocha}        มอคค่า
 ${hokkaido}     นมหมีฮอกไกโด
 ${latte}        ลาเต้
-${espreso}      เอสเปรสโซ่
+${espreso}      เอสเพรสโซ่
 ${chanom_fep}   ชานมหมีปั่น
 ${koko_fep}     โกโก้ปั่น
 ${hok_fep}      นมหมีฮอกไกโดปั่น
