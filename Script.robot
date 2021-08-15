@@ -201,7 +201,7 @@ Clear Redeem History
 Test docker
     [Tags]    docker
     [Setup]
-    log to console    ${\n}Success
+    log to console    ${\n}Test Success 
     [Teardown]
 
 Update bill to firestore
