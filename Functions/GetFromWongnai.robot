@@ -90,7 +90,7 @@ ${lineman_detecter}    Line Man
 # Normal Function
 ############################################################################################################################################
 Check Should Be On Home Page
-    Element Should Be Visible With Retry  ${HOM_scetion}
+    Wait Until Element Is Visible  ${HOM_scetion}  10 sec
     Reload Page
 
 Click Report At Nav Bar
@@ -337,6 +337,9 @@ Recalculate Point For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
+
+    ${not_free}  Run Keyword And Return Status  Should Not Contain Any
+    ...  ${name}      ${free}
     
     IF  ${is_10}
 
@@ -354,7 +357,7 @@ Recalculate Point For The Set Product
 
         BuiltIn.Return From Keyword   2
 
-    ELSE IF  ${is_1}
+    ELSE IF  ${is_1} and ${not_free}
 
         BuiltIn.Return From Keyword   1
 
