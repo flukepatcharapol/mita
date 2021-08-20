@@ -44,12 +44,12 @@ Update Bill Document to FireStore
     IF  ${is_success}
 
         #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] New ${new_data_length} records. Success list: ${result_list}
+        LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
 
     ELSE
         #Just sent fail notification and wait for retry on the next time
         ${fail_length}  Get Length  ${result_list}
-        Set Test Variable  ${TEST MESSAGE}  \[${TEST NAME}\] Fail to up date ${fail_length} records. Fail list: ${result_list}
+        Set Test Variable  ${TEST MESSAGE}  ${TEST NAME} Fail to up date ${fail_length} records. Fail list: ${result_list}
         Fail
         
 
@@ -64,8 +64,8 @@ Bill list should exist for expected day
 Delete used and expired RedeemhHistory
     [Arguments]  ${used_due_date}  ${expire_due_date}
     ${delete_list}  Uploader.removeRedeemHistory  ${used_due_date}  ${expire_due_date}
-    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Redeem-code Delete list:${delete_list}
-    Pass Execution  finish delete Redeem-code Delete list:${delete_list}
+    LineCaller.Sent Alert To Line By ID  message=\[CODE\] finish delete Code Delete list:${delete_list}
+    Pass Execution  finish delete Code Delete list:${delete_list}
 
 Delete Document Where older Than '${date}'
     [Documentation]  Date format  11-05-2021
