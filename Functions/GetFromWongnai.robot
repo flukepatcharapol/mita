@@ -98,7 +98,7 @@ ${free}        หมีแลกแต้ม
 
 #Special Order
 # ${counter_reward}    สะสมแต้มออนไลน์
-${counter_reward}    คนละครึ่ง
+${counter_reward}    แม่หมี
 
 #Dynamic Variable
 ${lineman_detecter}    Line Man
