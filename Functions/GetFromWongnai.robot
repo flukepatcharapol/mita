@@ -97,8 +97,7 @@ ${counter}     หน้าร้าน
 ${free}        หมีแลกแต้ม
 
 #Special Order
-# ${counter_reward}    สะสมแต้มออนไลน์
-${counter_reward}    แม่หมี
+${counter_reward}    สะสมแต้มออนไลน์
 
 #Dynamic Variable
 ${lineman_detecter}    Line Man
@@ -637,7 +636,6 @@ Get New Order Detail From Bill List
 
                 #Set Detail to NEW LINE DETAIL DICT only valid bill
                 ${is_valid}  Get From Dictionary  ${detail}  Is_valid
-                log to console   ${\n}${bill_id}: ${is_valid}
                 IF  ${is_valid}
                     Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
                 END
