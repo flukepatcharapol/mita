@@ -24,8 +24,8 @@ ${REP_show_all_row}         xpath=//ul[@class='dt-button-collection dropdown-men
 ${REP_time}                 xpath=//div[@class='dataTables_scrollHead']//th[contains(@class,'col_2 sorting')]
 
 #Table
-${TAB_table}                xpath=//table[@id='show_table_billDetail']//tbody
-${TAB_row}                  xpath=//table[@id='show_table_billDetail']//tbody/tr  #Use to count the row
+# ${TAB_table}                xpath=//table[@id='show_table_billDetail']//tbody
+# ${TAB_row}                  xpath=//table[@id='show_table_billDetail']//tbody/tr  #Use to count the row
 ${TAB_order_date_bill}      xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[1]  #Get date value from this ele 
 ${TAB_order_time}           xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[2]  #Get time value from this ele 
 ${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[3]
@@ -36,6 +36,20 @@ ${TAB_payment}              xpath=//table[@id='show_table_billDetail']//tbody/tr
 ${TAB_comment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[19]
 ${TAB_order_type}           xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'<bill>')][<index>]/td[21]
 ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[1]  #Get date value from this ele 
+#Table
+${TAB_row}                  xpath=//table[@id='show_table_billDetail']//tbody/tr  #Use to count the all row
+${TAB_online_remark}        xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${counter_reward}')]  #Use to count all counter bill that have online remark
+${TAB_counter_bill}         xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${counter_reward}')][<index>]/td[3]  #Use to count all counter bill that have online remark
+# ${TAB_order_date_bill}      xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[1]  #Get date value from this ele 
+# ${TAB_order_time}           xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[2]  #Get time value from this ele 
+# ${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[3]
+# ${TAB_product_name}         xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[6]
+# ${TAB_amount}               xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[8]
+# ${TAB_price}                xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[10]
+# ${TAB_payment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[18]
+# ${TAB_comment}              xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[19]
+# ${TAB_order_type}           xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[21]
+# ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[1]  #Get date value from this ele 
 
 
 ${TAB_table_delivery}       xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'หน้าร้าน'))]  #Use to count all not counter row
@@ -82,7 +96,11 @@ ${wip}         วิปครีมมูส
 ${counter}     หน้าร้าน
 ${free}        หมีแลกแต้ม
 
-#Dinamic Variable
+#Special Order
+# ${counter_reward}    สะสมแต้มออนไลน์
+${counter_reward}    คนละครึ่ง
+
+#Dynamic Variable
 ${lineman_detecter}    Line Man
  
 ***Keywords***
@@ -174,6 +192,13 @@ Count Row
 Get Element Locator From Row
     [Arguments]    ${index}    ${row_name}
     ${ele}=    Replace String  ${TAB_${row_name}}     $INDEX    ${index}
+    ${text}=   Get Text    ${ele}
+    [Return]  ${text}
+
+Get Element Locator From Row Only Not Exist
+    [Arguments]    ${tr_condition}    ${index}    ${row_name}
+    ${ele}=    Replace String  ${TAB_${row_name}}     <index>    ${index}
+    ${ele}=    Replace String  ${ele}   <tr_condition>    ${tr_condition}
     ${text}=   Get Text    ${ele}
     [Return]  ${text}
 
@@ -490,17 +515,15 @@ Get Element Locator From Row and Bill
 Get New Order Detail From Bill List
     [Arguments]    ${bill_list}
     ${newline_detail}  Create Dictionary
-    # ${bill_list}  Create List
-    # ${row}=  Count Row
     ${prev_point}    Set Variable
     ${prev_bill}     Set Variable
     ${prev_price}    Set Variable
     ${prev_amount}   Set Variable
     ${product_list}  Create List
-    FOR  ${INDEX}  IN  @{bill_list}
-        ${bill_row}  Replace String  ${TAB_bill_list}  <bill>  ${INDEX}
+    FOR  ${BILL}  IN  @{bill_list}
+        ${bill_row}  Replace String  ${TAB_bill_list}  <bill>  ${BILL}
         ${bill_row_count}  Get Element Count  ${bill_row}
-        log to console  ${\n}INDEX: ${INDEX} for ${bill_row_count}
+        log to console  ${\n}${bill_row_count} indexs for ${BILL}
 
         FOR  ${BILL_ROW}  IN RANGE  ${bill_row_count}
 
@@ -510,24 +533,27 @@ Get New Order Detail From Bill List
             ${detail}    Create Dictionary    Point=0
 
             #Check this row should not be voided
-            ${comment}  Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    comment
+            ${comment}  Get Element Locator From Row and Bill    ${BILL}    ${row_number}    comment
             ${is_void}=    Run Keyword And Return Status    '${comment}' Should Not Have Void
 
             IF  ${is_void}
 
                 #If the row is void. We ignore the row
-                Set To Dictionary  ${detail}  Is_valid  False
+                Set To Dictionary  ${detail}  Is_valid  ${False}
 
             ELSE
+
+                Set To Dictionary  ${detail}  Is_valid  ${True}
+
                 #Get the text Value from the element
-                ${date}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_date_bill
-                ${time}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_time
-                ${bill_id}  Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    bill_id
-                ${name}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    product_name
-                ${payment}  Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    payment
-                ${type}     Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    order_type
-                ${amount}   Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    amount
-                ${price}    Get Element Locator From Row and Bill    ${INDEX}    ${row_number}    price
+                ${date}     Get Element Locator From Row and Bill    ${BILL}    ${row_number}    order_date_bill
+                ${time}     Get Element Locator From Row and Bill    ${BILL}    ${row_number}    order_time
+                ${bill_id}  Get Element Locator From Row and Bill    ${BILL}    ${row_number}    bill_id
+                ${name}     Get Element Locator From Row and Bill    ${BILL}    ${row_number}    product_name
+                ${payment}  Get Element Locator From Row and Bill    ${BILL}    ${row_number}    payment
+                ${type}     Get Element Locator From Row and Bill    ${BILL}    ${row_number}    order_type
+                ${amount}   Get Element Locator From Row and Bill    ${BILL}    ${row_number}    amount
+                ${price}    Get Element Locator From Row and Bill    ${BILL}    ${row_number}    price
                 ${bill_id}  Convert To Upper Case  ${bill_id}
                 
                 Set Test Variable  ${DATA_DATE}  ${date}
@@ -549,14 +575,14 @@ Get New Order Detail From Bill List
                 ${time}  Add Time To Date  ${time}  - 7 hours  exclude_millis=True
 
                 #Check if หน้าร้าน Type
-                ${is_counter}    Check If From Counter    ${type}
-                IF  ${is_counter}
-                    Set To Dictionary  ${detail}  Is_valid  False
-                    Set To Dictionary  ${detail}  Is_counter  True
-                ELSE
-                    Set To Dictionary  ${detail}  Is_valid  True
-                    Set To Dictionary  ${detail}  Is_counter  False
-                END
+                # ${is_counter}    Check If From Counter    ${type}
+                # IF  ${is_counter}
+                #     Set To Dictionary  ${detail}  Is_valid  False
+                #     Set To Dictionary  ${detail}  Is_counter  True
+                # ELSE
+                #     Set To Dictionary  ${detail}  Is_valid  True
+                #     Set To Dictionary  ${detail}  Is_counter  False
+                # END
 
 
                 #Set the value to dictionary
@@ -611,9 +637,9 @@ Get New Order Detail From Bill List
 
                 #Set Detail to NEW LINE DETAIL DICT only valid bill
                 ${is_valid}  Get From Dictionary  ${detail}  Is_valid
+                log to console   ${\n}${bill_id}: ${is_valid}
                 IF  ${is_valid}
                     Set To Dictionary  ${newline_detail}    ${bill_id}=${detail}
-                    # Append to list  ${bill_list}  ${bill_id}
                 END
                 ${prev_bill}=    Set Variable    ${bill_id}
                 ${prev_point}=   Set Variable    ${point}
@@ -623,7 +649,6 @@ Get New Order Detail From Bill List
         END
     END
     Log to console  ${\n}DATA_DATE: ${DATA_DATE}
-    # ${bill_list}  Remove Duplicates  ${bill_list}
     [Return]  ${newline_detail}
 
 Get All Current Bill Exclude Counter
@@ -631,8 +656,8 @@ Get All Current Bill Exclude Counter
     ${current_bill_list}  Create List
     
     FOR  ${ROW}  IN RANGE  ${row_amount}
-        ${index}  Evaluate  ${ROW}+1
-        ${index}  Convert to String  ${index}
+        # ${index}  Evaluate  ${ROW+1}
+        ${index}  Convert to String  ${ROW+1}
         ${ele}  Replace String  ${TAB_delivery_just_bill}  <index>  ${index}
         ${bill_id}  Get Text  ${ele}
         Append To List  ${current_bill_list}  ${bill_id}
@@ -640,3 +665,33 @@ Get All Current Bill Exclude Counter
 
     ${current_bill_list}  Remove Duplicates  ${current_bill_list}
     [Return]  ${current_bill_list}
+
+Get All Current Bill
+    ${row_amount}  Get Element Count  ${TAB_row}
+    ${current_bill_list}  Create List
+    
+    FOR  ${ROW}  IN RANGE  ${row_amount}
+        # ${index}  Evaluate  ${ROW}+1
+        ${index}  Convert to String  ${ROW+1}
+        ${ele}  Replace String  ${TAB_bill_id}  <index>  ${index}
+        ${bill_id}  Get Text  ${ele}
+        Append To List  ${current_bill_list}  ${bill_id}
+    END
+
+    ${current_bill_list}  Remove Duplicates  ${current_bill_list}
+    [Return]  ${current_bill_list}
+
+Get Rewardable Counter Bill
+    ${row_amount}  Get Element Count  ${TAB_online_remark}
+    ${reward_coundter_list}  Create List
+    
+    FOR  ${ROW}  IN RANGE  ${row_amount}
+        # ${index}  Evaluate  ${ROW}+1
+        ${index}  Convert to String  ${ROW+1}
+        ${ele}  Replace String  ${TAB_counter_bill}  <index>  ${index}
+        ${bill_id}  Get Text  ${ele}
+        Append To List  ${reward_coundter_list}  ${bill_id}
+    END
+
+    ${reward_coundter_list}  Remove Duplicates  ${reward_coundter_list}
+    [Return]  ${reward_coundter_list}

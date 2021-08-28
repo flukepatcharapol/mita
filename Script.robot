@@ -112,21 +112,27 @@ Get Only Not Exist Bill Dict
 ############################################################################################################################################
 ***Test Cases***
 ############################################################################################################################################
-Get All Bills from POS wongnai and update to Firestore cloud
-    [Tags]    Update-Delivery
-    [Setup]  Script Setup
-
-    Set Test Variable    ${TEST NAME}    Update Bill To Firestore
+Update delivery and rewardable counter bill to Firestore
+    [Tags]    Include counter
+    [Setup]  Script Setup  ${INPUT_DATE}
+    Set Test Variable    ${TEST NAME}    [Include counter] Update Bill To Firestore
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
     Click Show All Row
-    Sleep  ${GOLBAL_SLEEP}
-    Set Test Variable  ${PREV_LENGTH}  0
+    # Sleep  ${GOLBAL_SLEEP}
     SeleniumLibrary.Set Selenium Speed    0
 
-    Sleep  ${GOLBAL_SLEEP}
-    ${bill_dict}  ${bill_list}=  Get New Order Detail  ${PREV_LENGTH}
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${bill_list}
+    # Sleep  ${GOLBAL_SLEEP}
+    ${all_bill_list}  Get All Current Bill Exclude Counter
+    log to console  ${\n}all_bill_list:${\n}${all_bill_list}
+
+    ${reward_counter_bill}    Get Rewardable Counter Bill
+    log to console  ${\n}reward_counter_bill:${\n}${reward_counter_bill}
+
+    ${cur_bill_list}   Combine Lists    ${all_bill_list}    ${reward_counter_bill}
+    log to console  ${\n}cur_bill_list:${\n}${cur_bill_list}
+
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${cur_bill_list}  ${FS_DATE}
 
     IF  ${is_up_to_date}
 
@@ -136,9 +142,10 @@ Get All Bills from POS wongnai and update to Firestore cloud
     ELSE
 
         log to console  ${\n}non_exist_list:${\n}${non_exist_list}
-        ${update_list}  Get Only Not Exist Bill Dict  ${non_exist_list}  ${bill_dict}
-        log to console  ${\n}result: ${update_list}
-        ToTheCloud.Update Bill Document to FireStore  ${update_list}
+        ${bill_info}  Get New Order Detail From Bill List  ${non_exist_list}
+
+        log to console  ${\n}bill_info:${\n}${bill_info}
+        Update Bill Document to FireStore  ${bill_info}
 
     END
 
