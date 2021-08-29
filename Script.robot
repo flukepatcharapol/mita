@@ -144,6 +144,7 @@ Update delivery and rewardable counter bill to Firestore
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
     Click To Show All Row
+    Sleep    ${Global_SLEEP}
     Set Selenium Speed   0
 
     ${all_bill_list}    Get All Current Bill Exclude Counter
