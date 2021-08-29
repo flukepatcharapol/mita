@@ -11,9 +11,9 @@ Resource       ${CURDIR}/Config.robot
 #Config Variable
 ${ATTEMPT}              30 x
 ${WAIT}                 1 sec
-${GOLBAL_SLEEP}         1 sec
+${Global_SLEEP}         1 sec
 # ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
-${GOLBAL_TIMEOUT}        1 min
+${Global_TIMEOUT}        1 min
 ${ELEMENT_TIMEOUT}       10 sec
 
 ${EXPIRED_ORDER}         7 days
@@ -46,6 +46,13 @@ Set up initial value from OS variable
     ${_CREW_UID}     Get Environment Variable    _CREW_UID
     ${LINE_ACCESS_TOKEN}    Get Environment Variable    _ACCESS_TOKEN
     ${LINE_ACCESS_TOKEN_BO}    Get Environment Variable    _ACCESS_TOKEN_BO
+
+    Set Global Variable    ${_POS_USER}    ${_POS_USER}
+    Set Global Variable    ${_POS_PASS}    ${_POS_PASS}
+    Set Global Variable    ${_FLUKE_UID}    ${_FLUKE_UID}
+    Set Global Variable    ${_CREW_UID}    ${_CREW_UID}
+    Set Global Variable    ${LINE_ACCESS_TOKEN}    ${LINE_ACCESS_TOKEN}
+    Set Global Variable    ${LINE_ACCESS_TOKEN_BO}    ${LINE_ACCESS_TOKEN_BO}
 
 End Script
 
@@ -168,7 +175,7 @@ Update delivery and rewardable counter bill to Firestore
 
 Delete every document that older
     [Tags]    Clear-Old-Document
-    [Setup]
+    [Setup]    Set up initial value from OS variable
     #Get the date older than today for 7 days
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
@@ -180,7 +187,7 @@ Delete every document that older
   
 Clear Redeem History
     [Tags]    Clear-Redeem-History
-    [Setup]
+    [Setup]    Set up initial value from OS variable
     
     Set Date For FireStore
     Set Test Variable  ${DATA_DATE}  ${FS_DATE}
@@ -194,7 +201,7 @@ Clear Redeem History
 
 Test docker
     [Tags]    docker
-    [Setup]
+    [Setup]    Set up initial value from OS variable
     log to console    ${\n}Test Success
     [Teardown]
 
@@ -208,7 +215,7 @@ Update only delivery bill to firestore
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
     Click Show All Row
-    Sleep  ${GOLBAL_SLEEP}
+    Sleep  ${Global_SLEEP}
     SeleniumLibrary.Set Selenium Speed    0
 
     ${cur_bill_list}  Get All Current Bill Exclude Counter
