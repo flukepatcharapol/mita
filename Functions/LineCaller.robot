@@ -18,12 +18,12 @@ Send Text To Line User
 ####################################################################################################################################################################################
 
 Get My Bot Header
-    [Arguments]  ${token}=${LINE_ACCESS_TOKEN}
+    [Arguments]  ${token}=${_ACCESS_TOKEN}
     ${header}=  Create Dictionary  Content-Type=application/json  Authorization=Bearer ${token}
     [Return]  ${header}
 
 Sent Alert To Line By ID
-    [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}  ${sender}=${LINE_ACCESS_TOKEN}
+    [Arguments]  ${message}  ${receiver}=${_FLUKE_UID}  ${sender}=${_ACCESS_TOKEN}
     ${is_exist}  Run Keyword And return Status  Variable Should Exist  ${DATA_DATE}
 
     IF  ${is_exist}

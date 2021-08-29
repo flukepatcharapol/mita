@@ -44,15 +44,15 @@ Set up initial value from OS variable
     ${_POS_PASS}     Get Environment Variable    _POS_PASS
     ${_FLUKE_UID}    Get Environment Variable    _FLUKE_UID
     ${_CREW_UID}     Get Environment Variable    _CREW_UID
-    ${LINE_ACCESS_TOKEN}    Get Environment Variable    _ACCESS_TOKEN
-    ${LINE_ACCESS_TOKEN_BO}    Get Environment Variable    _ACCESS_TOKEN_BO
+    ${_ACCESS_TOKEN}    Get Environment Variable    _ACCESS_TOKEN
+    ${_ACCESS_TOKEN_BO}    Get Environment Variable    _ACCESS_TOKEN_BO
 
     Set Global Variable    ${_POS_USER}    ${_POS_USER}
     Set Global Variable    ${_POS_PASS}    ${_POS_PASS}
     Set Global Variable    ${_FLUKE_UID}    ${_FLUKE_UID}
     Set Global Variable    ${_CREW_UID}    ${_CREW_UID}
-    Set Global Variable    ${LINE_ACCESS_TOKEN}    ${LINE_ACCESS_TOKEN}
-    Set Global Variable    ${LINE_ACCESS_TOKEN_BO}    ${LINE_ACCESS_TOKEN_BO}
+    Set Global Variable    ${_ACCESS_TOKEN}    ${_ACCESS_TOKEN}
+    Set Global Variable    ${_ACCESS_TOKEN_BO}    ${_ACCESS_TOKEN_BO}
 
 End Script
 
@@ -66,7 +66,7 @@ Do This When Script Failed
     [Arguments]    ${for_bo}=${False}
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
     IF  ${for_bo}
-        # LineCaller.Sent Alert To Line By ID  message=ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง    receiver=${LINE_SOTHORN_CREW}    sender=${LINE_ACCESS_TOKEN_BO}
+        # LineCaller.Sent Alert To Line By ID  message=ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง    receiver=${_CREW_UID}    sender=${_ACCESS_TOKEN_BO}
         LineCaller.Sent Alert To Line By ID  message=ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง
     ELSE
         # LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
