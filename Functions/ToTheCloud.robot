@@ -43,10 +43,12 @@ Update Bill Document to FireStore
 
     IF  ${is_success}
 
-        #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
         IF ${is_BO}
-            LineCaller.Sent Alert To Line By ID  message=${TEST NAME} ออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}
+            #Send line to crew and fluke phone
+            LineCaller.Sent Alert To Line By ID  message=เพิ่มออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}
+            LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
+        ELSE
+            LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
         END
 
     ELSE
