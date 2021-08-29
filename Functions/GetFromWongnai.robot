@@ -111,14 +111,17 @@ Check Should Be On Home Page
     Reload Page
 
 Click Report At Nav Bar
-    Click Element When Ready  ${HOM_order_report}
+    # Click Element When Ready  ${HOM_order_report}
+    Common Click Element when ready    ${HOM_order_report}
 
 Click Billing Report Button
-    Click Element When Ready  ${HOM_report_btn}
+    # Click Element When Ready  ${HOM_report_btn}
+    Common Click Element when ready    ${HOM_report_btn}
 
 Check Daily Billing Should Show 
-    Element Should Be Visible With Retry  ${HOM_header}
-    Element Should Contain  ${HOM_header}  ${HOM_bill_report_lbl}
+    # Element Should Be Visible With Retry  ${HOM_header}
+    # Element Should Contain  ${HOM_header}  ${HOM_bill_report_lbl}
+    Common element should contain    ${HOM_header}   ${HOM_bill_report_lbl}
 
 Go To Daily Billing Page
     Click Report At Nav Bar
@@ -152,16 +155,34 @@ Should Finish Load
     ${is_loading}  Get Element Attribute  ${REP_loading}  style
     Should Not Contain  ${is_loading}  block
 
-Click Show All Row
+Click To Show All Row
+    # log to console  ${\n}Click Show All Row Entry
+    # BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Click Show All Row With Retry
+    # Click Element When Ready  ${REP_show_all_row}
+    # Log To Console  ${\n}Show All Row
+
     log to console  ${\n}Click Show All Row Entry
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Click Show All Row With Retry
-    Click Element When Ready  ${REP_show_all_row}
+    Common Click Element when ready    ${REP_show_all_row}
     Log To Console  ${\n}Show All Row
 
 Click Show All Row With Retry
-    Click Element When Ready  ${REP_show_btn}
-    Click Element When Ready  ${REP_show_all_row}
-    Click Element When Ready  ${REP_show_btn}
+    # Click Element When Ready  ${REP_show_btn}
+    # Click Element When Ready  ${REP_show_all_row}
+    # Click Element When Ready  ${REP_show_btn}
+    # ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
+    # ${is_not_active}  Run Keyword and Return Status  Should Not Contain  ${show_all_is_active}  active
+
+    # IF  ${is_not_active}
+    #     Reload Page
+    #     Should Be True  ${False}
+    # ELSE
+    #     log to console  ${\n}show all does active
+    # END
+
+    Common Click Element when ready    ${REP_show_btn}
+    Common Click Element when ready    ${REP_show_all_row}
+    Common Click Element when ready    ${REP_show_btn}
     ${show_all_is_active}  Get Element Attribute  ${REP_show_all_row}/..  class
     ${is_not_active}  Run Keyword and Return Status  Should Not Contain  ${show_all_is_active}  active
 
@@ -169,7 +190,7 @@ Click Show All Row With Retry
         Reload Page
         Should Be True  ${False}
     ELSE
-        log to console  ${\n}show all does active
+        log to console  ${\n}Show button row is active
     END
 
 Click To Expected Time Order Need Retry
@@ -449,22 +470,28 @@ Recalculate Amount For The Set Product
 
     END
 
-Set Date To Today
-    Log To Console  ${\n}Set Date To Today
-    Click Element When Ready  ${HOM_date}
-    Click Element When Ready  ${DATE_today_btn}
-    Click Element When Ready  ${REP_ok_btn}
-    The Date Should Be expect date
-
-    BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
+Check date button should be visible
+    Common wait element is visible    ${HOM_date}
 
 Set Date To Expect date
-    Click Element When Ready  ${HOM_date}
+    # Click Element When Ready  ${HOM_date}
+    # ${expect_date}  Replace String  ${FS_DATE}  -  /
+    # Input Text When Ready  ${DATE_start_date}  ${expect_date}
+    # Input Text When Ready  ${DATE_end_date}  ${expect_date}
+    # Click Element When Ready  ${DATE_apply_btn}
+    # Click Element When Ready  ${REP_ok_btn}
+    # The Date Should Be expect date
+
+    # BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load
+
+    # Log To Console  ${\n}Set Date To expect date ${expect_date}
+
+    Common Click Element when ready    ${HOM_date}
     ${expect_date}  Replace String  ${FS_DATE}  -  /
-    Input Text When Ready  ${DATE_start_date}  ${expect_date}
-    Input Text When Ready  ${DATE_end_date}  ${expect_date}
-    Click Element When Ready  ${DATE_apply_btn}
-    Click Element When Ready  ${REP_ok_btn}
+    Common Input text when ready    ${DATE_start_date}  ${expect_date}
+    Common Input text when ready    ${DATE_end_date}  ${expect_date}
+    Common Click Element when ready    ${DATE_apply_btn}
+    Common Click Element when ready    ${REP_ok_btn}
     The Date Should Be expect date
 
     BuiltIn.Wait Until Keyword Succeeds  ${ATTEMPT}  ${WAIT}  Should Finish Load

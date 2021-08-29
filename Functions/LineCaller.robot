@@ -1,8 +1,8 @@
 ***Keywords***
 ####################################################################################################################################################################################
 Send Text To Line User
-    [Arguments]  ${text}  ${receiver}
-    ${header}=  Get MY Bot Header
+    [Arguments]  ${text}    ${receiver}   ${sender}
+    ${header}=  Get MY Bot Header   ${sender}
 
     ${body}  Set Variable  {"to": "${receiver}","messages": [{"type": "text","text": "${text}"}]} 
     Create Session  Send Text  ${LINE.url}  headers=${header}  verify=True
@@ -18,12 +18,12 @@ Send Text To Line User
 ####################################################################################################################################################################################
 
 Get My Bot Header
-    [Arguments]  ${token}=Bearer ${LINE_ACCESS_TOKEN}
-    ${header}=  Create Dictionary  Content-Type=application/json  Authorization=${token}
+    [Arguments]  ${token}=${LINE_ACCESS_TOKEN}
+    ${header}=  Create Dictionary  Content-Type=application/json  Authorization=Bearer ${token}
     [Return]  ${header}
 
 Sent Alert To Line By ID
-    [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}
+    [Arguments]  ${message}  ${receiver}=${LINE_FLUKE_UID}  ${sender}=${LINE_ACCESS_TOKEN}
     ${is_exist}  Run Keyword And return Status  Variable Should Exist  ${DATA_DATE}
 
     IF  ${is_exist}
@@ -38,4 +38,4 @@ Sent Alert To Line By ID
     END
 
     ${body_message}=  Set Variable    ${message} ${show_date}: ${DATA_DATE}
-    Send Text To Line User  ${body_message}  ${receiver}
+    Send Text To Line User  ${body_message}  ${receiver}  ${sender}

@@ -45,6 +45,9 @@ Update Bill Document to FireStore
 
         #Sent success notify and update the prev number
         LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
+        IF ${is_BO}
+            LineCaller.Sent Alert To Line By ID  message=${TEST NAME} ออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}
+        END
 
     ELSE
         #Just sent fail notification and wait for retry on the next time
