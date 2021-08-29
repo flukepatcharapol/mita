@@ -67,7 +67,7 @@ Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
     IF  ${for_bo}
         # LineCaller.Sent Alert To Line By ID  message=ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง    receiver=${_CREW_UID}    sender=${_ACCESS_TOKEN_BO}
-        LineCaller.Sent Alert To Line By ID  message=ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง
+        LineCaller.Sent Alert To Line By ID  message=\[BO\]ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง
     ELSE
         # LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
         Fail  ${TEST MESSAGE}
