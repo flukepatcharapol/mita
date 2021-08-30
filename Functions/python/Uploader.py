@@ -199,7 +199,7 @@ class Uploader ():
         for bill in doc_date:
             if bill in void_list:
                 void_exist_list.append(bill)
-        if void_exist_list.len() > 0:
+        if len(void_exist_list) > 0:
             return True
         else:
             return False
