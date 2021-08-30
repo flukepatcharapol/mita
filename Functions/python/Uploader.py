@@ -191,3 +191,18 @@ class Uploader ():
     def deleteOrder (self, bill_id, order_date):
         str_orderDate=self.setExpectedTimeFormat(order_date)
         db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill_id).delete()
+        
+    def isVoidBillExist  (self, void_list, order_date):
+        str_orderDate=self.setExpectedTimeFormat(order_date)
+        doc_date=db.collection('Order').document(str_orderDate).collection('OrderDetail').get()
+        if doc_date.exists:
+            void_exist_list = []
+            for bill in doc_date:
+                if bill in void_list:
+                    void_exist_list.append(bill)
+            if void_exist_list.len() > 0:
+                return True
+            else:
+                return False
+        else:
+            return False

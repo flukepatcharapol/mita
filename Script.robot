@@ -163,8 +163,8 @@ Update delivery and rewardable counter bill to Firestore
     log to console  ${\n}Void order list:${\n}${void_order_list}
 
     IF  ${is_void_exist}
-    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${void_order_list}  ${FS_DATE}
-        IF  ${is_up_to_date}
+        ${is_void_exist_in_fs}  Check If Void Bill is exist  ${void_order_list}  ${FS_DATE}
+        IF  ${is_void_exist_in_fs}
             Delete List Of Order  ${void_order_list}  ${FS_DATE}
         END
     ELSE

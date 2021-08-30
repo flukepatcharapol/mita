@@ -94,6 +94,11 @@ Delete Document Where older Than '${date}'
 Delete List Of Order
     [Arguments]    ${void_list}    ${order_date}=${FS_DATE}
     FOR  ${BILL}  IN  @{void_list}
-        deleteOrder  ${BILL}  ${order_date}
+        Uploader.deleteOrder  ${BILL}  ${order_date}
     END
     LineCaller.Sent Alert To Line By ID  message=\[Void\] Delete void list: ${void_list}
+
+Check If Void Bill is exist
+    [Arguments]    ${void_list}    ${order_date}=${FS_DATE}
+    ${is_exist}  Uploader.isVoidBillExist  ${void_list}  ${order_date}
+    [Return]  ${is_exist}
