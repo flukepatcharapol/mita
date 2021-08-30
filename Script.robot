@@ -55,23 +55,15 @@ Set up initial value from OS variable
     Set Global Variable    ${_ACCESS_TOKEN_BO}    ${_ACCESS_TOKEN_BO}
 
 End Script
-
-    IF  ${is_BO}
-        Run Keyword If Test Failed    Do This When Script Failed    for_bo=${True}
-    END
     Run Keyword If Test Failed    Do This When Script Failed
     Close All Browsers
 
 Do This When Script Failed
-    [Arguments]    ${for_bo}=${False}
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
-    IF  ${for_bo}
-        # LineCaller.Sent Alert To Line By ID  message=ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง    receiver=${_CREW_UID}    sender=${_ACCESS_TOKEN_BO}
-        LineCaller.Sent Alert To Line By ID  message=\[BO\]ระบบเพิ่มออเดอร์ไม่สำเร็จ ลองใหม่อีกครั้ง
-    ELSE
-        # LineCaller.Sent Alert To Line By ID  message=The \[${TEST NAME}\] was Failed, with error \(${TEST MESSAGE}\)
-        Fail  ${TEST MESSAGE}
-    END
+
+    # LineCaller.Sent Alert To Line By ID  message=${TEST NAME} was Failed, with error \(${TEST MESSAGE}\)
+    # Capture Page Screenshot
+    Close All Browsers
 
 ############################################################################################################################################
 
@@ -112,8 +104,6 @@ Open Wongnai POS WEB on Headless and Maximize Window
     END
     Maximize Browser Window
     Log To Console  ${\n}Browser is open
-    # Create Webdriver    Chrome    chrome_options=${chrome options}
-    # Goto    ${url}
 
 Set Date For FireStore
     [Documentation]  Date format  30-12-2021
@@ -144,17 +134,16 @@ Update delivery and rewardable counter bill to Firestore
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
     Click To Show All Row
-    Sleep    ${Global_SLEEP}
     Set Selenium Speed   0
 
-    ${all_bill_list}    Get All Current Bill Exclude Counter
-    log to console  ${\n}all_bill_list:${\n}${all_bill_list}
+    ${delivery_bill_list}    Get All Current Bill Exclude Counter
+    log to console  ${\n}Delivery bill list:${\n}${delivery_bill_list}
 
-    ${reward_counter_bill}    Get Rewardable Counter Bill
-    log to console  ${\n}reward_counter_bill:${\n}${reward_counter_bill}
+    ${reward_counter_list}    Get Rewardable Counter Bill
+    log to console  ${\n}Reward counter list:${\n}${reward_counter_list}
 
-    ${cur_bill_list}   Combine Lists    ${all_bill_list}    ${reward_counter_bill}
-    log to console  ${\n}cur_bill_list:${\n}${cur_bill_list}
+    ${cur_bill_list}   Combine Lists    ${delivery_bill_list}    ${reward_counter_list}
+    log to console  ${\n}Cur bill list:${\n}${cur_bill_list}
     ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${cur_bill_list}  ${FS_DATE}
 
     IF  ${is_up_to_date}
@@ -164,12 +153,22 @@ Update delivery and rewardable counter bill to Firestore
 
     ELSE
 
-        log to console  ${\n}non_exist_list:${\n}${non_exist_list}
+        log to console  ${\n}Non exist list:${\n}${non_exist_list}
         ${bill_info}  Get New Order Detail From Bill List  ${non_exist_list}
-
-        log to console  ${\n}bill_info:${\n}${bill_info}
         Update Bill Document to FireStore  ${bill_info}
 
+    END
+
+    ${is_void_exist}    ${void_order_list}    Get void order if exist
+    log to console  ${\n}Void order list:${\n}${void_order_list}
+
+    IF  ${is_void_exist}
+    ${is_up_to_date}  ${non_exist_list}  ToTheCloud.Bill list should exist for expected day  ${void_order_list}  ${FS_DATE}
+        IF  ${is_up_to_date}
+            Delete List Of Order  ${void_order_list}  ${FS_DATE}
+        END
+    ELSE
+        log to console    ${\n}No void
     END
 
     [Teardown]  End Script

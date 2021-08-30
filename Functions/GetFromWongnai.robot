@@ -39,7 +39,9 @@ ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr
 #Table
 ${TAB_row}                  xpath=//table[@id='show_table_billDetail']//tbody/tr  #Use to count the all row
 ${TAB_online_remark}        xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${counter_reward}')]  #Use to count all counter bill that have online remark
-${TAB_counter_bill}         xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${counter_reward}')][<index>]/td[3]  #Use to count all counter bill that have online remark
+${TAB_counter_bill}         xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${counter_reward}')][<index>]/td[3]  #Use to get all counter bill that have online remark
+${TAB_void_remark}          xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${void_remark}')]  #Use to count all counter bill that have online remark
+${TAB_void_bill}            xpath=//table[@id='show_table_billDetail']//tbody/tr[contains(.,'${void_remark}')][<index>]/td[3]  #Use to get all counter bill that have online remark
 # ${TAB_order_date_bill}      xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[1]  #Get date value from this ele 
 # ${TAB_order_time}           xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[2]  #Get time value from this ele 
 # ${TAB_bill_id}              xpath=//table[@id='show_table_billDetail']//tbody/tr[<index>]/td[3]
@@ -98,6 +100,7 @@ ${free}        หมีแลกแต้ม
 
 #Special Order
 ${counter_reward}    สะสมแต้มออนไลน์
+${void_remark}       Void
 
 #Dynamic Variable
 ${lineman_detecter}    Line Man
@@ -720,3 +723,25 @@ Get Rewardable Counter Bill
 
     ${reward_coundter_list}  Remove Duplicates  ${reward_coundter_list}
     [Return]  ${reward_coundter_list}
+
+Get void order if exist
+    ${row_amount}  Get Element Count  ${TAB_void_remark}
+    ${void_list}  Create List
+    
+    IF  ${row_amount}>0
+    
+        FOR  ${ROW}  IN RANGE  ${row_amount}
+            ${index}  Convert to String  ${ROW+1}
+            ${ele}  Replace String  ${TAB_void_bill}  <index>  ${index}
+            ${bill_id}  Get Text  ${ele}
+            Append To List  ${void_list}  ${bill_id}
+        END
+
+        ${void_list}  Remove Duplicates  ${void_list}
+        Return From Keyword    ${True}    ${void_list}
+
+    ELSE
+
+        Return From Keyword    ${False}    ${void_list}
+
+    END

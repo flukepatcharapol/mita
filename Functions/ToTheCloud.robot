@@ -42,22 +42,14 @@ Update Bill Document to FireStore
     ${is_success}  ${result_list}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
 
     IF  ${is_success}
-
-        IF  ${is_BO}
-            #Send line to crew and fluke phone
-            # LineCaller.Sent Alert To Line By ID  message=เพิ่มออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}    receiver=${_CREW_UID}    sender=${_ACCESS_TOKEN_BO}
-            LineCaller.Sent Alert To Line By ID  message=เพิ่มออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}
-            LineCaller.Sent Alert To Line By ID  message=${TEST NAME}\[BO\] New ${new_data_length} records. Success list: ${result_list}
-        ELSE
-            LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
-        END
-
+        
+        Send line to crew and fluke phone
+        LineCaller.Sent Alert To Line By ID  message=เพิ่มออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}    receiver=${_CREW_UID}    sender=${_ACCESS_TOKEN_BO}
+        
     ELSE
         #Just sent fail notification and wait for retry on the next time
         ${fail_length}  Get Length  ${result_list}
         Set Test Variable  ${TEST MESSAGE}  ${TEST NAME} Fail to up date ${fail_length} records. Fail list: ${result_list}
-        Fail
-        
 
     END
 
@@ -98,3 +90,10 @@ Delete Document Where older Than '${date}'
         Fail  Failed to empty doc older than ${date} with no reason
 
     END
+
+Delete List Of Order
+    [Arguments]    ${void_list}    ${order_date}=${FS_DATE}
+    FOR  ${BILL}  IN  @{void_list}
+        deleteOrder  ${BILL}  ${order_date}
+    END
+    LineCaller.Sent Alert To Line By ID  message=\[Void\] Delete void list: ${void_list}

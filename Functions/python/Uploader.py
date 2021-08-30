@@ -187,3 +187,7 @@ class Uploader ():
             db.collection('RedeemHistory').document(doc_id).delete()
 
         return delete_list
+    
+    def deleteOrder (self, bill_id, order_date):
+        str_orderDate=self.setExpectedTimeFormat(order_date)
+        db.collection('Order').document(str_orderDate).collection('OrderDetail').document(bill_id).delete()
