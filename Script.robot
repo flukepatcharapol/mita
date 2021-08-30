@@ -167,6 +167,9 @@ Update delivery and rewardable counter bill to Firestore
         ${is_void_exist_in_fs}  Check If Void Bill is exist  ${void_order_list}  ${FS_DATE}
         IF  ${is_void_exist_in_fs}
             Delete List Of Order  ${void_order_list}  ${FS_DATE}
+            log to console    ${\n}Success delete void: ${void_order_list}
+        ELSE
+            log to console    ${\n}Have all deleted
         END
     ELSE
         log to console    ${\n}No void
