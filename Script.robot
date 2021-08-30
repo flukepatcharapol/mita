@@ -169,7 +169,7 @@ Update delivery and rewardable counter bill to Firestore
             Delete List Of Order  ${void_order_list}  ${FS_DATE}
             log to console    ${\n}Success delete void: ${void_order_list}
         ELSE
-            log to console    ${\n}Have all deleted
+            log to console    ${\n}All void deleted
         END
     ELSE
         log to console    ${\n}No void
