@@ -54,9 +54,9 @@ ${TAB_void_bill}            xpath=//table[@id='show_table_billDetail']//tbody/tr
 # ${TAB_order_date}           xpath=//table[@id='show_table_billDetail']//tbody/tr[$INDEX]/td[1]  #Get date value from this ele 
 
 
-${TAB_table_delivery}       xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'หน้าร้าน'))]  #Use to count all not counter row
+${TAB_table_delivery}       xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'${exclude_counter}')) and not(contains(.,'${void_remark}'))]  #Use to count all not counter row and not void
 ${TAB_bill_list}            xpath=//table[@id='show_table_billDetail']//tbody//tr[contains(.,'<bill>')]  #Use to count bill row
-${TAB_delivery_just_bill}   xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'หน้าร้าน'))][<index>]/td[3]
+${TAB_delivery_just_bill}   xpath=//table[@id='show_table_billDetail']//tbody//tr[not(contains(.,'${exclude_counter}')) and not(contains(.,'${void_remark}'))][<index>]/td[3]
 
 #10 Points List
 ${gang_mhee}             แก๊งค์หมี
@@ -101,6 +101,7 @@ ${free}        หมีแลกแต้ม
 #Special Order
 ${counter_reward}    สะสมแต้มออนไลน์
 ${void_remark}       Void
+${exclude_counter}   หน้าร้าน
 
 #Dynamic Variable
 ${lineman_detecter}    Line Man
