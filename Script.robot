@@ -40,19 +40,15 @@ Script Setup
     Open Wongnai POS WEB on Headless and Maximize Window
 
 Set up initial value from OS variable
-    ${_POS_USER}     Get Environment Variable    _POS_USER
-    ${_POS_PASS}     Get Environment Variable    _POS_PASS
-    ${_FLUKE_UID}    Get Environment Variable    _FLUKE_UID
-    ${_CREW_UID}     Get Environment Variable    _CREW_UID
+    ${_POS_USER}        Get Environment Variable    _POS_USER
+    ${_POS_PASS}        Get Environment Variable    _POS_PASS
+    ${_FLUKE_UID}       Get Environment Variable    _FLUKE_UID
     ${_ACCESS_TOKEN}    Get Environment Variable    _ACCESS_TOKEN
-    ${_ACCESS_TOKEN_BO}    Get Environment Variable    _ACCESS_TOKEN_BO
 
-    Set Global Variable    ${_POS_USER}    ${_POS_USER}
-    Set Global Variable    ${_POS_PASS}    ${_POS_PASS}
-    Set Global Variable    ${_FLUKE_UID}    ${_FLUKE_UID}
-    Set Global Variable    ${_CREW_UID}    ${_CREW_UID}
-    Set Global Variable    ${_ACCESS_TOKEN}    ${_ACCESS_TOKEN}
-    Set Global Variable    ${_ACCESS_TOKEN_BO}    ${_ACCESS_TOKEN_BO}
+    Set Global Variable    ${_POS_USER}         ${_POS_USER}
+    Set Global Variable    ${_POS_PASS}         ${_POS_PASS}
+    Set Global Variable    ${_FLUKE_UID}        ${_FLUKE_UID}
+    Set Global Variable    ${_ACCESS_TOKEN}     ${_ACCESS_TOKEN}
 
 End Script
     Run Keyword If Test Failed    Do This When Script Failed
