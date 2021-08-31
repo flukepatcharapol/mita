@@ -25,4 +25,4 @@ Version 0.2
 3. Robot[Reset everyday]
     3.1 Clear prev.txt when trigger
     3.2 Log and send alert to line
- robot -v is_local:True -i update-delivery script.robot  
+robot -v IS_LOCAL:True -v INPUT_DATE:False -i Include-counter Script.robot

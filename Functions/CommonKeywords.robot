@@ -20,5 +20,26 @@ Input Text When Ready
     # Wait Until Element Is Visible  ${element}  ${GOLBAL_TIMEOUT}  error=The ${element} is not visible in ${GOLBAL_TIMEOUT}
     # Input Text  ${element}  ${text}  clear=True
 
-# Common Wait Until Element Is Visible
-#     [Arguments]    ${element}
+Common wait element is visible
+    [Arguments]    ${element}    ${timeout}=${ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${element}    ${timeout}
+
+Common Click Element when ready
+    [Arguments]    ${element}    ${timeout}=${ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${element}    ${timeout}
+    Click Element    ${element}
+
+Common Input text when ready
+    [Arguments]    ${element}    ${text}    ${timeout}=${ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${element}    ${timeout}
+    Input Text    ${element}    ${text}    clear=true
+
+Common Input password when ready
+    [Arguments]    ${element}    ${password}    ${timeout}=${ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${element}    ${timeout}
+    Input password    ${element}    ${password}    clear=true
+
+Common element should contain
+    [Arguments]    ${element}    ${expected}    ${timeout}=${ELEMENT_TIMEOUT}
+    Wait Until Element Is Visible    ${element}    ${timeout}
+    Element Should Contain    ${element}    ${expected}

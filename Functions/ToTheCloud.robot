@@ -42,16 +42,14 @@ Update Bill Document to FireStore
     ${is_success}  ${result_list}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
 
     IF  ${is_success}
-
-        #Sent success notify and update the prev number
-        LineCaller.Sent Alert To Line By ID  message=${TEST NAME} New ${new_data_length} records. Success list: ${result_list}
-
+        
+        Send line to crew and fluke phone
+        LineCaller.Sent Alert To Line By ID  message=เพิ่มออเดอร์ใหม่ ${new_data_length} ออเดอร์ ออเดอร์ที่ถูกเพิ่ม: ${result_list}    receiver=${_CREW_UID}    sender=${_ACCESS_TOKEN_BO}
+        
     ELSE
         #Just sent fail notification and wait for retry on the next time
         ${fail_length}  Get Length  ${result_list}
         Set Test Variable  ${TEST MESSAGE}  ${TEST NAME} Fail to up date ${fail_length} records. Fail list: ${result_list}
-        Fail
-        
 
     END
 
@@ -92,3 +90,15 @@ Delete Document Where older Than '${date}'
         Fail  Failed to empty doc older than ${date} with no reason
 
     END
+
+Delete List Of Order
+    [Arguments]    ${void_list}    ${order_date}=${FS_DATE}
+    FOR  ${BILL}  IN  @{void_list}
+        Uploader.deleteOrder  ${BILL}  ${order_date}
+    END
+    LineCaller.Sent Alert To Line By ID  message=\[Void\] Delete void list: ${void_list}
+
+Check If Void Bill is exist
+    [Arguments]    ${void_list}    ${order_date}=${FS_DATE}
+    ${is_exist}  Uploader.isVoidBillExist  ${void_list}  ${order_date}
+    [Return]  ${is_exist}
