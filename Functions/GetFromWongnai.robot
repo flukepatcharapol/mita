@@ -92,6 +92,8 @@ ${koko_fep}     โกโก้ปั่น
 ${hok_fep}      นมหมีฮอกไกโดปั่น
 ${matcha_fep}   ชาเขียวมัทฉะปั่น
 ${thai_fep}     ชาไทยปั่น
+${milk_j}       นมถั่วเหลือง
+${koko_j}       โกโก้เจ
 
 #Exclue_list
 ${wip}         วิปครีมมูส
@@ -386,6 +388,7 @@ Recalculate Point For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
+    ...               ${koko_j}  ${milk_j}
 
     ${not_free}  Run Keyword And Return Status  Should Not Contain Any
     ...  ${name}      ${free}
@@ -446,6 +449,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
+    ...               ${koko_j}  ${milk_j}
     ...               ${wip}  ${free}
     
     IF  ${is_10}
