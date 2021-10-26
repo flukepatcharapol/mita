@@ -94,9 +94,10 @@ ${matcha_fep}   ชาเขียวมัทฉะปั่น
 ${thai_fep}     ชาไทยปั่น
 ${milk_j}       นมถั่วเหลือง
 ${koko_j}       โกโก้เจ
+${wip}          วิปครีมมูส
+${bloody}       บลัดดี้
 
 #Exclue_list
-${wip}         วิปครีมมูส
 ${counter}     หน้าร้าน
 ${free}        หมีแลกแต้ม
 
@@ -388,7 +389,7 @@ Recalculate Point For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${koko_j}  ${milk_j}
+    ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}
 
     ${not_free}  Run Keyword And Return Status  Should Not Contain Any
     ...  ${name}      ${free}
@@ -449,7 +450,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${koko_j}  ${milk_j}
+    ...               ${koko_j}  ${milk_j}    ${bloody}
     ...               ${wip}  ${free}
     
     IF  ${is_10}
