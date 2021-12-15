@@ -96,6 +96,7 @@ ${milk_j}       นมถั่วเหลือง
 ${koko_j}       โกโก้เจ
 ${wip}          วิปครีมมูส
 ${bloody}       บลัดดี้
+${xmas}         เมอร์รี
 
 #Exclue_list
 ${counter}     หน้าร้าน
@@ -389,7 +390,7 @@ Recalculate Point For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}
+    ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}    ${xmas}
 
     ${not_free}  Run Keyword And Return Status  Should Not Contain Any
     ...  ${name}      ${free}
@@ -450,7 +451,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${koko_j}  ${milk_j}    ${bloody}
+    ...               ${koko_j}  ${milk_j}    ${bloody}    ${xmas}
     ...               ${wip}  ${free}
     
     IF  ${is_10}
