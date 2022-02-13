@@ -97,6 +97,7 @@ ${koko_j}       โกโก้เจ
 ${wip}          วิปครีมมูส
 ${bloody}       บลัดดี้
 ${xmas}         เมอร์รี
+${valentine}    ชาหมีคอลลาเจน
 
 #Exclue_list
 ${counter}     หน้าร้าน
@@ -390,7 +391,7 @@ Recalculate Point For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}    ${xmas}
+    ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}    ${xmas}    ${valentine}
 
     ${not_free}  Run Keyword And Return Status  Should Not Contain Any
     ...  ${name}      ${free}
@@ -451,7 +452,7 @@ Recalculate Amount For The Set Product
     ...  ${name}      ${koko}  ${thai}  ${mom}  ${dad}  ${chanom}  ${matcha}  ${mocha}
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
-    ...               ${koko_j}  ${milk_j}    ${bloody}    ${xmas}
+    ...               ${koko_j}  ${milk_j}    ${bloody}    ${xmas}    ${valentine}
     ...               ${wip}  ${free}
     
     IF  ${is_10}
