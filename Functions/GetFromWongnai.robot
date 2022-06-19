@@ -98,6 +98,8 @@ ${wip}          วิปครีมมูส
 ${bloody}       บลัดดี้
 ${xmas}         เมอร์รี
 ${valentine}    ชาหมีคอลลาเจน
+${white_mali}   ชาขาวมะลิ
+${peach_japan}  ชาดำพีชญี่ปุ่น
 
 #Exclue_list
 ${counter}     หน้าร้าน
@@ -133,8 +135,11 @@ Check Daily Billing Should Show
     Common element should contain    ${HOM_header}   ${HOM_bill_report_lbl}
 
 Go To Daily Billing Page
-    Click Report At Nav Bar
-    Click Billing Report Button
+    # Click Report At Nav Bar
+    # Import Library  DebugLibrary
+    # debug
+    Go to    https://pos.wongnai.com/th/salebybilldetail
+    # Click Billing Report Button
     Check Daily Billing Should Show
     Log To Console  ${\n}Visiting Daily Billing Page
 
@@ -222,6 +227,7 @@ Get Element Locator From Row
     [Arguments]    ${index}    ${row_name}
     ${ele}=    Replace String  ${TAB_${row_name}}     $INDEX    ${index}
     ${text}=   Get Text    ${ele}
+    Element Should Be Visible With Retry    ${ele}
     [Return]  ${text}
 
 Get Element Locator From Row Only Not Exist
@@ -392,6 +398,7 @@ Recalculate Point For The Set Product
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
     ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}    ${xmas}    ${valentine}
+    ...               ${white_mali}    ${peach_japan}
 
     ${not_free}  Run Keyword And Return Status  Should Not Contain Any
     ...  ${name}      ${free}
@@ -453,6 +460,7 @@ Recalculate Amount For The Set Product
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
     ...               ${koko_j}  ${milk_j}    ${bloody}    ${xmas}    ${valentine}
+    ...               ${white_mali}    ${peach_japan}
     ...               ${wip}  ${free}
     
     IF  ${is_10}

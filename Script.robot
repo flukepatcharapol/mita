@@ -56,7 +56,8 @@ End Script
 
 Do This When Script Failed
     ${TEST MESSAGE}  Remove String  ${TEST MESSAGE}  \n
-
+    Send Text To Line User  \[Robot Failed\]${TEST MESSAGE}  ${_FLUKE_UID}  ${_ACCESS_TOKEN}
+    Run Keyword If    ${IS_LOCAL}  Capture Page Screenshot    Screenshot.png
     # LineCaller.Sent Alert To Line By ID  message=${TEST NAME} was Failed, with error \(${TEST MESSAGE}\)
     # Capture Page Screenshot
     Close All Browsers
@@ -125,7 +126,7 @@ Update delivery and rewardable counter bill to Firestore
     [Tags]    Include-counter
     [Setup]  Script Setup  ${INPUT_DATE}
     Set Test Variable    ${TEST NAME}    [Include counter] Update Bill To Firestore
-    
+
     Login to Firebear Sothorn POS
     Go To Daily Billing Page
     Set Date To Expect Date and Validate Data Date Should be Expecte Date
