@@ -398,6 +398,7 @@ Recalculate Point For The Set Product
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
     ...               ${koko_j}  ${milk_j}   ${wip}    ${bloody}    ${xmas}    ${valentine}
+    ...               ${white_mali}    ${peach_japan}
 
     ${not_free}  Run Keyword And Return Status  Should Not Contain Any
     ...  ${name}      ${free}
@@ -459,6 +460,7 @@ Recalculate Amount For The Set Product
     ...               ${hokkaido}  ${latte}  ${espreso}
     ...               ${hok_fep}  ${matcha_fep}  ${thai_fep}  ${chanom_fep}  ${koko_fep}
     ...               ${koko_j}  ${milk_j}    ${bloody}    ${xmas}    ${valentine}
+    ...               ${white_mali}    ${peach_japan}
     ...               ${wip}  ${free}
     
     IF  ${is_10}
