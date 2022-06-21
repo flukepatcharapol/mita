@@ -153,6 +153,7 @@ Update delivery and rewardable counter bill to Firestore
     IF  ${is_up_to_date}
 
         log to console  ${\n}Every bill is updated.
+        Send Text To Line User     \[Robot Success\] Every bill is updated.    ${_FLUKE_UID}   ${_ACCESS_TOKEN}
         # LineCaller.Sent Alert To Line By ID  message=\[${TEST NAME}\] Every bill is updated.
 
     ELSE
