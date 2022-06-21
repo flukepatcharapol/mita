@@ -44,10 +44,15 @@ Update Bill Document to FireStore
     IF  ${is_success}
         
         Set Test Variable    ${SUCCESS_UPLOAD}    ${True}
+        Log to console    ${\n}Set SUCCESS_UPLOAD ${SUCCESS_UPLOAD}
         # Send line to fluke phone
         LineCaller.Sent Alert To Line By ID  message=${TEST NAME}. new ${new_data_length} orders. ${result_list}
         
     ELSE
+        
+        
+        Set Test Variable    ${SUCCESS_UPLOAD}    ${False}
+        Log to console    ${\n}Set SUCCESS_UPLOAD ${SUCCESS_UPLOAD}
         #Just sent fail notification and wait for retry on the next time
         ${fail_length}  Get Length  ${result_list}
         Set Test Variable  ${TEST MESSAGE}  ${TEST NAME} Fail to up date ${fail_length} records. Fail list: ${result_list}
