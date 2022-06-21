@@ -40,9 +40,10 @@ Update Bill Document to FireStore
 
     #The result_list retrun the list of fail or sucess depends on is_success.
     ${is_success}  ${result_list}=  Uploader.billShouldExist  ${bill_list}  ${bill_date}
-
+    
     IF  ${is_success}
         
+        Set Test Variable    ${SUCCESS_UPLOAD}    ${True}
         # Send line to fluke phone
         LineCaller.Sent Alert To Line By ID  message=${TEST NAME}. new ${new_data_length} orders. ${result_list}
         
