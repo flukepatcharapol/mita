@@ -43,8 +43,6 @@ Update Bill Document to FireStore
     
     IF  ${is_success}
         
-        Set Test Variable    ${SUCCESS_UPLOAD}    ${True}
-        Log to console    ${\n}Set SUCCESS_UPLOAD ${SUCCESS_UPLOAD}
         # Send line to fluke phone
         LineCaller.Sent Alert To Line By ID  message=${TEST NAME}. new ${new_data_length} orders. ${result_list}
         
