@@ -51,6 +51,7 @@ Set up initial value from OS variable
     Set Global Variable    ${_ACCESS_TOKEN}     ${_ACCESS_TOKEN}
 
 End Script
+    Run Keyword If Test Passed    Do This When Script Passed
     Run Keyword If Test Failed    Do This When Script Failed
     Close All Browsers
 
@@ -61,6 +62,11 @@ Do This When Script Failed
     # LineCaller.Sent Alert To Line By ID  message=${TEST NAME} was Failed, with error \(${TEST MESSAGE}\)
     # Capture Page Screenshot
     Close All Browsers
+
+Do This When Script Passed
+    IF    ${SUCCESS_UPLOAD}!=${True}
+        Send Text To Line User  \[Robot Success\] Successfully run and no new upload
+    END
 
 ############################################################################################################################################
 
