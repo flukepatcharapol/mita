@@ -14,7 +14,7 @@ ${WAIT}                 1 sec
 ${Global_SLEEP}         1 sec
 # ${GCP_BUILD_LINK}      https\://console.cloud.google.com/cloud-build/builds/${BUILD_ID}?project\=${PROJECT_ID}
 ${Global_TIMEOUT}        1 min
-${ELEMENT_TIMEOUT}       10 sec
+${ELEMENT_TIMEOUT}       30 sec
 
 ${EXPIRED_ORDER}         7 days
 ${REDEEM_USED_EXPIRED}   7 days
