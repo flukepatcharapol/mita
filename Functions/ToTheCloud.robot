@@ -45,6 +45,7 @@ Update Bill Document to FireStore
         
         # Send line to fluke phone
         LineCaller.Sent Alert To Line By ID  message=${TEST NAME}. new ${new_data_length} orders. ${result_list}
+        Set Test Variable    ${SUCCESS_UPLOAD}    ${True}
         
     ELSE
         
