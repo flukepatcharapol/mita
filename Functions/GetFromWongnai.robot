@@ -490,7 +490,7 @@ Recalculate Amount For The Set Product
     END
 
 Check date button should be visible
-    Common wait element is visible    ${HOM_date}
+    Common wait element is visible    ${HOM_date}    30
 
 Set Date To Expect date
     # Click Element When Ready  ${HOM_date}
