@@ -6,5 +6,5 @@ steps:
         '-v', 'INPUT_DATE:$_DATE',
         '-i', '$_SCRIPT_TAG', 'Script.robot'
         ]
-  timeout: 3 mins
+  timeout: 180s
   
